@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SitePulse — Espace Apporteur d'Affaires</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root {
+    --bg: #f2f3f5;
+    --card-bg: #ffffff;
+    --border: #e0e2e6;
+    --text: #1c1f24;
+    --text-muted: #6b7280;
+    --accent: #2563eb;
+    --accent-light: #eaf1fe;
+    --accent-dark: #1d4ed8;
+    --danger: #dc2626;
+    --danger-light: #fdecec;
+    --success: #16a34a;
+    --success-light: #eafaf0;
+    --radius: 7px;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04);
+    --sidebar-w: 240px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  button, input, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+  }
+
+  a { color: var(--accent); }
+
+  .app-shell {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    background: var(--card-bg);
+    border-right: 1px solid var(--border);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 40;
+    transition: transform 0.2s ease;
+  }
+
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-brand-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-brand-text {
+    font-weight: 600;
+    font-size: 14.5px;
+  }
+
+  .sidebar-brand-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 10px;
+  }
+
+  .sidebar-group {
+    margin-bottom: 18px;
+  }
+
+  .sidebar-group-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    padding: 0 10px 6px;
+  }
+
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 9px 10px;
+    border: none;
+    background: none;
+    border-radius: var(--radius);
+    text-align: left;
+    cursor: pointer;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .sidebar-link i {
+    width: 16px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  .sidebar-link:hover {
+    background: var(--bg);
+  }
+
+  .sidebar-link.active {
+    background: var(--accent-light);
+    color: var(--accent-dark);
+    font-weight: 600;
+  }
+
+  .sidebar-link.active i {
+    color: var(--accent-dark);
+  }
+
+  .sidebar-footer {
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* Mobile top bar */
+  .mobile-topbar {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+
+  .burger-btn {
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .mobile-topbar-title {
+    font-weight: 600;
+  }
+
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 39;
+  }
+
+  /* Main */
+  .main {
+    flex: 1;
+    margin-left: var(--sidebar-w);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .page {
+    display: none;
+    padding: 28px 32px 60px;
+    max-width: 1100px;
+    width: 100%;
+  }
+
+  .page.active {
+    display: block;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .page-header h1 {
+    margin: 0 0 4px;
+    font-size: 21px;
+    font-weight: 600;
+  }
+
+  .page-header p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 13.5px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text);
+    padding: 9px 14px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .btn:hover { background: var(--bg); }
+
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .btn-primary:hover { background: var(--accent-dark); }
+
+  .btn-danger {
+    color: var(--danger);
+  }
+
+  .btn-danger:hover {
+    background: var(--danger-light);
+    border-color: var(--danger);
+  }
+
+  .btn-sm {
+    padding: 6px 10px;
+    font-size: 12.5px;
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+  }
+
+  .card + .card { margin-top: 16px; }
+
+  .card-title {
+    font-weight: 600;
+    font-size: 14.5px;
+    margin: 0 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-desc {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin: 0;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  /* Tool cards */
+  .tool-card {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+    padding: 18px;
+    text-decoration: none;
+    color: var(--text);
+    box-shadow: var(--shadow);
+  }
+
+  .tool-card:hover {
+    border-color: var(--accent);
+  }
+
+  .tool-card-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius);
+    background: var(--accent-light);
+    color: var(--accent-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .tool-card h3 {
+    margin: 0 0 6px;
+    font-size: 14.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tool-card p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  .tool-card .ext-badge {
+    font-size: 11px;
+    color: var(--accent);
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* Checklist */
+  .checklist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .checklist li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .checklist li:last-child { border-bottom: none; }
+
+  .checklist input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .checklist label {
+    cursor: pointer;
+    flex: 1;
+  }
+
+  textarea.notes-field {
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    background: var(--bg);
+  }
+
+  textarea.notes-field:focus, input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .save-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Script steps */
+  .script-step {
+    display: flex;
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .script-step:last-child { border-bottom: none; }
+
+  .script-step-num {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    color: var(--accent-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    flex-shrink: 0;
+    font-size: 13px;
+  }
+
+  .script-step-body {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .script-step-text {
+    flex: 1;
+  }
+
+  .script-step-label {
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-dark);
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+
+  .script-step-line {
+    font-size: 14.5px;
+  }
+
+  .script-step-note {
+    flex-shrink: 0;
+    width: 200px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+    border-left: 2px solid var(--border);
+    padding-left: 12px;
+  }
+
+  /* Accordion */
+  .accordion-item {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+
+  .accordion-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card-bg);
+    border: none;
+    padding: 14px 16px;
+    cursor: pointer;
+    font-weight: 500;
+    text-align: left;
+  }
+
+  .accordion-header:hover { background: var(--bg); }
+
+  .accordion-header i { color: var(--text-muted); transition: transform 0.15s ease; }
+
+  .accordion-item.open .accordion-header i { transform: rotate(180deg); }
+
+  .accordion-body {
+    display: none;
+    padding: 0 16px 16px;
+    color: var(--text-muted);
+  }
+
+  .accordion-item.open .accordion-body { display: block; }
+
+  /* Definition lists / info blocks */
+  .info-row {
+    display: flex;
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .info-row:last-child { border-bottom: none; }
+
+  .info-row-label {
+    width: 160px;
+    flex-shrink: 0;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 12.5px;
+  }
+
+  /* Pricing table */
+  .pricing-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .pricing-table th, .pricing-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .pricing-table td:first-child, .pricing-table th:first-child {
+    text-align: left;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  .pricing-table th {
+    font-size: 14px;
+  }
+
+  .pricing-table .plan-price {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .pricing-table .recommended-col {
+    background: var(--accent-light);
+    position: relative;
+  }
+
+  .recommended-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 3px 8px;
+    border-radius: 20px;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  .yes-mark { color: var(--success); }
+  .no-mark { color: var(--text-muted); }
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  /* Forms */
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .form-group .required-mark { color: var(--danger); }
+
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 9px 11px;
+    background: var(--card-bg);
+  }
+
+  .form-group textarea {
+    min-height: 90px;
+    resize: vertical;
+  }
+
+  .field-error {
+    display: none;
+    color: var(--danger);
+    font-size: 12px;
+    margin-top: 5px;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .form-group.invalid input,
+  .form-group.invalid select,
+  .form-group.invalid textarea {
+    border-color: var(--danger);
+  }
+
+  .form-group.invalid .field-error {
+    display: flex;
+  }
+
+  .form-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .calendly-frame {
+    width: 100%;
+    height: 640px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  /* Appointments table */
+  .filters-bar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .filters-bar select, .filters-bar input {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 10px;
+    background: var(--card-bg);
+  }
+
+  .filters-bar input[type="search"] {
+    flex: 1;
+    min-width: 180px;
+  }
+
+  table.appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  .appointments-table th {
+    text-align: left;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .appointments-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13.5px;
+  }
+
+  .appointments-table tbody tr.data-row {
+    cursor: pointer;
+  }
+
+  .appointments-table tbody tr.data-row:hover {
+    background: var(--bg);
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+
+  .badge-froid { background: #e8f0fe; color: #1d4ed8; }
+  .badge-tiede { background: #fff4e0; color: #b45309; }
+  .badge-chaud { background: #fde8e8; color: #b91c1c; }
+  .badge-essentiel { background: #eef0f3; color: #374151; }
+  .badge-pulses { background: var(--accent-light); color: var(--accent-dark); }
+
+  .detail-row td {
+    background: var(--bg);
+    padding: 16px 20px;
+  }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px 24px;
+    margin-bottom: 10px;
+  }
+
+  .detail-grid div span {
+    display: block;
+    color: var(--text-muted);
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 2px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+
+  .empty-state i {
+    font-size: 34px;
+    margin-bottom: 14px;
+    color: var(--border);
+  }
+
+  .empty-state p { margin: 0 0 16px; }
+
+  /* Stats */
+  .stat-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px;
+  }
+
+  .stat-card .stat-label {
+    color: var(--text-muted);
+    font-size: 12.5px;
+    margin-bottom: 6px;
+  }
+
+  .stat-card .stat-value {
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .progress-row {
+    margin-bottom: 14px;
+  }
+
+  .progress-row:last-child { margin-bottom: 0; }
+
+  .progress-row-top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .progress-track {
+    height: 8px;
+    background: var(--bg);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 20px;
+  }
+
+  /* Toasts */
+  .toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 200;
+  }
+
+  .toast {
+    background: var(--text);
+    color: #fff;
+    padding: 11px 16px;
+    border-radius: var(--radius);
+    font-size: 13.5px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 220px;
+    animation: toast-in 0.15s ease;
+  }
+
+  .toast.success { background: #14532d; }
+  .toast.error { background: #7f1d1d; }
+
+  @keyframes toast-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    align-items: center;
+    justify-content: center;
+    z-index: 210;
+  }
+
+  .modal-overlay.open {
+    display: flex;
+  }
+
+  .modal-box {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 22px;
+    width: 380px;
+    max-width: 90vw;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+
+  .modal-box h3 {
+    margin: 0 0 10px;
+    font-size: 15.5px;
+  }
+
+  .modal-box p {
+    margin: 0 0 20px;
+    color: var(--text-muted);
+    font-size: 13.5px;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  @media (max-width: 900px) {
+    .sidebar {
+      transform: translateX(-100%);
+    }
+    .sidebar.open {
+      transform: translateX(0);
+    }
+    .sidebar-backdrop.open {
+      display: block;
+    }
+    .main {
+      margin-left: 0;
+    }
+    .mobile-topbar {
+      display: flex;
+    }
+    .page {
+      padding: 20px 16px 50px;
+    }
+    .grid-2, .grid-3, .form-columns, .detail-grid {
+      grid-template-columns: 1fr;
+    }
+    .stat-cards {
+      grid-template-columns: 1fr 1fr;
+    }
+    .script-step-body {
+      flex-direction: column;
+      gap: 8px;
+    }
+    .script-step-note {
+      width: auto;
+      border-left: none;
+      border-top: 2px solid var(--border);
+      padding-left: 0;
+      padding-top: 8px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon"><i class="fa-solid fa-bolt"></i></div>
+      <div>
+        <div class="sidebar-brand-text">SitePulse</div>
+        <div class="sidebar-brand-sub">Espace Apporteur d'Affaires</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-group">
+        <div class="sidebar-group-title">PROSPECTION</div>
+        <button class="sidebar-link" data-page="search"><i class="fa-solid fa-magnifying-glass"></i>Recherche de prospects</button>
+        <button class="sidebar-link" data-page="script"><i class="fa-solid fa-phone"></i>Script d'appel</button>
+        <button class="sidebar-link" data-page="objections"><i class="fa-solid fa-comments"></i>Objections</button>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-title">ARGUMENTAIRE</div>
+        <button class="sidebar-link" data-page="company"><i class="fa-solid fa-building"></i>L'entreprise</button>
+        <button class="sidebar-link" data-page="pricing"><i class="fa-solid fa-tags"></i>Offres &amp; tarifs</button>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-title">PIPELINE</div>
+        <button class="sidebar-link" data-page="new-appointment"><i class="fa-solid fa-calendar-plus"></i>Nouveau rendez-vous</button>
+        <button class="sidebar-link" data-page="appointments"><i class="fa-solid fa-list-check"></i>Mes rendez-vous</button>
+        <button class="sidebar-link" data-page="stats"><i class="fa-solid fa-chart-simple"></i>Statistiques</button>
+      </div>
+    </nav>
+    <div class="sidebar-footer">SitePulse &copy; <span id="footerYear"></span></div>
+  </aside>
+
+  <div class="main">
+    <div class="mobile-topbar">
+      <button class="burger-btn" id="burgerBtn"><i class="fa-solid fa-bars"></i></button>
+      <div class="mobile-topbar-title" id="mobileTitle">SitePulse</div>
+    </div>
+
+    <!-- PAGE: Recherche de prospects -->
+    <section class="page" data-page="search">
+      <div class="page-header">
+        <div>
+          <h1>Recherche de prospects</h1>
+          <p>Trouvez des entreprises locales à démarcher et préparez votre session d'appels.</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <a class="tool-card" href="https://scraper.io" target="_blank" rel="noopener">
+          <div class="tool-card-icon"><i class="fa-solid fa-database"></i></div>
+          <h3>Scraper.io</h3>
+          <p>Extrait des listes d'entreprises locales : nom, téléphone, site web, secteur d'activité. L'outil principal pour constituer vos listes de prospection.</p>
+          <div class="ext-badge"><i class="fa-solid fa-up-right-from-square"></i>Ouvrir dans un nouvel onglet</div>
+        </a>
+        <a class="tool-card" href="https://www.google.com/maps" target="_blank" rel="noopener">
+          <div class="tool-card-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+          <h3>Google Maps</h3>
+          <p>Vérifiez la présence, les avis et les coordonnées d'un prospect avant de l'appeler.</p>
+          <div class="ext-badge"><i class="fa-solid fa-up-right-from-square"></i>Ouvrir dans un nouvel onglet</div>
+        </a>
+      </div>
+
+      <div class="card">
+        <p class="card-title"><i class="fa-solid fa-clipboard-check"></i>Qualification d'un prospect</p>
+        <p class="card-desc" style="margin-bottom:14px;">Passez en revue ces points avant d'appeler.</p>
+        <ul class="checklist">
+          <li><input type="checkbox" id="chk-site"><label for="chk-site">A-t-il un site web ?</label></li>
+          <li><input type="checkbox" id="chk-maps"><label for="chk-maps">Est-il présent sur Google Maps ?</label></li>
+          <li><input type="checkbox" id="chk-avis"><label for="chk-avis">A-t-il des avis clients ?</label></li>
+          <li><input type="checkbox" id="chk-responsive"><label for="chk-responsive">Son site est-il responsive (mobile) ?</label></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <p class="card-title"><i class="fa-solid fa-pen"></i>Notes de session</p>
+        <p class="card-desc" style="margin-bottom:12px;">Préparez vos appels : liste de prospects, remarques, priorités du jour.</p>
+        <textarea class="notes-field" id="prospectingNotes" placeholder="Ex : Liste plombiers Dole - 12 numéros à appeler ce matin..."></textarea>
+        <div class="save-hint"><i class="fa-solid fa-circle-check"></i><span id="notesSaveHint">Sauvegardé automatiquement</span></div>
+      </div>
+    </section>
+
+    <!-- PAGE: Script d'appel -->
+    <section class="page" data-page="script">
+      <div class="page-header">
+        <div>
+          <h1>Script d'appel</h1>
+          <p>Le déroulé type d'un appel de prospection, étape par étape.</p>
+        </div>
+        <button class="btn btn-primary" id="copyScriptBtn"><i class="fa-solid fa-copy"></i>Copier le script</button>
+      </div>
+
+      <div class="card" id="scriptSteps"></div>
+    </section>
+
+    <!-- PAGE: Objections -->
+    <section class="page" data-page="objections">
+      <div class="page-header">
+        <div>
+          <h1>Objections</h1>
+          <p>Les objections les plus fréquentes et comment y répondre.</p>
+        </div>
+      </div>
+
+      <div id="objectionsList"></div>
+    </section>
+
+    <!-- PAGE: L'entreprise -->
+    <section class="page" data-page="company">
+      <div class="page-header">
+        <div>
+          <h1>L'entreprise</h1>
+          <p>Ce qu'il faut savoir sur SitePulse pour bien en parler.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="card-title"><i class="fa-solid fa-bullseye"></i>Mission</p>
+        <p class="card-desc">SitePulse aide les entreprises locales à obtenir plus de clients grâce à des sites web modernes et optimisés.</p>
+      </div>
+
+      <div class="card">
+        <p class="card-title"><i class="fa-solid fa-list"></i>Services</p>
+        <div class="tag-list">
+          <span class="tag">Sites responsifs</span>
+          <span class="tag">SEO local</span>
+          <span class="tag">Google My Business</span>
+          <span class="tag">Design sur mesure</span>
+          <span class="tag">Support technique</span>
+          <span class="tag">SSL</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="card-title"><i class="fa-solid fa-users"></i>Clients types</p>
+        <div class="tag-list">
+          <span class="tag">Plombiers</span>
+          <span class="tag">Électriciens</span>
+          <span class="tag">Couvreurs</span>
+          <span class="tag">Menuisiers</span>
+          <span class="tag">Coiffeurs</span>
+          <span class="tag">Restaurants</span>
+          <span class="tag">Artisans en général</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="info-row">
+          <div class="info-row-label">Zone d'intervention</div>
+          <div>Dole et alentours (Jura), France</div>
+        </div>
+        <div class="info-row">
+          <div class="info-row-label">Contact</div>
+          <div><a href="mailto:sitepulses.net@gmail.com">sitepulses.net@gmail.com</a></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: Offres & tarifs -->
+    <section class="page" data-page="pricing">
+      <div class="page-header">
+        <div>
+          <h1>Offres &amp; tarifs</h1>
+          <p>Comparatif des deux offres proposées aux prospects.</p>
+        </div>
+      </div>
+
+      <div class="card table-scroll">
+        <table class="pricing-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Essentiel</th>
+              <th class="recommended-col">
+                <span class="recommended-badge">Recommandée</span><br>Pulses
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Prix</td>
+              <td class="plan-price">299 &euro;</td>
+              <td class="plan-price recommended-col">399 &euro;</td>
+            </tr>
+            <tr>
+              <td>Site web moderne</td>
+              <td><i class="fa-solid fa-check yes-mark"></i></td>
+              <td class="recommended-col"><i class="fa-solid fa-check yes-mark"></i></td>
+            </tr>
+            <tr>
+              <td>Responsive / mobile</td>
+              <td><i class="fa-solid fa-check yes-mark"></i></td>
+              <td class="recommended-col"><i class="fa-solid fa-check yes-mark"></i></td>
+            </tr>
+            <tr>
+              <td>Formulaire de contact</td>
+              <td><i class="fa-solid fa-check yes-mark"></i></td>
+              <td class="recommended-col"><i class="fa-solid fa-check yes-mark"></i></td>
+            </tr>
+            <tr>
+              <td>SSL + support</td>
+              <td><i class="fa-solid fa-check yes-mark"></i></td>
+              <td class="recommended-col"><i class="fa-solid fa-check yes-mark"></i></td>
+            </tr>
+            <tr>
+              <td>Google My Business</td>
+              <td class="no-mark">&mdash;</td>
+              <td class="recommended-col"><i class="fa-solid fa-check yes-mark"></i></td>
+            </tr>
+            <tr>
+              <td>Gestion des avis</td>
+              <td class="no-mark">&mdash;</td>
+              <td class="recommended-col"><i class="fa-solid fa-check yes-mark"></i></td>
+            </tr>
+            <tr>
+              <td>Intégration carte</td>
+              <td class="no-mark">&mdash;</td>
+              <td class="recommended-col"><i class="fa-solid fa-check yes-mark"></i></td>
+            </tr>
+            <tr>
+              <td>Analytics</td>
+              <td class="no-mark">&mdash;</td>
+              <td class="recommended-col"><i class="fa-solid fa-check yes-mark"></i></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PAGE: Nouveau rendez-vous -->
+    <section class="page" data-page="new-appointment">
+      <div class="page-header">
+        <div>
+          <h1>Nouveau rendez-vous</h1>
+          <p>Enregistrez la fiche prospect et calez un créneau avec Calendly.</p>
+        </div>
+      </div>
+
+      <div class="form-columns">
+        <div class="card">
+          <p class="card-title"><i class="fa-solid fa-id-card"></i>Fiche prospect</p>
+          <form id="appointmentForm" novalidate>
+            <div class="form-group" id="group-name">
+              <label for="field-name">Nom <span class="required-mark">*</span></label>
+              <input type="text" id="field-name" name="name">
+              <div class="field-error"><i class="fa-solid fa-circle-exclamation"></i>Le nom est requis.</div>
+            </div>
+            <div class="form-group" id="group-email">
+              <label for="field-email">Email <span class="required-mark">*</span></label>
+              <input type="email" id="field-email" name="email">
+              <div class="field-error"><i class="fa-solid fa-circle-exclamation"></i>Un email valide est requis.</div>
+            </div>
+            <div class="form-group" id="group-phone">
+              <label for="field-phone">Téléphone</label>
+              <input type="tel" id="field-phone" name="phone">
+            </div>
+            <div class="form-group" id="group-sector">
+              <label for="field-sector">Secteur d'activité <span class="required-mark">*</span></label>
+              <input type="text" id="field-sector" name="sector" list="sectorSuggestions" placeholder="Ex : Plombier">
+              <datalist id="sectorSuggestions">
+                <option value="Plombier">
+                <option value="Électricien">
+                <option value="Couvreur">
+                <option value="Menuisier">
+                <option value="Coiffeur">
+                <option value="Restaurant">
+                <option value="Artisan">
+              </datalist>
+              <div class="field-error"><i class="fa-solid fa-circle-exclamation"></i>Le secteur d'activité est requis.</div>
+            </div>
+            <div class="form-group" id="group-existingSite">
+              <label for="field-existingSite">Site existant</label>
+              <select id="field-existingSite" name="existingSite">
+                <option value="non">Non</option>
+                <option value="oui_mal">Oui, mal optimisé</option>
+                <option value="oui_correct">Oui, correct</option>
+              </select>
+            </div>
+            <div class="form-group" id="group-offer">
+              <label for="field-offer">Offre proposée</label>
+              <select id="field-offer" name="offer">
+                <option value="essentiel">Essentiel &mdash; 299 &euro;</option>
+                <option value="pulses">Pulses &mdash; 399 &euro;</option>
+              </select>
+            </div>
+            <div class="form-group" id="group-interest">
+              <label for="field-interest">Niveau d'intérêt</label>
+              <select id="field-interest" name="interest">
+                <option value="froid">Froid</option>
+                <option value="tiede">Tiède</option>
+                <option value="chaud">Chaud</option>
+              </select>
+            </div>
+            <div class="form-group" id="group-notes">
+              <label for="field-notes">Notes libres</label>
+              <textarea id="field-notes" name="notes" placeholder="Contexte, remarques..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i>Enregistrer le rendez-vous</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <p class="card-title"><i class="fa-solid fa-calendar-days"></i>Prendre rendez-vous</p>
+          <p class="card-desc" style="margin-bottom:14px;">Choisissez un créneau directement avec le prospect.</p>
+          <iframe class="calendly-frame" src="https://calendly.com/sitepulse-net/30min" title="Calendly"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: Mes rendez-vous -->
+    <section class="page" data-page="appointments">
+      <div class="page-header">
+        <div>
+          <h1>Mes rendez-vous</h1>
+          <p>L'ensemble des rendez-vous enregistrés.</p>
+        </div>
+        <button class="btn" id="exportCsvBtn"><i class="fa-solid fa-file-arrow-down"></i>Exporter en CSV</button>
+      </div>
+
+      <div class="filters-bar">
+        <input type="search" id="filterSearch" placeholder="Rechercher un nom...">
+        <select id="filterOffer">
+          <option value="">Toutes les offres</option>
+          <option value="essentiel">Essentiel</option>
+          <option value="pulses">Pulses</option>
+        </select>
+        <select id="filterInterest">
+          <option value="">Tous les intérêts</option>
+          <option value="froid">Froid</option>
+          <option value="tiede">Tiède</option>
+          <option value="chaud">Chaud</option>
+        </select>
+      </div>
+
+      <div class="card table-scroll" id="appointmentsCard" style="padding:0;">
+        <table class="appointments-table">
+          <thead>
+            <tr>
+              <th>Prospect</th>
+              <th>Secteur</th>
+              <th>Offre</th>
+              <th>Intérêt</th>
+              <th>Date</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="appointmentsTableBody"></tbody>
+        </table>
+        <div class="empty-state" id="appointmentsEmptyState" style="display:none;">
+          <i class="fa-solid fa-calendar-xmark"></i>
+          <p>Aucun rendez-vous enregistré pour le moment.</p>
+          <button class="btn btn-primary" data-page-link="new-appointment"><i class="fa-solid fa-calendar-plus"></i>Nouveau rendez-vous</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: Statistiques -->
+    <section class="page" data-page="stats">
+      <div class="page-header">
+        <div>
+          <h1>Statistiques</h1>
+          <p>Vue d'ensemble de votre activité de prospection.</p>
+        </div>
+      </div>
+
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-label">Total de RDV pris</div>
+          <div class="stat-value" id="statTotal">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Chiffre d'affaires potentiel</div>
+          <div class="stat-value" id="statRevenue">0 &euro;</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Offre Pulses</div>
+          <div class="stat-value" id="statPulses">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Prospects chauds</div>
+          <div class="stat-value" id="statChaud">0</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <p class="card-title"><i class="fa-solid fa-tags"></i>Répartition par offre</p>
+          <div id="statsOfferBars"></div>
+        </div>
+        <div class="card">
+          <p class="card-title"><i class="fa-solid fa-fire"></i>Répartition par intérêt</p>
+          <div id="statsInterestBars"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="card-title"><i class="fa-solid fa-ranking-star"></i>Top 3 des secteurs démarchés</p>
+        <div id="statsSectorBars"></div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <h3 id="modalTitle">Confirmer</h3>
+    <p id="modalMessage"></p>
+    <div class="modal-actions">
+      <button class="btn" id="modalCancelBtn">Annuler</button>
+      <button class="btn btn-danger" id="modalConfirmBtn">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var STORAGE_KEY = "sitepulse_data";
+  var DATA_VERSION = 1;
+
+  var OFFER_LABELS = { essentiel: "Essentiel", pulses: "Pulses" };
+  var OFFER_PRICES = { essentiel: 299, pulses: 399 };
+  var INTEREST_LABELS = { froid: "Froid", tiede: "Tiède", chaud: "Chaud" };
+  var EXISTING_SITE_LABELS = { non: "Non", oui_mal: "Oui, mal optimisé", oui_correct: "Oui, correct" };
+
+  var PAGE_TITLES = {
+    "search": "Recherche de prospects",
+    "script": "Script d'appel",
+    "objections": "Objections",
+    "company": "L'entreprise",
+    "pricing": "Offres & tarifs",
+    "new-appointment": "Nouveau rendez-vous",
+    "appointments": "Mes rendez-vous",
+    "stats": "Statistiques"
+  };
+
+  function defaultData() {
+    return {
+      version: DATA_VERSION,
+      prospectingNotes: "",
+      prospectingChecklist: {},
+      appointments: []
+    };
+  }
+
+  function loadData() {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultData();
+    try {
+      var parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== "object") return defaultData();
+      var data = defaultData();
+      data.prospectingNotes = parsed.prospectingNotes || "";
+      data.prospectingChecklist = parsed.prospectingChecklist || {};
+      data.appointments = Array.isArray(parsed.appointments) ? parsed.appointments : [];
+      return data;
+    } catch (e) {
+      return defaultData();
+    }
+  }
+
+  function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  var state = loadData();
+
+  /* ---------- Toasts ---------- */
+  function showToast(message, type) {
+    var container = document.getElementById("toastContainer");
+    var toast = document.createElement("div");
+    toast.className = "toast" + (type ? " " + type : "");
+    var icon = type === "success" ? "fa-circle-check" : type === "error" ? "fa-circle-exclamation" : "fa-circle-info";
+    toast.innerHTML = '<i class="fa-solid ' + icon + '"></i><span></span>';
+    toast.querySelector("span").textContent = message;
+    container.appendChild(toast);
+    setTimeout(function () {
+      toast.style.opacity = "0";
+      toast.style.transition = "opacity 0.2s ease";
+      setTimeout(function () { toast.remove(); }, 200);
+    }, 3200);
+  }
+
+  /* ---------- Modal (confirm) ---------- */
+  var modalOverlay = document.getElementById("modalOverlay");
+  var modalTitle = document.getElementById("modalTitle");
+  var modalMessage = document.getElementById("modalMessage");
+  var modalConfirmBtn = document.getElementById("modalConfirmBtn");
+  var modalCancelBtn = document.getElementById("modalCancelBtn");
+  var pendingConfirmCallback = null;
+
+  function showConfirm(title, message, onConfirm) {
+    modalTitle.textContent = title;
+    modalMessage.textContent = message;
+    pendingConfirmCallback = onConfirm;
+    modalOverlay.classList.add("open");
+  }
+
+  function closeModal() {
+    modalOverlay.classList.remove("open");
+    pendingConfirmCallback = null;
+  }
+
+  modalConfirmBtn.addEventListener("click", function () {
+    var cb = pendingConfirmCallback;
+    closeModal();
+    if (cb) cb();
+  });
+  modalCancelBtn.addEventListener("click", closeModal);
+  modalOverlay.addEventListener("click", function (e) {
+    if (e.target === modalOverlay) closeModal();
+  });
+
+  /* ---------- Navigation ---------- */
+  var sidebar = document.getElementById("sidebar");
+  var sidebarBackdrop = document.getElementById("sidebarBackdrop");
+  var burgerBtn = document.getElementById("burgerBtn");
+  var mobileTitle = document.getElementById("mobileTitle");
+
+  function closeSidebar() {
+    sidebar.classList.remove("open");
+    sidebarBackdrop.classList.remove("open");
+  }
+
+  burgerBtn.addEventListener("click", function () {
+    sidebar.classList.toggle("open");
+    sidebarBackdrop.classList.toggle("open");
+  });
+  sidebarBackdrop.addEventListener("click", closeSidebar);
+
+  function goToPage(pageName) {
+    var pages = document.querySelectorAll(".page");
+    for (var i = 0; i < pages.length; i++) {
+      pages[i].classList.toggle("active", pages[i].getAttribute("data-page") === pageName);
+    }
+    var links = document.querySelectorAll(".sidebar-link");
+    for (var j = 0; j < links.length; j++) {
+      links[j].classList.toggle("active", links[j].getAttribute("data-page") === pageName);
+    }
+    mobileTitle.textContent = PAGE_TITLES[pageName] || "SitePulse";
+    closeSidebar();
+    window.scrollTo(0, 0);
+    if (pageName === "appointments") renderAppointmentsTable();
+    if (pageName === "stats") renderStats();
+  }
+
+  document.querySelectorAll(".sidebar-link").forEach(function (link) {
+    link.addEventListener("click", function () {
+      goToPage(link.getAttribute("data-page"));
+    });
+  });
+
+  document.querySelectorAll("[data-page-link]").forEach(function (el) {
+    el.addEventListener("click", function () {
+      goToPage(el.getAttribute("data-page-link"));
+    });
+  });
+
+  document.getElementById("footerYear").textContent = new Date().getFullYear();
+
+  /* ---------- Page: Recherche de prospects ---------- */
+  var CHECKLIST_IDS = ["chk-site", "chk-maps", "chk-avis", "chk-responsive"];
+  CHECKLIST_IDS.forEach(function (id) {
+    var el = document.getElementById(id);
+    el.checked = !!state.prospectingChecklist[id];
+    el.addEventListener("change", function () {
+      state.prospectingChecklist[id] = el.checked;
+      saveData();
+    });
+  });
+
+  var prospectingNotesEl = document.getElementById("prospectingNotes");
+  prospectingNotesEl.value = state.prospectingNotes;
+  var notesSaveTimer = null;
+  prospectingNotesEl.addEventListener("input", function () {
+    var hint = document.getElementById("notesSaveHint");
+    hint.textContent = "Enregistrement...";
+    clearTimeout(notesSaveTimer);
+    notesSaveTimer = setTimeout(function () {
+      state.prospectingNotes = prospectingNotesEl.value;
+      saveData();
+      hint.textContent = "Sauvegardé automatiquement";
+    }, 400);
+  });
+
+  /* ---------- Page: Script d'appel ---------- */
+  var SCRIPT_STEPS = [
+    {
+      label: "1. Accroche",
+      line: "Bonjour, Si je vous dis que c'est un bon vieux appel de prospection.",
+      note: "Ton badin, sourire dans la voix"
+    },
+    {
+      label: "2. Permission",
+      line: "Vous préférez jeter le téléphone par la fenêtre, ou me laisser 10 secondes pour vous expliquer pourquoi je vous appelle ?",
+      note: "Laisser un silence ici, attendre la réponse"
+    },
+    {
+      label: "3. Pitch",
+      line: "Cesse de plaisanterie, je vais faire vite. Chez SitePulse, on aide les entreprises locales à obtenir plus de clients grâce à des sites web modernes et optimisés.",
+      note: "Ton plus sérieux et direct"
+    },
+    {
+      label: "4. Observation",
+      line: "Et en regardant rapidement votre présence en ligne, je me suis dit qu'il y avait peut-être une belle opportunité pour vous d'améliorer votre visibilité et générer plus de demandes.",
+      note: "Personnaliser avec un détail réel si possible"
+    },
+    {
+      label: "5. Différenciateur",
+      line: "La grande différence, c'est que j'ai pris la liberté de vous en créer un.",
+      note: "Marquer une pause, laisser l'effet de surprise agir"
+    },
+    {
+      label: "6. Closing",
+      line: "Alors qu'en dites vous de le voir et de décider si vous le voulez ?",
+      note: "Poser la question et se taire, attendre la réponse"
+    }
+  ];
+
+  function renderScriptSteps() {
+    var container = document.getElementById("scriptSteps");
+    container.innerHTML = "";
+    SCRIPT_STEPS.forEach(function (step, index) {
+      var el = document.createElement("div");
+      el.className = "script-step";
+      el.innerHTML =
+        '<div class="script-step-num">' + (index + 1) + '</div>' +
+        '<div class="script-step-body">' +
+          '<div class="script-step-text">' +
+            '<div class="script-step-label"></div>' +
+            '<div class="script-step-line"></div>' +
+          '</div>' +
+          '<div class="script-step-note"></div>' +
+        '</div>';
+      el.querySelector(".script-step-label").textContent = step.label;
+      el.querySelector(".script-step-line").textContent = step.line;
+      el.querySelector(".script-step-note").textContent = step.note;
+      container.appendChild(el);
+    });
+  }
+  renderScriptSteps();
+
+  document.getElementById("copyScriptBtn").addEventListener("click", function () {
+    var fullText = SCRIPT_STEPS.map(function (s) { return s.line; }).join("\n\n");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(fullText).then(function () {
+        showToast("Script copié dans le presse-papiers", "success");
+      }).catch(function () {
+        showToast("Impossible de copier le script", "error");
+      });
+    } else {
+      showToast("Impossible de copier le script", "error");
+    }
+  });
+
+  /* ---------- Page: Objections ---------- */
+  var OBJECTIONS = [
+    {
+      q: "J'ai déjà un site",
+      a: "Très bien, justement je ne vous demande pas d'en changer aujourd'hui. Je vous propose juste de regarder ce qu'on a préparé pour vous, sans engagement. Si le vôtre fonctionne mieux, vous ne perdez que 2 minutes."
+    },
+    {
+      q: "Je n'ai pas le temps",
+      a: "Je comprends, je ne vous prends que 10 secondes là, maintenant. Et pour la suite, on cale un rendez-vous de 15 minutes quand ça vous arrange, pas avant."
+    },
+    {
+      q: "C'est trop cher",
+      a: "Je comprends la question du prix. C'est justement pour ça qu'on a un site déjà prêt à vous montrer, comme ça vous jugez si la valeur est là avant même de parler du montant exact."
+    },
+    {
+      q: "Envoyez-moi un mail",
+      a: "Avec plaisir, mais un mail se perd vite dans une boîte pleine. Je préfère vous montrer 2 minutes maintenant ce qu'on a fait, ça vous permet de juger tout de suite si ça vaut le coup d'aller plus loin."
+    },
+    {
+      q: "Je ne suis pas intéressé",
+      a: "Aucun souci, beaucoup de mes meilleurs clients m'ont dit ça au début. Juste une question rapide : votre site vous ramène-t-il des demandes clients toutes les semaines actuellement ?"
+    },
+    {
+      q: "Je vais y réfléchir",
+      a: "Bien sûr, c'est normal. Pour vous aider à réfléchir avec du concret, autant qu'on fixe 15 minutes ensemble, ça vous donnera une vraie base de décision plutôt qu'une impression."
+    }
+  ];
+
+  function renderObjections() {
+    var container = document.getElementById("objectionsList");
+    container.innerHTML = "";
+    OBJECTIONS.forEach(function (obj) {
+      var item = document.createElement("div");
+      item.className = "accordion-item";
+      item.innerHTML =
+        '<button class="accordion-header"><span></span><i class="fa-solid fa-chevron-down"></i></button>' +
+        '<div class="accordion-body"><p></p></div>';
+      item.querySelector(".accordion-header span").textContent = obj.q;
+      item.querySelector(".accordion-body p").textContent = obj.a;
+      item.querySelector(".accordion-header").addEventListener("click", function () {
+        item.classList.toggle("open");
+      });
+      container.appendChild(item);
+    });
+  }
+  renderObjections();
+
+  /* ---------- Page: Nouveau rendez-vous ---------- */
+  var appointmentForm = document.getElementById("appointmentForm");
+
+  function setFieldInvalid(groupId, invalid) {
+    document.getElementById(groupId).classList.toggle("invalid", invalid);
+  }
+
+  function isValidEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+  function validateAppointmentForm() {
+    var name = document.getElementById("field-name").value.trim();
+    var email = document.getElementById("field-email").value.trim();
+    var sector = document.getElementById("field-sector").value.trim();
+    var valid = true;
+
+    if (!name) { setFieldInvalid("group-name", true); valid = false; }
+    else setFieldInvalid("group-name", false);
+
+    if (!email || !isValidEmail(email)) { setFieldInvalid("group-email", true); valid = false; }
+    else setFieldInvalid("group-email", false);
+
+    if (!sector) { setFieldInvalid("group-sector", true); valid = false; }
+    else setFieldInvalid("group-sector", false);
+
+    return valid;
+  }
+
+  appointmentForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (!validateAppointmentForm()) {
+      showToast("Merci de corriger les champs en erreur", "error");
+      return;
+    }
+
+    var appointment = {
+      id: "apt_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8),
+      name: document.getElementById("field-name").value.trim(),
+      email: document.getElementById("field-email").value.trim(),
+      phone: document.getElementById("field-phone").value.trim(),
+      sector: document.getElementById("field-sector").value.trim(),
+      existingSite: document.getElementById("field-existingSite").value,
+      offer: document.getElementById("field-offer").value,
+      interest: document.getElementById("field-interest").value,
+      notes: document.getElementById("field-notes").value.trim(),
+      createdAt: new Date().toISOString()
+    };
+
+    state.appointments.push(appointment);
+    saveData();
+    appointmentForm.reset();
+    ["group-name", "group-email", "group-sector"].forEach(function (id) {
+      setFieldInvalid(id, false);
+    });
+    showToast("Rendez-vous enregistré avec succès", "success");
+    goToPage("appointments");
+  });
+
+  /* ---------- Page: Mes rendez-vous ---------- */
+  var appointmentsTableBody = document.getElementById("appointmentsTableBody");
+  var appointmentsEmptyState = document.getElementById("appointmentsEmptyState");
+  var filterSearch = document.getElementById("filterSearch");
+  var filterOffer = document.getElementById("filterOffer");
+  var filterInterest = document.getElementById("filterInterest");
+  var expandedRowId = null;
+
+  function formatDate(isoString) {
+    var d = new Date(isoString);
+    if (isNaN(d.getTime())) return "-";
+    return d.toLocaleDateString("fr-FR") + " " + d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  }
+
+  function getFilteredAppointments() {
+    var search = filterSearch.value.trim().toLowerCase();
+    var offer = filterOffer.value;
+    var interest = filterInterest.value;
+    return state.appointments.filter(function (apt) {
+      if (offer && apt.offer !== offer) return false;
+      if (interest && apt.interest !== interest) return false;
+      if (search && apt.name.toLowerCase().indexOf(search) === -1) return false;
+      return true;
+    });
+  }
+
+  function renderAppointmentsTable() {
+    var list = getFilteredAppointments();
+    appointmentsTableBody.innerHTML = "";
+
+    var table = document.querySelector("table.appointments-table");
+    if (state.appointments.length === 0) {
+      table.style.display = "none";
+      appointmentsEmptyState.style.display = "block";
+      return;
+    }
+    table.style.display = "";
+    appointmentsEmptyState.style.display = "none";
+
+    if (list.length === 0) {
+      var trEmpty = document.createElement("tr");
+      trEmpty.innerHTML = '<td colspan="6" style="text-align:center;color:var(--text-muted);padding:24px;">Aucun résultat pour ces filtres.</td>';
+      appointmentsTableBody.appendChild(trEmpty);
+      return;
+    }
+
+    list.slice().reverse().forEach(function (apt) {
+      var tr = document.createElement("tr");
+      tr.className = "data-row";
+      tr.dataset.id = apt.id;
+      tr.innerHTML =
+        '<td>' + escapeHtml(apt.name) + '</td>' +
+        '<td>' + escapeHtml(apt.sector) + '</td>' +
+        '<td><span class="badge badge-' + apt.offer + '">' + OFFER_LABELS[apt.offer] + '</span></td>' +
+        '<td><span class="badge badge-' + apt.interest + '">' + INTEREST_LABELS[apt.interest] + '</span></td>' +
+        '<td>' + formatDate(apt.createdAt) + '</td>' +
+        '<td><button class="btn btn-sm btn-danger delete-apt-btn"><i class="fa-solid fa-trash"></i></button></td>';
+
+      tr.addEventListener("click", function (e) {
+        if (e.target.closest(".delete-apt-btn")) return;
+        expandedRowId = expandedRowId === apt.id ? null : apt.id;
+        renderAppointmentsTable();
+      });
+
+      tr.querySelector(".delete-apt-btn").addEventListener("click", function (e) {
+        e.stopPropagation();
+        showConfirm(
+          "Supprimer ce rendez-vous ?",
+          "Cette action est définitive. Le rendez-vous de " + apt.name + " sera supprimé.",
+          function () {
+            state.appointments = state.appointments.filter(function (a) { return a.id !== apt.id; });
+            saveData();
+            renderAppointmentsTable();
+            showToast("Rendez-vous supprimé", "success");
+          }
+        );
+      });
+
+      appointmentsTableBody.appendChild(tr);
+
+      if (expandedRowId === apt.id) {
+        var detailTr = document.createElement("tr");
+        detailTr.className = "detail-row";
+        detailTr.innerHTML =
+          '<td colspan="6">' +
+            '<div class="detail-grid">' +
+              '<div><span>Email</span>' + escapeHtml(apt.email || "-") + '</div>' +
+              '<div><span>Téléphone</span>' + escapeHtml(apt.phone || "-") + '</div>' +
+              '<div><span>Site existant</span>' + EXISTING_SITE_LABELS[apt.existingSite] + '</div>' +
+            '</div>' +
+            '<div><span style="display:block;color:var(--text-muted);font-size:11.5px;text-transform:uppercase;letter-spacing:0.03em;margin-bottom:4px;">Notes</span>' +
+            (apt.notes ? escapeHtml(apt.notes) : '<em style="color:var(--text-muted);">Aucune note</em>') + '</div>' +
+          '</td>';
+        appointmentsTableBody.appendChild(detailTr);
+      }
+    });
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement("div");
+    div.textContent = str == null ? "" : String(str);
+    return div.innerHTML;
+  }
+
+  [filterSearch, filterOffer, filterInterest].forEach(function (el) {
+    el.addEventListener("input", renderAppointmentsTable);
+    el.addEventListener("change", renderAppointmentsTable);
+  });
+
+  document.getElementById("exportCsvBtn").addEventListener("click", function () {
+    if (state.appointments.length === 0) {
+      showToast("Aucun rendez-vous à exporter", "error");
+      return;
+    }
+    var headers = ["Nom", "Email", "Telephone", "Secteur", "Site existant", "Offre", "Interet", "Notes", "Date"];
+    var rows = state.appointments.map(function (apt) {
+      return [
+        apt.name, apt.email, apt.phone, apt.sector,
+        EXISTING_SITE_LABELS[apt.existingSite], OFFER_LABELS[apt.offer], INTEREST_LABELS[apt.interest],
+        apt.notes, formatDate(apt.createdAt)
+      ].map(function (val) {
+        var s = String(val == null ? "" : val).replace(/"/g, '""');
+        return '"' + s + '"';
+      }).join(",");
+    });
+    var csv = headers.join(",") + "\n" + rows.join("\n");
+    var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "sitepulse_rendezvous_" + new Date().toISOString().slice(0, 10) + ".csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast("Export CSV téléchargé", "success");
+  });
+
+  /* ---------- Page: Statistiques ---------- */
+  function renderStats() {
+    var appointments = state.appointments;
+    var total = appointments.length;
+
+    document.getElementById("statTotal").textContent = total;
+
+    var revenue = appointments.reduce(function (sum, apt) {
+      return sum + (OFFER_PRICES[apt.offer] || 0);
+    }, 0);
+    document.getElementById("statRevenue").textContent = revenue.toLocaleString("fr-FR") + " €";
+
+    var offerCounts = { essentiel: 0, pulses: 0 };
+    var interestCounts = { froid: 0, tiede: 0, chaud: 0 };
+    var sectorCounts = {};
+
+    appointments.forEach(function (apt) {
+      if (offerCounts[apt.offer] !== undefined) offerCounts[apt.offer]++;
+      if (interestCounts[apt.interest] !== undefined) interestCounts[apt.interest]++;
+      if (apt.sector) {
+        var key = apt.sector.trim();
+        sectorCounts[key] = (sectorCounts[key] || 0) + 1;
+      }
+    });
+
+    document.getElementById("statPulses").textContent = offerCounts.pulses;
+    document.getElementById("statChaud").textContent = interestCounts.chaud;
+
+    renderProgressBars("statsOfferBars", [
+      { label: "Essentiel", value: offerCounts.essentiel, total: total },
+      { label: "Pulses", value: offerCounts.pulses, total: total }
+    ]);
+
+    renderProgressBars("statsInterestBars", [
+      { label: "Froid", value: interestCounts.froid, total: total },
+      { label: "Tiède", value: interestCounts.tiede, total: total },
+      { label: "Chaud", value: interestCounts.chaud, total: total }
+    ]);
+
+    var topSectors = Object.keys(sectorCounts)
+      .map(function (key) { return { label: key, value: sectorCounts[key] }; })
+      .sort(function (a, b) { return b.value - a.value; })
+      .slice(0, 3);
+
+    var maxSectorValue = topSectors.length ? topSectors[0].value : 0;
+    renderProgressBars("statsSectorBars", topSectors.map(function (s) {
+      return { label: s.label, value: s.value, total: maxSectorValue };
+    }), true);
+  }
+
+  function renderProgressBars(containerId, items, isEmptyMessageAllowed) {
+    var container = document.getElementById(containerId);
+    container.innerHTML = "";
+
+    var hasData = items.some(function (i) { return i.value > 0; });
+    if (!hasData) {
+      container.innerHTML = '<p style="color:var(--text-muted);font-size:13px;margin:0;">Aucune donnée pour le moment.</p>';
+      return;
+    }
+
+    items.forEach(function (item) {
+      if (isEmptyMessageAllowed && item.value === 0) return;
+      var pct = item.total > 0 ? Math.round((item.value / item.total) * 100) : 0;
+      var row = document.createElement("div");
+      row.className = "progress-row";
+      row.innerHTML =
+        '<div class="progress-row-top"><span></span><span></span></div>' +
+        '<div class="progress-track"><div class="progress-fill" style="width:' + pct + '%;"></div></div>';
+      row.querySelector(".progress-row-top span:first-child").textContent = item.label;
+      row.querySelector(".progress-row-top span:last-child").textContent = item.value + (isEmptyMessageAllowed ? "" : " (" + pct + "%)");
+      container.appendChild(row);
+    });
+  }
+
+  /* ---------- Init ---------- */
+  goToPage("search");
+})();
+</script>
+
+</body>
+</html>
