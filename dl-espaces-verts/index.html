@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DL Espaces Verts — Paysagiste & Élagueur dans le Gers et jusqu'à Bordeaux</title>
+<meta name="description" content="DL Espaces Verts, paysagiste et grimpeur-élagueur basé dans le Gers. Création de jardins, élagage, abattage, entretien et débroussaillage dans le Gers, le Lot-et-Garonne et jusqu'à Bordeaux. Devis gratuit.">
+<meta name="theme-color" content="#0b4e1e">
+<meta property="og:title" content="DL Espaces Verts — Chaque jardin mérite son plus beau plan">
+<meta property="og:description" content="Paysagiste & élagueur dans le Gers et le Sud-Ouest. Création, élagage, entretien. Devis gratuit.">
+<meta property="og:image" content="assets/logo.png">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/style.css">
+<noscript><style>#intro{display:none!important}body.locked{overflow:auto!important}</style></noscript>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LandscapingBusiness",
+  "name": "DL Espaces Verts",
+  "description": "Paysagiste et grimpeur-élagueur : création de jardins, élagage, abattage, entretien et débroussaillage.",
+  "image": "assets/logo.png",
+  "areaServed": ["Gers", "Lot-et-Garonne", "Landes", "Gironde", "Bordeaux"],
+  "address": { "@type": "PostalAddress", "addressRegion": "Gers", "addressCountry": "FR" }
+}
+</script>
+</head>
+<body class="locked">
+
+<a class="skip-link" href="#savoir-faire">Aller au contenu</a>
+
+<!-- ============ GÉNÉRIQUE D'OUVERTURE ============ -->
+<div id="intro" aria-live="polite">
+  <div class="intro-half top"></div>
+  <div class="intro-half bottom"></div>
+  <div class="intro-content">
+    <div class="leader" aria-hidden="true">
+      <div class="leader-ring"><div class="leader-sweep"></div></div>
+      <span class="leader-cross h"></span><span class="leader-cross v"></span>
+      <span class="leader-num">3</span>
+    </div>
+    <div class="intro-title">
+      <img src="assets/logo.png" alt="Logo DL Espaces Verts" class="intro-logo" width="220" height="220">
+      <p class="intro-present">DL Espaces Verts présente</p>
+      <h2 class="display intro-film">Un film de nature</h2>
+      <p class="intro-sub serif">tourné dans le Gers, jusqu'aux portes de Bordeaux</p>
+      <div class="intro-actions">
+        <button class="btn btn-light" data-enter="sound" data-cursor="Action !">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>
+          Entrer avec le son
+        </button>
+        <button class="btn btn-ghost" data-enter="mute" data-cursor="Action !">Entrer en silence</button>
+      </div>
+      <p class="intro-hint">Conseil : montez le son &amp; plein écran pour l'expérience complète</p>
+    </div>
+  </div>
+  <button class="intro-skip" data-enter="mute">Passer l'intro →</button>
+</div>
+
+<!-- ============ HABILLAGE CINÉMA ============ -->
+<div class="letterbox lb-top" aria-hidden="true"></div>
+<div class="letterbox lb-bottom" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+<canvas id="particles" aria-hidden="true"></canvas>
+<div class="cursor" aria-hidden="true"><div class="cursor-ring"><span class="cursor-label"></span></div><div class="cursor-dot"></div>
+  <svg class="cursor-shears" viewBox="0 0 64 64"><g fill="none" stroke="#f5f1e6" stroke-width="3" stroke-linecap="round"><circle cx="16" cy="48" r="7"/><circle cx="30" cy="54" r="7"/><path d="M21 43 54 10M26 48 58 18"/></g></svg>
+</div>
+
+<header class="hud">
+  <a href="#hero" class="hud-brand" data-cursor="Début">
+    <img src="assets/logo.png" alt="" width="44" height="44">
+    <span class="display">DL Espaces Verts</span>
+  </a>
+  <div class="hud-center"><span class="rec" aria-hidden="true"></span><span id="hud-scene">Scène 01 — Ouverture</span></div>
+  <div class="hud-right">
+    <span class="tc" id="tc" aria-hidden="true">00:00:00:00</span>
+    <a href="#devis" class="btn btn-green btn-sm" data-cursor="Go">Devis gratuit</a>
+  </div>
+</header>
+
+<div class="hud-bottom">
+  <nav class="timeline" aria-label="Chapitres">
+    <div class="timeline-track"><div class="timeline-fill"></div></div>
+    <div class="timeline-ticks"></div>
+  </nav>
+  <button id="sound-toggle" class="sound-toggle" aria-pressed="false" data-cursor="Son">
+    <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <span class="sound-label">Son coupé</span>
+  </button>
+</div>
+
+<main>
+
+<!-- ============ SCÈNE 1 : OUVERTURE ============ -->
+<section id="hero" class="scene" data-chapter="Ouverture" data-particles="pollen">
+  <div class="hero-stage">
+    <div class="layer sky sky-dawn"></div>
+    <div class="layer sky sky-day"></div>
+    <div class="layer sun-wrap"><div class="sun"></div><div class="sun-rays"></div></div>
+    <div class="layer clouds" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <svg class="layer" id="l-far" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg>
+    <svg class="layer" id="l-mid" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg>
+    <div class="layer mist"></div>
+    <svg class="layer" id="l-main" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg>
+    <svg class="layer" id="l-front" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg>
+    <div class="layer hero-shade"></div>
+
+    <div class="hero-copy">
+      <div class="hero-title">
+        <p class="eyebrow">Paysagiste · Grimpeur-élagueur · Gers &amp; Sud-Ouest</p>
+        <h1 class="display"><span class="split">DL Espaces</span> <span class="split accent">Verts</span></h1>
+        <p class="tagline serif">Chaque jardin mérite son plus beau plan.</p>
+      </div>
+      <p class="subtitle serif" data-sub="1">Quelque part dans le Gers…</p>
+      <p class="subtitle serif" data-sub="2">…entre vallons, vignes et tournesols,</p>
+      <p class="subtitle serif" data-sub="3">jusqu'aux portes de Bordeaux,</p>
+      <p class="subtitle serif" data-sub="4">une équipe met vos espaces verts en scène.</p>
+    </div>
+    <div class="scroll-hint" aria-hidden="true"><span>Faites défiler pour lancer le film</span><i></i></div>
+  </div>
+</section>
+
+<!-- ============ SCÈNE 2 : MANIFESTE ============ -->
+<section id="manifeste" class="scene manifesto" data-chapter="Le manifeste" data-particles="pollen">
+  <div class="manifesto-logo" aria-hidden="true"><img src="assets/logo.png" alt=""></div>
+  <div class="wrap">
+    <p class="eyebrow">Chapitre I — Le manifeste</p>
+    <p class="manifesto-text" id="manifesto-text">Chez DL Espaces Verts, on ne se contente pas d'entretenir des jardins&nbsp;: on les met en scène. Une haie taillée au cordeau, un arbre allégé avec respect, une pelouse qui respire. Chaque détail compte, comme dans un plan de cinéma. Basés dans le Gers, nous intervenons jusqu'en Gironde, pour les particuliers comme pour les professionnels.</p>
+    <div class="pillars">
+      <div class="pillar"><span class="pillar-n display">01</span><h3>Devis gratuit</h3><p>Visite sur place et chiffrage clair, sans engagement.</p></div>
+      <div class="pillar"><span class="pillar-n display">02</span><h3>Travail soigné</h3><p>Chantier propre, déchets verts évacués, finitions nettes.</p></div>
+      <div class="pillar"><span class="pillar-n display">03</span><h3>Grimpeur-élagueur</h3><p>Interventions en hauteur sur cordes, en sécurité.</p></div>
+      <div class="pillar"><span class="pillar-n display">04</span><h3>Gers → Bordeaux</h3><p>Une équipe locale qui se déplace dans tout le Sud-Ouest.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCÈNE 3 : SAVOIR-FAIRE (travelling horizontal) ============ -->
+<section id="savoir-faire" class="scene services" data-chapter="Savoir-faire" data-particles="leaves">
+  <div class="hz-track">
+    <article class="panel panel-intro">
+      <p class="eyebrow">Chapitre II</p>
+      <h2 class="display big-title"><span class="split">Notre</span><br><span class="split accent">savoir-faire</span></h2>
+      <p class="lead serif">Quatre métiers, un seul objectif : le jardin dont vous rêvez. Laissez la caméra faire le travelling&nbsp;→</p>
+      <div class="hz-arrow" aria-hidden="true"><i></i></div>
+    </article>
+
+    <article class="panel" data-n="01">
+      <div class="panel-copy">
+        <span class="panel-num display" aria-hidden="true">01</span>
+        <p class="eyebrow">Plan 01 · Création</p>
+        <h3 class="display">Création &amp; aménagement</h3>
+        <p>Du croquis à la dernière plante : nous dessinons et réalisons des jardins qui vous ressemblent, pensés pour le climat du Sud-Ouest.</p>
+        <ul class="ticks"><li>Conception de massifs &amp; plantations</li><li>Engazonnement &amp; gazon de placage</li><li>Allées, bordures &amp; paillage</li><li>Haies brise-vue &amp; arbres d'ornement</li></ul>
+      </div>
+      <div class="panel-art"><svg id="art-create" viewBox="0 0 800 600" aria-hidden="true"></svg></div>
+    </article>
+
+    <article class="panel" data-n="02">
+      <div class="panel-copy">
+        <span class="panel-num display" aria-hidden="true">02</span>
+        <p class="eyebrow">Plan 02 · En hauteur</p>
+        <h3 class="display">Élagage &amp; abattage</h3>
+        <p>Notre grimpeur-élagueur intervient sur cordes, au plus près de l'arbre, pour le tailler sans le blesser ou l'abattre en toute sécurité, même dans les espaces étroits.</p>
+        <ul class="ticks"><li>Taille douce &amp; allègement</li><li>Abattage par démontage</li><li>Arbres dangereux &amp; bois mort</li><li>Dessouchage &amp; broyage</li></ul>
+      </div>
+      <div class="panel-art"><svg id="art-prune" viewBox="0 0 800 600" aria-hidden="true"></svg></div>
+    </article>
+
+    <article class="panel" data-n="03">
+      <div class="panel-copy">
+        <span class="panel-num display" aria-hidden="true">03</span>
+        <p class="eyebrow">Plan 03 · Toute l'année</p>
+        <h3 class="display">Entretien de jardins</h3>
+        <p>Ponctuel ou sous contrat annuel, on garde votre jardin impeccable, saison après saison. Vous profitez, on s'occupe du reste.</p>
+        <ul class="ticks"><li>Tonte &amp; scarification</li><li>Taille de haies &amp; arbustes</li><li>Désherbage &amp; ramassage de feuilles</li><li>Contrats d'entretien réguliers</li></ul>
+      </div>
+      <div class="panel-art"><svg id="art-mow" viewBox="0 0 800 600" aria-hidden="true"></svg></div>
+    </article>
+
+    <article class="panel" data-n="04">
+      <div class="panel-copy">
+        <span class="panel-num display" aria-hidden="true">04</span>
+        <p class="eyebrow">Plan 04 · Remise à neuf</p>
+        <h3 class="display">Débroussaillage &amp; nettoyage</h3>
+        <p>Terrain envahi, ronces, friche ? Nous rendons vos parcelles nettes et praticables, et nous repartons avec les déchets verts.</p>
+        <ul class="ticks"><li>Débroussaillage de terrains</li><li>Nettoyage &amp; remise en état</li><li>Broyage des végétaux</li><li>Évacuation des déchets verts</li></ul>
+      </div>
+      <div class="panel-art"><svg id="art-clear" viewBox="0 0 800 600" aria-hidden="true"></svg></div>
+    </article>
+  </div>
+  <div class="hz-progress" aria-hidden="true"><i></i></div>
+</section>
+
+<!-- ============ SCÈNE 4 : LES SAISONS ============ -->
+<section id="saisons" class="scene seasons" data-chapter="Les saisons" data-particles="petals">
+  <div class="season-stage">
+    <svg id="season-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg>
+    <div class="season-copy">
+      <p class="eyebrow">Chapitre III — Une année au jardin</p>
+      <h2 class="display season-name" id="season-name">Printemps</h2>
+      <p class="serif season-title" id="season-title">Le réveil</p>
+      <ul class="season-list" id="season-list"></ul>
+    </div>
+    <div class="season-dial" role="tablist" aria-label="Choisir une saison">
+      <button data-season="0" role="tab">Printemps</button>
+      <button data-season="1" role="tab">Été</button>
+      <button data-season="2" role="tab">Automne</button>
+      <button data-season="3" role="tab">Hiver</button>
+      <div class="season-bar"><i></i></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCÈNE 5 : À VOUS DE JOUER ============ -->
+<section id="atelier" class="scene atelier" data-chapter="À vous de jouer" data-particles="none">
+  <div class="wrap">
+    <div class="atelier-head">
+      <div><p class="eyebrow">Chapitre IV — Prise de vue interactive</p>
+      <h2 class="display big-title"><span class="split">À vous</span> <span class="split accent">de tailler</span></h2></div>
+      <p class="lead serif">Cette haie a été un peu oubliée… Prenez le sécateur&nbsp;: passez la souris (ou le doigt) dessus en maintenant le clic pour la remettre au cordeau.</p>
+    </div>
+    <div class="hedge-game" id="hedge-game">
+      <svg class="hedge-neat" id="hedge-neat" viewBox="0 0 1000 420" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <canvas id="hedge-canvas" aria-label="Haie à tailler : glissez pour couper"></canvas>
+      <div class="hedge-hud">
+        <span>Taillé : <strong id="hedge-pct">0</strong>%</span>
+        <div class="hedge-meter"><i id="hedge-meter"></i></div>
+        <button class="btn btn-ghost btn-sm" id="hedge-reset">Recommencer</button>
+      </div>
+      <div class="hedge-win" id="hedge-win">
+        <p class="display">Coupez ! C'est dans la boîte.</p>
+        <p class="serif">Joli travail… mais pour vos vraies haies, laissez faire les pros.</p>
+        <a href="#devis" class="btn btn-light btn-sm">Demander un devis</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCÈNE 6 : LA PELLICULE ============ -->
+<section id="pellicule" class="scene filmstrip" data-chapter="Sur le tournage" data-particles="leaves">
+  <div class="wrap">
+    <p class="eyebrow">Chapitre V — Sur le tournage</p>
+    <h2 class="display big-title"><span class="split">Nos</span> <span class="split accent">interventions</span></h2>
+  </div>
+  <div class="strip" id="strip"><div class="strip-inner" id="strip-inner"></div></div>
+  <div class="strip strip-rev" id="strip2"><div class="strip-inner" id="strip-inner-2"></div></div>
+</section>
+
+<!-- ============ SCÈNE 7 : LE TERRITOIRE ============ -->
+<section id="territoire" class="scene territory" data-chapter="Le territoire" data-particles="pollen">
+  <div class="wrap territory-grid">
+    <div class="territory-copy">
+      <p class="eyebrow">Chapitre VI — Lieux de tournage</p>
+      <h2 class="display big-title"><span class="split">Du Gers</span><br><span class="split accent">à Bordeaux</span></h2>
+      <p class="lead serif">Basés dans le Gers, nous sillonnons le Sud-Ouest&nbsp;: de l'Armagnac à la vallée de la Garonne, jusqu'à la métropole bordelaise.</p>
+      <ul class="towns" id="towns"></ul>
+      <p class="small">Votre commune n'apparaît pas ? Contactez-nous, on étudie chaque demande.</p>
+    </div>
+    <div class="map-wrap">
+      <svg id="map" viewBox="0 0 800 700" aria-label="Carte de la zone d'intervention, du Gers à Bordeaux" role="img"></svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCÈNE 8 : DEVIS ============ -->
+<section id="devis" class="scene devis" data-chapter="Votre projet" data-particles="none">
+  <div class="wrap devis-grid">
+    <div class="devis-intro">
+      <p class="eyebrow">Chapitre VII — Votre scénario</p>
+      <h2 class="display big-title"><span class="split">Écrivons</span><br><span class="split accent">votre projet</span></h2>
+      <p class="lead serif">Trois prises, une minute. Décrivez votre jardin, on vous rappelle avec un devis gratuit.</p>
+      <div class="contact-cards">
+        <a class="contact-card" id="cta-phone" href="#" data-cursor="Appeler">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>
+          <span><small>Téléphone</small><strong data-config="phone"></strong></span>
+        </a>
+        <a class="contact-card" id="cta-mail" href="#" data-cursor="Écrire">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5z"/></svg>
+          <span><small>E-mail</small><strong data-config="email"></strong></span>
+        </a>
+        <a class="contact-card" id="cta-fb" href="#" target="_blank" rel="noopener" data-cursor="Suivre">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg>
+          <span><small>Facebook</small><strong>DL Espaces Verts</strong></span>
+        </a>
+      </div>
+    </div>
+
+    <form class="devis-form" id="devis-form" novalidate>
+      <div class="take-head">
+        <div class="clap" aria-hidden="true">
+          <svg viewBox="0 0 120 100"><g class="clap-top"><rect x="6" y="14" width="108" height="18" rx="2" fill="#0d120e"/><path d="M14 14l14 18M38 14l14 18M62 14l14 18M86 14l14 18" stroke="#f5f1e6" stroke-width="6"/></g><rect x="6" y="34" width="108" height="60" rx="3" fill="#0d120e"/><text x="14" y="56" fill="#f5f1e6" font-size="11" font-family="Inter">DL ESPACES VERTS</text><text x="14" y="74" fill="#e3b866" font-size="10" font-family="Inter" id="clap-take">PRISE 1 / 3</text><text x="14" y="88" fill="#9fb59f" font-size="9" font-family="Inter">VOTRE JARDIN</text></svg>
+        </div>
+        <div class="take-steps"><span class="on">1</span><i></i><span>2</span><i></i><span>3</span></div>
+      </div>
+
+      <fieldset class="take on" data-take="1">
+        <legend class="display">Prise 1 · Quelles prestations ?</legend>
+        <div class="chips" id="service-chips"></div>
+      </fieldset>
+
+      <fieldset class="take" data-take="2">
+        <legend class="display">Prise 2 · Le décor</legend>
+        <label class="field-label" for="surface">Surface approximative : <strong id="surface-out">500 – 1 000 m²</strong></label>
+        <input type="range" id="surface" min="0" max="4" step="1" value="2">
+        <div class="range-legend"><span>&lt; 200 m²</span><span>&gt; 3 000 m²</span></div>
+        <p class="field-label">Fréquence souhaitée</p>
+        <div class="seg" id="freq">
+          <label><input type="radio" name="freq" value="Intervention ponctuelle" checked><span>Ponctuelle</span></label>
+          <label><input type="radio" name="freq" value="Entretien régulier"><span>Régulière</span></label>
+          <label><input type="radio" name="freq" value="Je ne sais pas encore"><span>À définir</span></label>
+        </div>
+        <p class="field-label">Vous êtes</p>
+        <div class="seg" id="client">
+          <label><input type="radio" name="client" value="Particulier" checked><span>Particulier</span></label>
+          <label><input type="radio" name="client" value="Professionnel / Collectivité"><span>Professionnel</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="take" data-take="3">
+        <legend class="display">Prise 3 · Le casting</legend>
+        <div class="grid2">
+          <label class="field"><span>Nom *</span><input type="text" name="name" required autocomplete="name"></label>
+          <label class="field"><span>Téléphone *</span><input type="tel" name="phone" required autocomplete="tel"></label>
+          <label class="field"><span>Commune *</span><input type="text" name="town" required list="towns-list" autocomplete="address-level2"></label>
+          <label class="field"><span>E-mail</span><input type="email" name="email" autocomplete="email"></label>
+        </div>
+        <datalist id="towns-list"></datalist>
+        <label class="field"><span>Votre projet en quelques mots</span><textarea name="message" rows="3" placeholder="Ex. : haie de lauriers de 30 m à tailler, gros chêne à élaguer près de la maison…"></textarea></label>
+      </fieldset>
+
+      <div class="take-nav">
+        <button type="button" class="btn btn-ghost" id="take-prev" disabled>← Retour</button>
+        <button type="button" class="btn btn-green" id="take-next" data-cursor="Suivant">Prise suivante →</button>
+      </div>
+      <p class="form-error" id="form-error" role="alert"></p>
+
+      <div class="take-done" id="take-done">
+        <p class="display">Clap de fin&nbsp;!</p>
+        <p class="serif">Votre messagerie va s'ouvrir avec le résumé de votre projet. Il ne reste qu'à l'envoyer — on vous recontacte très vite.</p>
+        <button type="button" class="btn btn-ghost btn-sm" id="take-again">Nouvelle demande</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ GÉNÉRIQUE DE FIN ============ -->
+<section id="generique" class="scene credits" data-chapter="Générique" data-particles="leaves">
+  <div class="credits-stage">
+    <div class="credits-roll" id="credits-roll">
+      <img src="assets/logo.png" alt="DL Espaces Verts" class="credits-logo" width="200" height="200">
+      <dl>
+        <div><dt>Réalisation</dt><dd>DL Espaces Verts</dd></div>
+        <div><dt>Décors</dt><dd>Vos jardins, parcs &amp; terrains</dd></div>
+        <div><dt>Lumière</dt><dd>Le soleil du Gers</dd></div>
+        <div><dt>Cascades</dt><dd>Notre grimpeur-élagueur</dd></div>
+        <div><dt>Effets spéciaux</dt><dd>Taille-haie, tronçonneuse &amp; savoir-faire</dd></div>
+        <div><dt>Casting</dt><dd>Chênes, haies, pelouses &amp; massifs</dd></div>
+        <div><dt>Lieux de tournage</dt><dd>Gers · Lot-et-Garonne · Landes · Gironde</dd></div>
+        <div><dt>Production</dt><dd>Vous, dès aujourd'hui</dd></div>
+      </dl>
+      <p class="display fin">Fin</p>
+      <p class="serif fin-sub">… ou plutôt, le début de votre jardin.</p>
+      <a href="#devis" class="btn btn-light">Demander mon devis gratuit</a>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <span>© <span id="year"></span> DL Espaces Verts — Paysagiste &amp; élagueur, Gers &amp; Sud-Ouest</span>
+    <span><a href="#hero">Revoir le film ↑</a></span>
+  </footer>
+</section>
+
+</main>
+
+<script src="assets/js/gsap.min.js"></script>
+<script src="assets/js/ScrollTrigger.min.js"></script>
+<script src="assets/js/lenis.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
