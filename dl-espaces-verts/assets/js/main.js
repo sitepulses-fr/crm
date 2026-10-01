@@ -135,70 +135,25 @@ function bush(x, y, rad, seed, colors) {
 }
 
 /* ==========================================================
-   Scène d'ouverture
+   Scène d'ouverture : vidéo travelling (format adapté à l'écran)
    ========================================================== */
-function buildHero() {
-  const W = 1600, H = 900;
-  // Lointain : collines bleutées, cyprès, clocher de bastide
-  const far1 = hill(W, H, 560, 30, 11), far2 = hill(W, H, 600, 24, 12);
-  let far = `<g class="mp"><path d="${far1.d}" fill="#8aa596" opacity=".85"/>`;
-  const r = rng(5);
-  for (let i = 0; i < 26; i++) { const x = r() * W; far += poplar(x, far1.y(x) + 6, 24 + r() * 22, 5 + r() * 3, '#6d8b7a'); }
-  far += `<g fill="#6d8b7a"><rect x="236" y="${f1(far1.y(250) - 40)}" width="28" height="44"/><path d="M232,${f1(far1.y(250) - 40)} L250,${f1(far1.y(250) - 84)} L268,${f1(far1.y(250) - 40)}Z"/><rect x="200" y="${f1(far1.y(250) - 18)}" width="90" height="22"/></g>`;
-  far += `<path d="${far2.d}" fill="#6f8f78"/></g>`;
-  $('#l-far').innerHTML = far;
-
-  // Plan moyen : tournesols, vignes, peupliers, ferme
-  const mid = hill(W, H, 645, 36, 3);
-  let m = `<g class="mp"><path d="${mid.d}" fill="#3f7343"/>`;
-  const r2 = rng(9);
-  for (let i = 0; i < 260; i++) {
-    const x = 90 + r2() * 420, y = mid.y(x) + 10 + r2() * 70;
-    if (y > mid.y(x) + 4) m += `<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(2.2 + (y - mid.y(x)) * .03)}" fill="#f2c230"/>`;
-  }
-  for (let row = 0; row < 7; row++) {
-    let d = '';
-    for (let x = 1040; x <= 1560; x += 20) d += `${x === 1040 ? 'M' : 'L'}${x},${f1(mid.y(x) + 14 + row * 11)}`;
-    m += `<path d="${d}" stroke="#285a2d" stroke-width="3.2" stroke-dasharray="2 6" stroke-linecap="round" fill="none"/>`;
-  }
-  m += poplar(560, mid.y(560) + 8, 120, 16, '#22592c') + poplar(596, mid.y(596) + 8, 96, 13, '#2b6633') + poplar(1180, mid.y(1180) + 8, 110, 15, '#22592c');
-  const fx = 1390, fy = mid.y(1390) + 6;
-  m += `<g><rect x="${fx - 40}" y="${fy - 34}" width="80" height="34" fill="#7a5a3a"/><path d="M${fx - 48},${fy - 32} L${fx},${fy - 62} L${fx + 48},${fy - 32}Z" fill="#9b4b2c"/><rect x="${fx + 14}" y="${fy - 70}" width="9" height="20" fill="#5a3d24"/>`;
-  for (let i = 0; i < 3; i++) m += `<circle class="smoke" style="animation-delay:${i * 2}s" cx="${fx + 18}" cy="${fy - 76}" r="7" fill="#e9e2d6"/>`;
-  m += `</g></g>`;
-  $('#l-mid').innerHTML = m;
-
-  // Plan principal : maison, chêne, grimpeur-élagueur
-  const g = hill(W, H, 738, 18, 7);
-  let mm = `<g class="mp"><path d="${g.d}" fill="#1f5f2f"/>`;
-  mm += `<path d="M180,${f1(g.y(180) + 40)} Q700,${f1(g.y(700) - 30)} 1500,${f1(g.y(1500) + 10)}" stroke="#fff" stroke-opacity=".55" stroke-width="7" fill="none" stroke-linecap="round"/>`;
-  mm += `<path d="M180,${f1(g.y(180) + 60)} Q700,${f1(g.y(700) - 5)} 1500,${f1(g.y(1500) + 30)}" stroke="${COL.green2}" stroke-width="18" fill="none" stroke-linecap="round" opacity=".7"/>`;
-  mm += `<g class="sway d2">${poplar(395, g.y(395) + 6, 150, 24, COL.green2)}</g><g class="sway d3">${poplar(440, g.y(440) + 6, 118, 19, '#1d6b2e')}</g>`;
-  mm += house(650, g.y(650) + 8, .95);
-  mm += bush(770, g.y(770) + 10, 34, 4, ['#185a29', '#2a7a3a', '#0f4a1e']);
-  mm += oak(930, g.y(930) + 8, 560, 42, { colors: ['#0b3f19', '#165026', '#2f7a3c'] });
-  const ropeX = 981, ropeTop = 400, ground = g.y(ropeX);
-  mm += `<g class="swing" style="transform-origin:${ropeX}px ${ropeTop}px"><line x1="${ropeX}" y1="${ropeTop}" x2="${ropeX}" y2="${f1(ground)}" stroke="#d8b46a" stroke-width="2.5"/>${climber(ropeX - 14, 610, 1.15, '#e8742a', '#f5f1e6')}</g>`;
-  mm += `</g>`;
-  $('#l-main').innerHTML = mm;
-
-  // Premier plan : herbes hautes, fleurs sauvages, buissons de cadrage
-  const fr = hill(W, H, 862, 26, 21);
-  let f = `<g class="mp"><path d="${fr.d}" fill="#0b2a13"/>`;
-  f += bush(60, 900, 150, 3, ['#081f0e', '#0d2e15', '#0a2611']) + bush(1560, 905, 170, 8, ['#081f0e', '#0d2e15', '#0a2611']);
-  f += grassBlades(W, fr.y, 150, 31, ['#0f3318', '#16421f', '#0b2a13', '#1d4f25'], 26, 78);
-  const r3 = rng(77);
-  for (let i = 0; i < 24; i++) {
-    const x = 120 + r3() * 1360, y = fr.y(x) - 10 - r3() * 40, c = ['#f5f1e6', '#f2c230', '#b48ad6', '#f5f1e6'][i % 4];
-    f += `<g class="sway ${i % 2 ? 'd2' : ''}"><line x1="${f1(x)}" y1="${f1(fr.y(x) + 6)}" x2="${f1(x)}" y2="${f1(y)}" stroke="#1d4f25" stroke-width="2"/><circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(4 + r3() * 3)}" fill="${c}"/></g>`;
-  }
-  f += `</g>`;
-  $('#l-front').innerHTML = f;
+function initHeroVideo() {
+  const v = $('#hero-video'); if (!v) return;
+  // H.264 (Safari, Chrome, Edge) ; repli WebM/VP9 pour les navigateurs sans H.264
+  const mp4 = !!v.canPlayType('video/mp4; codecs="avc1.640028"');
+  const pick = () => { const port = innerHeight > innerWidth * 1.1; return mp4 ? (port ? v.dataset.srcPort : v.dataset.srcLand) : (port ? v.dataset.srcPortWebm : v.dataset.srcLandWebm); };
+  let cur = pick(); v.src = cur;
+  if (reduced) return;
+  const play = () => { const p = v.play(); if (p && p.catch) p.catch(() => {}); };
+  play();
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { const n = pick(); if (n !== cur) { cur = n; v.src = n; play(); } }, 300); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && v.dataset.active !== '0') play(); });
 }
 
 /* ==========================================================
    Illustrations des 4 métiers
    ========================================================== */
+const setArt = (sel, html) => { const el = $(sel); if (el) el.innerHTML = html; };
 function buildServiceArt() {
   const ground = (fill = '#7fb069', dark = '#5e9a46') => `<ellipse cx="400" cy="485" rx="390" ry="105" fill="${dark}"/><ellipse cx="400" cy="472" rx="380" ry="96" fill="${fill}"/>`;
 
@@ -215,7 +170,7 @@ function buildServiceArt() {
   }
   [[430, 545, 30], [500, 530, 26], [565, 515, 24], [620, 498, 20]].forEach(([x, y, w]) => { a += `<ellipse cx="${x}" cy="${y}" rx="${w}" ry="${w * .42}" fill="#d9d2bf"/>`; });
   a += `<g class="grow" style="transition-delay:.6s">${oak(640, 455, 210, 3, { colors: ['#1d5e2c', '#2f7a3c', '#5aa45e'] })}</g><line x1="660" y1="455" x2="660" y2="350" stroke="#a37b4f" stroke-width="5"/>`;
-  $('#art-create').innerHTML = a;
+  setArt('#art-create', a);
 
   // 02 Élagage
   let b = ground('#6fa85a', '#4f8a3f');
@@ -225,7 +180,7 @@ function buildServiceArt() {
   b += `<g class="climber-move">${climber(434, 470, 1.6, '#e8742a', '#f5f1e6')}</g>`;
   b += `<g transform="translate(600,500)"><rect x="-50" y="-16" width="100" height="16" rx="8" fill="#7a4a24"/><rect x="-40" y="-32" width="86" height="16" rx="8" fill="#8f5a2c"/><circle cx="-50" cy="-8" r="8" fill="#c8955a"/><circle cx="-40" cy="-24" r="8" fill="#c8955a"/></g>`;
   b += `<g transform="translate(150,505)"><path d="M-14,0 L0,-36 L14,0Z" fill="#e8742a"/><rect x="-16" y="-3" width="32" height="5" fill="#e8742a"/><rect x="-7" y="-22" width="14" height="5" fill="#fff"/></g>`;
-  $('#art-prune').innerHTML = b;
+  setArt('#art-prune', b);
 
   // 03 Entretien
   let c = `<rect x="70" y="200" width="660" height="110" rx="46" fill="#1d5e2c"/>`;
@@ -237,7 +192,7 @@ function buildServiceArt() {
   c += `</g>`;
   c += `<g class="mower"><g transform="translate(60,470)"><path d="M-10,-40 L-70,-120" stroke="#2b2b2b" stroke-width="6" stroke-linecap="round"/><path d="M-78,-124 L-62,-116" stroke="#2b2b2b" stroke-width="8" stroke-linecap="round"/><rect x="-20" y="-46" width="90" height="40" rx="12" fill="${COL.green2}"/><rect x="0" y="-62" width="40" height="20" rx="6" fill="#e3b866"/><circle cx="-6" cy="-4" r="12" fill="#222"/><circle cx="58" cy="-4" r="12" fill="#222"/><circle cx="-6" cy="-4" r="4" fill="#aaa"/><circle cx="58" cy="-4" r="4" fill="#aaa"/></g></g>`;
   c += poplar(30, 320, 210, 30, COL.green2) + poplar(770, 320, 180, 26, '#1d6b2e');
-  $('#art-mow').innerHTML = c;
+  setArt('#art-mow', c);
 
   // 04 Débroussaillage
   let d = `<rect x="0" y="470" width="800" height="130" rx="40" fill="#7a9a4a"/><rect x="0" y="470" width="800" height="16" fill="#6b8a3e"/>`;
@@ -254,41 +209,25 @@ function buildServiceArt() {
   d += `</g>`;
   d += `<g class="clear-front"><g transform="translate(40,470)"><g stroke="${COL.green2}" stroke-width="9" stroke-linecap="round" fill="none"><path d="M0,-70 L0,-30"/><path d="M0,-30 L-10,0"/><path d="M0,-30 L12,0"/><path d="M0,-60 L22,-44"/></g><circle cx="0" cy="-84" r="11" fill="#e8742a"/><rect x="-4" y="-80" width="16" height="6" fill="#333"/><path d="M-30,-70 L40,-2" stroke="#555" stroke-width="5" stroke-linecap="round"/><circle cx="40" cy="-2" r="9" fill="none" stroke="#aaa" stroke-width="3"/></g></g>`;
   d += `<g transform="translate(590,470)"><rect x="-90" y="-60" width="180" height="56" rx="6" fill="${COL.brown}"/>${bush(0, -62, 80, 12, ['#4d6b2a', '#3f5a24', '#5b6b2a'])}<circle cx="-50" cy="0" r="18" fill="#222"/><circle cx="50" cy="0" r="18" fill="#222"/><path d="M90,-30 L150,-20" stroke="#333" stroke-width="6"/></g>`;
-  $('#art-clear').innerHTML = d;
+  setArt('#art-clear', d);
 }
 
 /* ==========================================================
-   Pellicule : petites scènes illustrées
-   (remplacez par de vraies photos de chantiers : <img src="...">)
+   Pellicule : photos (remplacez-les par vos propres chantiers)
    ========================================================== */
-const FRAMES = [
-  ['Taille de haies', 'PLAN 01'], ['Élagage sur cordes', 'PLAN 02'], ['Création de massifs', 'PLAN 03'], ['Tonte & finitions', 'PLAN 04'],
-  ['Abattage par démontage', 'PLAN 05'], ["Plantation d'arbres", 'PLAN 06'], ['Débroussaillage', 'PLAN 07'], ['Ramassage de feuilles', 'PLAN 08']
+const PHOTOS = [
+  ['assets/media/pelouse.jpg', 'Pelouse rayée & massifs', 'Jardin structuré, bordures courbes et pelouse tondue en bandes', '50% 40%'],
+  ['assets/media/mediterraneen.jpg', 'Aménagement méditerranéen', 'Citronnier, olivier, lavandes et paillage minéral', '50% 55%'],
+  ['assets/media/haie.jpg', 'Taille de haies au cordeau', 'Haie dense taillée droite le long d\'une allée', '50% 45%'],
+  ['assets/media/olivier.jpg', 'Mise en valeur d\'un olivier', 'Olivier sur pelouse, haies de fond et terrasse', '50% 50%'],
+  ['assets/media/allee.jpg', 'Allée en pas japonais', 'Pas japonais dans une pelouse ombragée', '50% 60%']
 ];
-function frameArt(i) {
-  const skies = [['#a9d1e6', '#f2ead0'], ['#f0b27a', '#fbe3b8'], ['#bfe0e8', '#f3f0d8'], ['#7fb6d9', '#eef0d6'], ['#d99a7a', '#f4d9b0'], ['#a6c8d8', '#e8eedc'], ['#e9c27a', '#f8ebc8'], ['#d0896a', '#f3c98e']];
-  const [s1, s2] = skies[i], id = 'fs' + i;
-  let s = `<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${s1}"/><stop offset="1" stop-color="${s2}"/></linearGradient></defs><rect width="400" height="300" fill="url(#${id})"/>`;
-  const h = hill(400, 300, 215, 10, 100 + i, 30);
-  s += `<path d="${hill(400, 300, 190, 14, 200 + i, 30).d}" fill="#7d9a86" opacity=".7"/><path d="${h.d}" fill="#3f7a45"/>`;
-  const r = rng(300 + i);
-  switch (i) {
-    case 0: s += `<rect x="40" y="150" width="320" height="70" rx="18" fill="#1d5e2c"/>`; for (let k = 0; k < 50; k++) s += `<circle cx="${f1(50 + r() * 300)}" cy="${f1(158 + r() * 55)}" r="${f1(5 + r() * 6)}" fill="${['#246b34', '#2f7a3c', '#185a29'][k % 3]}"/>`; break;
-    case 1: s += oak(190, 240, 250, 61, { colors: ['#0b3f19', '#165026', '#2f7a3c'] }) + `<line x1="225" y1="80" x2="225" y2="240" stroke="#d8b46a" stroke-width="1.5"/>` + climber(214, 175, .9, '#e8742a', '#f5f1e6'); break;
-    case 2: for (let k = 0; k < 40; k++) { const x = 40 + r() * 320, y = 215 + r() * 60; s += `<line x1="${f1(x)}" y1="${f1(y)}" x2="${f1(x)}" y2="${f1(y - 22)}" stroke="#2f7a3c" stroke-width="2"/><circle cx="${f1(x)}" cy="${f1(y - 22)}" r="6" fill="${['#e8a33a', '#d9534f', '#f5f1e6', '#b56fd6', '#f5d742'][k % 5]}"/>`; } break;
-    case 3: for (let k = 0; k < 5; k++) s += `<rect x="0" y="${222 + k * 16}" width="400" height="8" fill="${k % 2 ? '#5e9a46' : '#85c063'}"/>`; s += poplar(330, 220, 120, 18, COL.green2); break;
-    case 4: s += `<rect x="180" y="110" width="34" height="115" fill="${COL.brown}"/><rect x="172" y="100" width="50" height="10" fill="#c8955a"/><path d="M220,150 L280,138" stroke="${COL.brown}" stroke-width="8"/><g transform="translate(280,240)"><rect x="-40" y="-14" width="80" height="14" rx="7" fill="#7a4a24"/><circle cx="-40" cy="-7" r="7" fill="#c8955a"/></g>`; break;
-    case 5: s += oak(200, 235, 140, 9, { colors: ['#2f7a3c', '#3f8f4f', '#6fae5c'] }) + `<line x1="214" y1="235" x2="214" y2="150" stroke="#a37b4f" stroke-width="4"/><ellipse cx="200" cy="238" rx="40" ry="8" fill="#6b4423"/>`; break;
-    case 6: for (let k = 0; k < 60; k++) { const x = 20 + r() * 200, hh = 30 + r() * 70; s += `<path d="M${f1(x)},240 q${f1((r() - .5) * 30)},${f1(-hh * .6)} ${f1((r() - .5) * 50)},${f1(-hh)}" stroke="${['#5b6b2a', '#3f5a24', '#7a6a32'][k % 3]}" stroke-width="3" fill="none"/>`; } s += `<rect x="230" y="225" width="170" height="80" fill="#8fb35a"/>`; break;
-    case 7: s += oak(110, 230, 190, 13, { colors: ['#8a3b12', '#c8641c', '#e8a33a'] }); for (let k = 0; k < 40; k++) s += `<ellipse cx="${f1(240 + r() * 90)}" cy="${f1(240 - r() * 30 * (1 - Math.abs(r() - .5)))}" rx="7" ry="4" fill="${['#c8641c', '#e8a33a', '#8a3b12'][k % 3]}" transform="rotate(${f1(r() * 180)} 0 0)" transform-origin="center"/>`; s += `<ellipse cx="285" cy="240" rx="55" ry="22" fill="#c8641c"/>`; break;
-  }
-  return s + '</svg>';
-}
 function buildStrips() {
-  const html = list => list.map(i => `<figure class="frame">${frameArt(i)}<figcaption><small>${FRAMES[i][1]} · DL ESPACES VERTS</small>${FRAMES[i][0]}</figcaption></figure>`).join('');
-  const a = [0, 1, 2, 3, 4, 5, 6, 7], b = [4, 7, 2, 0, 6, 1, 5, 3];
-  $('#strip-inner').innerHTML = html(a.concat(a));
-  $('#strip-inner-2').innerHTML = html(b.concat(b));
+  const html = list => list.map((i, k) => { const [src, cap, alt, pos] = PHOTOS[i];
+    return `<figure class="frame"><img src="${src}" alt="${alt}" loading="lazy" style="object-position:${pos}"><figcaption><small>PLAN ${String(k % PHOTOS.length + 1).padStart(2, '0')} · DL ESPACES VERTS</small>${cap}</figcaption></figure>`; }).join('');
+  const a = [0, 1, 2, 3, 4], b = [3, 4, 0, 2, 1];
+  $('#strip-inner').innerHTML = html(a.concat(a, a));
+  $('#strip-inner-2').innerHTML = html(b.concat(b, b));
 }
 
 /* ==========================================================
@@ -812,24 +751,26 @@ function initScroll() {
     lenis ? lenis.scrollTo(el, { duration: 2, offset: 0 }) : el.scrollIntoView({ behavior: 'smooth' });
   }));
 
-  /* --- Ouverture : travelling avant + lever de soleil --- */
-  const mp = $$('.mp');
+  /* --- Ouverture : la caméra s'enfonce dans le jardin --- */
   if (finePointer) {
-    const qs = mp.map((g, i) => [gsap.quickTo(g, 'x', { duration: 1.2, ease: 'power2' }), gsap.quickTo(g, 'y', { duration: 1.2, ease: 'power2' }), [6, 14, 26, 46][i] || 10]);
-    addEventListener('pointermove', e => { const nx = e.clientX / innerWidth - .5, ny = e.clientY / innerHeight - .5; qs.forEach(([qx, qy, k]) => { qx(-nx * k); qy(-ny * k * .4); }); }, { passive: true });
+    const inner = $('.hero-video-inner');
+    const qx = gsap.quickTo(inner, 'x', { duration: 1.4, ease: 'power2' }), qy = gsap.quickTo(inner, 'y', { duration: 1.4, ease: 'power2' });
+    gsap.set(inner, { scale: 1.06 });
+    addEventListener('pointermove', e => { qx(-(e.clientX / innerWidth - .5) * 34); qy(-(e.clientY / innerHeight - .5) * 18); }, { passive: true });
   }
-  const hero = gsap.timeline({ scrollTrigger: { trigger: '#hero', start: 'top top', end: '+=230%', pin: true, scrub: 1 } });
+  const vid = $('#hero-video');
+  const hero = gsap.timeline({ scrollTrigger: { trigger: '#hero', start: 'top top', end: '+=230%', pin: true, scrub: 1,
+    onLeave: () => { vid.dataset.active = '0'; vid.pause(); },
+    onEnterBack: () => { vid.dataset.active = '1'; if (!reduced) vid.play().catch(() => {}); } } });
   hero
     .to('.hero-title', { yPercent: -60, opacity: 0, ease: 'power1.in', duration: .14 }, 0)
     .to('.scroll-hint', { opacity: 0, duration: .05 }, 0)
-    .to('.sky-day', { opacity: 1, duration: .9 }, 0)
-    .to('.sun, .sun-rays', { top: '20%', duration: 1 }, 0)
-    .to('.clouds', { yPercent: -20, duration: 1 }, 0)
-    .to('#l-far', { scale: 1.08, yPercent: -2, transformOrigin: '60% 70%', duration: 1 }, 0)
-    .to('#l-mid', { scale: 1.22, transformOrigin: '60% 75%', duration: 1 }, 0)
-    .to('.mist', { opacity: .2, duration: 1 }, 0)
-    .to('#l-main', { scale: 1.9, transformOrigin: '60% 72%', duration: 1 }, 0)
-    .to('#l-front', { scale: 2.8, yPercent: 30, transformOrigin: '50% 100%', duration: .8 }, 0);
+    .to('.hero-video-wrap', { scale: 1.55, transformOrigin: '50% 42%', ease: 'power1.in', duration: 1 }, 0)
+    .to('.hero-grade', { opacity: .35, duration: .6 }, 0)
+    .to('.light-leak', { opacity: 1, duration: 1 }, 0)
+    .to('.mist', { opacity: .15, duration: 1 }, 0)
+    .to('.hero-shade', { opacity: .6, duration: .4 }, .6)
+    .to('.hero-video-wrap', { filter: 'brightness(.55) blur(3px)', duration: .12 }, .88);
   [[.12, .3], [.3, .48], [.48, .66], [.66, .96]].forEach(([a, b], i) => {
     const el = `.subtitle[data-sub="${i + 1}"]`;
     hero.fromTo(el, { opacity: 0, y: 20, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: .06 }, a)
@@ -926,7 +867,7 @@ function initScroll() {
    ========================================================== */
 function boot() {
   $('#year').textContent = new Date().getFullYear();
-  buildHero(); buildServiceArt(); buildStrips(); buildSeasonScene(); buildMap();
+  initHeroVideo(); buildServiceArt(); buildStrips(); buildSeasonScene(); buildMap();
   splitText(); initDevis(); Particles.init(); initCursor(); initHedgeGame();
   applySeason(0);
   $('#sound-toggle').addEventListener('click', () => Sound.on ? Sound.disable() : Sound.enable());
