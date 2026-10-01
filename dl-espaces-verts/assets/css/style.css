@@ -14,6 +14,7 @@
 @font-face { font-family: Inter; src: url(../fonts/inter-latin-700-normal.woff2) format("woff2"); font-weight: 700; font-display: swap; }
 
 :root {
+  color-scheme: dark;
   --green: #165026;
   --green-2: #0b4e1e;
   --green-deep: #06200d;
@@ -413,6 +414,8 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 .take-done.on { opacity: 1; visibility: visible; }
 .take-done .display { font-size: clamp(2.6rem, 6vw, 4.2rem); color: var(--gold); }
 .take-done .serif { max-width: 36ch; font-size: 1.15rem; }
+.take-recap { max-width: 100%; max-height: 240px; overflow: auto; text-align: left; font: .78rem/1.5 "Courier New", monospace; background: rgba(0,0,0,.25); border-radius: 10px; padding: .8rem 1rem; white-space: pre-wrap; }
+.preview-tag { position: fixed; left: 50%; top: calc(64px + env(safe-area-inset-top, 0px)); transform: translateX(-50%); z-index: 85; padding: .35rem .8rem; border-radius: 999px; background: rgba(227,184,102,.92); color: #0b100c; font: 600 .68rem/1 Inter, system-ui, sans-serif; letter-spacing: .14em; text-transform: uppercase; pointer-events: none; white-space: nowrap; }
 
 /* ==========================================================
    GÉNÉRIQUE DE FIN

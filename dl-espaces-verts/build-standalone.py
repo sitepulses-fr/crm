@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Génère un fichier HTML unique et autonome (CSS, JS, polices, images et vidéos intégrés).
 Usage : python3 build-standalone.py  ->  dl-espaces-verts-standalone.html"""
-import base64, mimetypes, os, re
+import base64, mimetypes, os, re, sys
+
+PREVIEW = '--preview' in sys.argv  # variante « aperçu » publiable (sans squelette, envoi simulé, badge Maquette)
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 MIME = {'.woff2': 'font/woff2', '.webp': 'image/webp', '.mp4': 'video/mp4', '.webm': 'video/webm', '.jpg': 'image/jpeg', '.png': 'image/png'}
@@ -35,7 +37,15 @@ html = re.sub(r'<script src="(assets/js/[^"]+)"></script>', inline_script, html)
 # attributs src / href / poster / data-src-* (la balise og:image et le JSON-LD gardent leur chemin)
 html = re.sub(r'((?:src|href|poster|data-src-[a-z-]+)=")(assets/[^"]+)"', lambda m: m.group(1) + data_uri(m.group(2)) + '"', html)
 
-out = os.path.join(ROOT, 'dl-espaces-verts-standalone.html')
+if PREVIEW:
+    html = re.sub(r'<!DOCTYPE html>\s*<html[^>]*>\s*<head>\s*<meta charset="UTF-8">\s*<meta name="viewport"[^>]*>\s*', '', html)
+    html = re.sub(r'<title>.*?</title>', '<title>DL Espaces Verts</title>', html, count=1)
+    html = html.replace('</head>\n<body class="locked">', '<script>document.body.classList.add("locked")</script>\n<div class="preview-tag">Maquette · aperçu pour validation</div>')
+    html = html.replace('<script>\n/* ======', '<script>window.DL_PREVIEW = true;</script>\n<script>\n/* ======', 1)
+    html = html.replace('</body>\n</html>', '')
+    html = '<title>DL Espaces Verts</title>\n' + html.replace('<title>DL Espaces Verts</title>', '', 1)
+
+out = os.path.join(ROOT, 'dl-espaces-verts-preview.html' if PREVIEW else 'dl-espaces-verts-standalone.html')
 with open(out, 'w', encoding='utf-8') as f:
     f.write(html)
 print(f'{out} — {os.path.getsize(out) / 1e6:.1f} Mo')

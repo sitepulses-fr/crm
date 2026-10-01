@@ -668,6 +668,14 @@ function initDevis() {
     const subject = `Demande de devis — ${fd.get('name')} (${fd.get('town')})`;
     clap.classList.add('snap'); Sound.clap();
     $('#take-done').classList.add('on');
+    if (window.DL_PREVIEW) {
+      // Maquette : pas d'envoi réel, on montre ce que l'entreprise recevrait
+      $('#take-done .serif').textContent = 'Maquette : dans la version en ligne, cette demande part directement chez DL Espaces Verts. Voici ce qu\'ils recevraient :';
+      let pre = $('#take-done pre');
+      if (!pre) { pre = document.createElement('pre'); pre.className = 'take-recap'; $('#take-again').before(pre); }
+      pre.textContent = body;
+      return;
+    }
     setTimeout(() => { location.href = `mailto:${CONFIG.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`; }, 700);
   });
   $('#take-again').addEventListener('click', () => { form.reset(); so(); $('#take-done').classList.remove('on'); show(1); });
