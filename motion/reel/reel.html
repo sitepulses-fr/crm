@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Reel SitePulse</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Roboto:wght@400;500&display=swap">
+<style>
+/* 1080×1920 TikTok frame, rendered frame by frame through window.renderAt(t).
+   Text stays inside the TikTok safe zone: x 60–940, y 180–1450. */
+:root { --navy: #071127; --blue: #3d7bff; --blue-2: #8db0ff; --white: #f5f7fb; --client: #f26a21; --red: #e5484d;
+  --f: "Poppins", "Segoe UI", system-ui, sans-serif; --g: "Roboto", Arial, sans-serif; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #000; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--navy); font-family: var(--f); color: var(--white); }
+.sc { position: absolute; inset: 0; display: none; overflow: hidden; }
+.abs { position: absolute; }
+.cap { position: absolute; left: 70px; right: 140px; top: 210px; font-weight: 800; font-size: 118px; word-spacing: .08em; line-height: 1.02; letter-spacing: -0.045em; text-transform: uppercase; }
+.cap .w { display: inline-block; margin-right: .22em; transform-origin: 50% 80%; }
+.cap .hl { background: var(--blue); color: #fff; padding: 0 .16em; border-radius: .14em; transform: rotate(-2deg); }
+.cap.dark { color: #0b1530; }
+.chip { display: inline-flex; align-items: center; gap: 14px; padding: 14px 26px; border-radius: 999px; font-size: 30px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; background: rgba(245,247,251,.1); border: 2px solid rgba(245,247,251,.25); }
+.chip i { width: 14px; height: 14px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 14px var(--blue); }
+.flash { position: absolute; inset: 0; background: #fff; pointer-events: none; opacity: 0; z-index: 50; }
+.glow { position: absolute; inset: 0; background: radial-gradient(900px 900px at 50% 60%, rgba(61,123,255,.35), transparent 65%); }
+
+/* Google UI */
+.gui { font-family: var(--g); color: #202124; }
+.gsearch { position: absolute; left: 70px; right: 70px; top: 760px; height: 112px; border-radius: 56px; background: #fff; box-shadow: 0 4px 30px rgba(32,33,36,.18); display: flex; align-items: center; gap: 26px; padding: 0 44px; font-size: 44px; }
+.gsearch svg { width: 46px; height: 46px; flex-shrink: 0; }
+.caret { display: inline-block; width: 3px; height: 50px; background: #202124; margin-left: 2px; }
+.res { position: absolute; left: 70px; right: 70px; height: 150px; border-radius: 28px; border: 2px solid #e3e5e8; background: #fff; padding: 26px 34px; }
+.res h6 { margin: 0; font-size: 40px; font-weight: 400; color: #1a0dab; }
+.res p { margin: 8px 0 0; font-size: 31px; color: #70757a; }
+.res p b { color: #202124; font-weight: 400; } .stars { color: #fbbc04; letter-spacing: 2px; }
+.ask { position: absolute; left: 70px; top: 1440px; display: flex; gap: 22px; align-items: center; font-family: var(--f); font-weight: 600; font-size: 40px; color: #0b1530; }
+.stamp { position: absolute; left: 50%; top: 1080px; width: 820px; margin-left: -410px; text-align: center; padding: 26px 0; border: 10px solid var(--red); border-radius: 30px; color: var(--red); font-weight: 900; font-size: 92px; letter-spacing: -0.02em; text-transform: uppercase; background: rgba(255,255,255,.88); }
+
+/* site footage */
+.bgblur { position: absolute; inset: -80px; background-size: cover; background-position: center; filter: blur(48px) brightness(.55) saturate(1.2); }
+.shot { position: absolute; overflow: hidden; border-radius: 34px; box-shadow: 0 60px 120px -30px rgba(61,123,255,.55), 0 0 0 3px rgba(255,255,255,.12); background: #0b1530; }
+.shot img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
+.label { position: absolute; left: 70px; right: 140px; top: 470px; font-weight: 800; font-size: 76px; line-height: 1.04; letter-spacing: -0.04em; }
+.label small { display: block; font-size: 30px; font-weight: 600; letter-spacing: .12em; color: var(--blue-2); margin-bottom: 18px; }
+
+/* phone */
+.phone { position: absolute; left: 250px; top: 600px; width: 580px; height: 1180px; border-radius: 86px; background: #050608; padding: 22px; box-shadow: 0 80px 160px -40px rgba(61,123,255,.6), 0 0 0 3px rgba(255,255,255,.18); }
+.scr { position: absolute; inset: 22px; border-radius: 66px; overflow: hidden; }
+.mhero { position: absolute; inset: 0; padding: 120px 44px 70px; background: linear-gradient(180deg, rgba(10,20,45,.5), rgba(10,20,45,.1) 40%, rgba(10,20,45,.9)), url("site.jpg") 70% center / auto 100%; display: flex; flex-direction: column; }
+.mhero .logo { position: absolute; left: 36px; top: 50px; width: 90px; height: 56px; border-radius: 14px; background: #fff; }
+.mhero .tag { margin-top: auto; margin-bottom: 26px; align-self: flex-start; font-size: 19px; letter-spacing: .16em; text-transform: uppercase; padding: 10px 18px; border-radius: 999px; border: 2px solid rgba(255,255,255,.35); }
+.mhero h4 { margin: 0; font-size: 88px; font-weight: 700; letter-spacing: -0.045em; line-height: .95; }
+.mhero h4 span { color: var(--client); }
+.mhero p { font-size: 26px; line-height: 1.5; color: #dde2ea; margin: 24px 0 0; }
+.mhero .cta { margin-top: 34px; align-self: flex-start; font-size: 28px; font-weight: 600; padding: 20px 34px; border-radius: 999px; background: var(--client); }
+.tap { position: absolute; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,.55); border: 4px solid #fff; }
+.notif { position: absolute; left: 22px; right: 22px; top: 60px; display: flex; gap: 22px; align-items: center; padding: 26px 28px; border-radius: 40px; background: rgba(245,247,251,.96); color: #111; box-shadow: 0 30px 60px -20px rgba(0,0,0,.6); }
+.notif .ic { width: 78px; height: 78px; border-radius: 20px; background: var(--blue); flex-shrink: 0; }
+.notif b { display: block; font-size: 27px; } .notif span { font-size: 23px; color: #5f6368; }
+
+/* Google profile */
+.gp { position: absolute; left: 90px; top: 640px; width: 900px; border-radius: 44px; overflow: hidden; background: #fff; box-shadow: 0 80px 160px -40px rgba(61,123,255,.6); }
+.gp .hero { height: 330px; background: url("toit.jpg") center 60% / cover; }
+.gp .body { padding: 34px 44px 10px; }
+.gp h5 { margin: 0; font-size: 52px; font-weight: 400; }
+.gp .cat { font-size: 32px; color: #70757a; margin-top: 6px; }
+.gp .acts { display: flex; justify-content: space-between; padding: 30px 44px 24px; }
+.gp .act { display: flex; flex-direction: column; align-items: center; gap: 14px; font-size: 26px; color: #0b57d0; font-weight: 500; width: 150px; }
+.gp .act span { width: 96px; height: 96px; border-radius: 50%; display: grid; place-items: center; background: #c2e7ff; }
+.gp .act:first-child span { background: #0b57d0; }
+.gp .act svg { width: 42px; height: 42px; color: #001d35; } .gp .act:first-child svg { color: #fff; }
+.gp .row { display: flex; gap: 34px; align-items: center; padding: 24px 50px; border-top: 2px solid #f1f1f1; font-size: 32px; }
+.gp .row svg { width: 40px; height: 40px; color: #0b57d0; flex-shrink: 0; }
+.gp .row em { font-style: normal; color: #188038; }
+
+/* CTA */
+.big { position: absolute; left: 70px; right: 140px; word-spacing: .12em; font-weight: 900; letter-spacing: -0.05em; line-height: .92; text-transform: uppercase; }
+.comment { position: absolute; left: 70px; right: 140px; top: 860px; display: flex; gap: 26px; padding: 34px 36px; border-radius: 40px; background: #fff; color: #111; box-shadow: 0 40px 80px -20px rgba(0,0,0,.4); }
+.comment .av { width: 88px; height: 88px; border-radius: 50%; background: linear-gradient(140deg, #ffb36b, #f26a21); flex-shrink: 0; }
+.comment b { display: block; font-size: 30px; color: #6b6b6b; font-weight: 500; }
+.comment span { display: block; font-size: 58px; font-weight: 800; letter-spacing: -0.02em; margin-top: 4px; }
+.mark { width: 220px; height: 220px; border-radius: 60px; background: linear-gradient(140deg, #6b9bff, var(--blue)); display: grid; place-items: center; box-shadow: 0 0 160px rgba(61,123,255,.7); }
+.mark svg { width: 120px; height: 120px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="cam" class="abs" style="inset:0">
+
+    <!-- A · hook: invisible on Google -->
+    <section class="sc" id="A" style="background:#fff">
+      <div class="cap dark" id="capA"></div>
+      <div class="gsearch gui" id="sbar"><svg viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span id="typed"></span><span class="caret"></span></div>
+      <div class="res gui" id="r1" style="top:930px"><h6>Couverture Jurassienne</h6><p><b>4,1</b> <span class="stars">★★★★☆</span> · Couvreur · Arbois</p></div>
+      <div class="res gui" id="r2" style="top:1100px"><h6>Toits &amp; Charpentes du Revermont</h6><p><b>3,8</b> <span class="stars">★★★★☆</span> · Couvreur · Lons</p></div>
+      <div class="res gui" id="r3" style="top:1270px"><h6>Bâti-Jura Services</h6><p><b>4,4</b> <span class="stars">★★★★☆</span> · Toiture · Champagnole</p></div>
+      <div class="stamp" id="stamp">Introuvable</div>
+    </section>
+
+    <!-- B · "alors on a fait ça" -->
+    <section class="sc" id="B"><div class="glow"></div>
+      <div class="abs" id="Bwords" style="left:70px;right:70px;top:640px;text-align:center;word-spacing:.12em;font-weight:900;font-size:170px;line-height:.95;letter-spacing:-0.05em;text-transform:uppercase"></div>
+    </section>
+
+    <!-- C · the drop: the real site -->
+    <section class="sc" id="C">
+      <div class="bgblur" id="Cbg"></div>
+      <div class="shot" id="Cshot"><img id="Cimg" alt=""></div>
+      <div class="cap" id="capC"></div>
+    </section>
+
+    <!-- D · feature cuts -->
+    <section class="sc" id="D">
+      <div class="bgblur" id="Dbg"></div>
+      <div class="label" id="Dlabel"><small id="Dnum"></small><span id="Dtxt"></span></div>
+      <div class="shot" id="Dshot" style="left:40px;top:760px;width:1000px;height:562px"><img id="Dimg" alt=""></div>
+    </section>
+
+    <!-- E · mobile + a quote request -->
+    <section class="sc" id="E"><div class="glow"></div>
+      <div class="cap" id="capE"></div>
+      <div class="phone" id="phone"><div class="scr">
+        <div class="mhero"><span class="logo"></span><span class="tag">Rénovation · Jura</span><h4>Du faîtage à la <span>façade.</span></h4><p>Toiture, couverture, zinguerie, dessous de toit et façade.</p><span class="cta" id="cta">Devis gratuit →</span></div>
+        <div class="tap" id="tap"></div>
+        <div class="notif" id="notif"><span class="ic"></span><div><b>Nouvelle demande de devis</b><span>Réfection de toiture · Arbois</span></div></div>
+      </div></div>
+    </section>
+
+    <!-- F · Google profile -->
+    <section class="sc" id="F"><div class="glow"></div>
+      <div class="cap" id="capF"></div>
+      <div class="gp gui" id="gp">
+        <div class="hero" id="gpHero"></div>
+        <div class="body"><h5 id="gpName">L'Univers de la Rénovation</h5><div class="cat" id="gpCat">Couvreur · Poligny, Jura</div></div>
+        <div class="acts">
+          <div class="act"><span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 2 12l10 10 10-10zm1 13v-3h-4v3H7v-4a1 1 0 0 1 1-1h5V7l4 4z"/></svg></span>Itinéraire</div>
+          <div class="act"><span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg></span>Appeler</div>
+          <div class="act"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span>Site Web</div>
+          <div class="act"><span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 3h12v18l-6-4-6 4z"/></svg></span>Enregistrer</div>
+        </div>
+        <div class="row" id="gpRow1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><em>Ouvert</em> · Lun–Sam 9h–18h</span></div>
+        <div class="row" id="gpRow2"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg><span>Intervient jusqu'à 80 km</span></div>
+      </div>
+    </section>
+
+    <!-- G · call to action -->
+    <section class="sc" id="G" style="background:var(--blue)">
+      <div class="big" id="G1" style="top:330px;font-size:150px">Tu es<br>artisan ?</div>
+      <div class="big" id="G2" style="top:330px;font-size:118px">Ton site pro<br><span style="font-size:.62em;letter-spacing:-0.02em">dès</span> <span id="price" style="font-size:1.6em">0</span><span style="font-size:.9em"> €</span></div>
+      <div class="comment" id="comment"><span class="av"></span><div><b>Commente</b><span>« SITE »</span><b style="margin-top:10px">on te répond en privé</b></div></div>
+    </section>
+
+    <!-- H · end card -->
+    <section class="sc" id="H"><div class="glow"></div>
+      <div class="abs" style="left:0;right:0;top:620px;display:flex;flex-direction:column;align-items:center;gap:40px;text-align:center">
+        <div class="mark" id="Hmark"><svg viewBox="0 0 24 24" fill="#fff"><path d="M13.5 2 4 13.5h6.5L9 22l10-12.5h-6.6z"/></svg></div>
+        <div id="Hword" style="font-weight:800;font-size:150px;letter-spacing:-0.05em;line-height:1">SitePulse</div>
+        <div id="Htag" style="font-size:44px;font-weight:400;color:#c9d3e6">Rendre visibles ceux qui <span style="color:var(--blue-2);font-weight:600">font.</span></div>
+        <div class="chip" id="Hchip"><i></i>Sites · Fiche Google · Jura</div>
+      </div>
+    </section>
+  </div>
+  <div class="flash" id="flash"></div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var FPS = 30, TOTAL = 21;
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function seg(t, a, b) { return clamp((t - a) / (b - a), 0, 1); }
+  var E = {
+    out: function (p) { return 1 - Math.pow(1 - p, 3); },
+    expo: function (p) { return p >= 1 ? 1 : 1 - Math.pow(2, -10 * p); },
+    io: function (p) { return p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; },
+    back: function (p) { var c = 1.9; return 1 + (c + 1) * Math.pow(p - 1, 3) + c * Math.pow(p - 1, 2); }
+  };
+  function frameSrc(v) { return "frames/f" + String(clamp(Math.round(v * 30) + 1, 1, 480)).padStart(4, "0") + ".jpg"; }
+
+  /* kinetic captions: words pop in on the beat */
+  function buildCap(el, words) {
+    el.innerHTML = "";
+    words.forEach(function (w) {
+      if (w === "\n") { el.appendChild(document.createElement("br")); return; }
+      var s = document.createElement("span"); s.className = "w" + (w[2] ? " hl" : ""); s.textContent = w[0]; s.dataset.t = w[1];
+      el.appendChild(s);
+    });
+  }
+  function drawCap(el, t) {
+    el.querySelectorAll(".w").forEach(function (s) {
+      var p = seg(t, +s.dataset.t, +s.dataset.t + .2);
+      s.style.opacity = p > 0 ? 1 : 0;
+      var sc = 1.5 - .5 * E.back(p);
+      s.style.transform = "scale(" + sc + ")" + (s.classList.contains("hl") ? " rotate(-2deg)" : "");
+    });
+  }
+  buildCap($("capA"), [["Ce", -1], ["couvreur", -1], "\n", ["était", .15], ["invisible", .35, 1], "\n", ["sur", .55], ["Google", .7]]);
+  buildCap($("capC"), [["Son", 3.1], ["nouveau", 3.25], "\n", ["site", 3.45, 1]]);
+  buildCap($("capE"), [["Pensé", 9.1], ["pour", 9.25], "\n", ["le", 9.4], ["mobile", 9.55, 1]]);
+  buildCap($("capF"), [["Et", 12.6], ["sa", 12.75], ["fiche", 12.9], "\n", ["Google", 13.1, 1]]);
+  ["Alors", "on a fait", "ça."].forEach(function (w, i) {
+    var d = document.createElement("div"); d.textContent = w; d.dataset.t = 2 + i * .25; if (i === 2) d.style.color = "var(--blue)";
+    $("Bwords").appendChild(d);
+  });
+
+  var CUTS = [
+    { a: 6.0, v: 5.2, n: "01 / 04", txt: "Ses métiers,<br>pièce par pièce" },
+    { a: 6.75, v: 9.2, n: "02 / 04", txt: "Un calculateur<br>de toiture" },
+    { a: 7.5, v: 12.4, n: "03 / 04", txt: "Sa zone :<br>80 km autour" },
+    { a: 8.25, v: .6, n: "04 / 04", txt: "Devis gratuit<br>en un clic" }
+  ];
+  var HITS = [1.55, 2, 2.25, 2.5, 3, 4, 5, 6, 6.75, 7.5, 8.25, 9, 10.5, 11, 12.5, 13.3, 15.5, 16.25, 17.25, 17.75, 19];
+
+  var pending = [];
+  function setImg(img, src) { if (img.getAttribute("src") !== src) { img.setAttribute("src", src); pending.push(img.decode ? img.decode().catch(function () {}) : Promise.resolve()); } }
+  function setBg(el, src) { var u = 'url("' + src + '")'; if (el.dataset.u !== u) { el.dataset.u = u; el.style.backgroundImage = u; var im = new Image(); im.src = src; pending.push(im.decode ? im.decode().catch(function () {}) : Promise.resolve()); } }
+  function show(id, on) { $(id).style.display = on ? "block" : "none"; }
+  function rect(el, x, y, w, h) { el.style.left = x + "px"; el.style.top = y + "px"; el.style.width = w + "px"; el.style.height = h + "px"; }
+  function lerp(a, b, p) { return a + (b - a) * p; }
+
+  window.renderAt = function (t) {
+    pending = [];
+    ["A", "B", "C", "D", "E", "F", "G", "H"].forEach(function (id, i) {
+      var r = [[0, 2], [2, 3], [3, 6], [6, 9], [9, 12.5], [12.5, 15.5], [15.5, 19], [19, 21.01]][i];
+      show(id, t >= r[0] && t < r[1]);
+    });
+
+    /* camera: punch-in on every hit + a short decaying shake */
+    var punch = 0, shx = 0, shy = 0;
+    HITS.forEach(function (h, k) {
+      var d = t - h; if (d < 0 || d > .4) return;
+      var a = Math.exp(-d * 12); punch += .06 * a;
+      shx += Math.sin(d * 90 + k) * 14 * a; shy += Math.cos(d * 70 + k * 2) * 10 * a;
+    });
+    $("cam").style.transform = "translate(" + shx + "px," + shy + "px) scale(" + (1 + punch) + ")";
+    var fl = 0; [3, 19].forEach(function (h) { var d = t - h; if (d >= 0 && d < .5) fl = Math.max(fl, 1 - d / .5); });
+    var w = seg(t, 20.6, 21); if (w > 0) fl = Math.max(fl, E.io(w));
+    $("flash").style.opacity = fl;
+
+    if (t < 2) { // A
+      drawCap($("capA"), t);
+      var q = "couvreur poligny"; $("typed").textContent = q.slice(0, clamp(Math.floor(t / .045), 0, q.length));
+      ["r1", "r2", "r3"].forEach(function (id, k) {
+        var p = E.expo(seg(t, .8 + k * .1, 1.2 + k * .1)); var el = $(id);
+        el.style.opacity = p; el.style.transform = "translateY(" + (80 * (1 - p)) + "px)"; el.style.filter = t > 1.55 ? "grayscale(1) opacity(.55)" : "";
+      });
+      var sp = seg(t, 1.5, 1.7); $("stamp").style.opacity = sp > 0 ? 1 : 0; $("stamp").style.transform = "scale(" + (2.2 - 1.2 * E.out(sp)) + ") rotate(-6deg)";
+    }
+    if (t >= 2 && t < 3) { // B
+      [].forEach.call($("Bwords").children, function (d) { var p = seg(t, +d.dataset.t, +d.dataset.t + .16); d.style.opacity = p > 0 ? 1 : 0; d.style.transform = "scale(" + (1.6 - .6 * E.out(p)) + ")"; });
+      var z = seg(t, 2.75, 3); $("Bwords").style.transform = "scale(" + (1 + 5 * z * z) + ")"; $("Bwords").style.filter = "blur(" + (z * 30) + "px)";
+    }
+    if (t >= 3 && t < 6) { // C: card view, then dive into the full-bleed village
+      var l = t - 3, src = frameSrc(.2 + l * 1.5);
+      setImg($("Cimg"), src); setBg($("Cbg"), src);
+      var ip = E.out(seg(l, 0, .5)), zp = E.io(seg(l, .9, 1.6));
+      var cw = lerp(1000, 3413, zp), ch = lerp(562, 1920, zp);
+      var pan = lerp(0, -1300, E.io(seg(l, 1.4, 3)));
+      var cx = lerp(40, -900, zp) + pan * zp, cy = lerp(760, 0, zp);
+      rect($("Cshot"), cx, cy, cw, ch);
+      $("Cshot").style.borderRadius = (34 * (1 - zp)) + "px";
+      $("Cshot").style.transform = "scale(" + (1.25 - .25 * ip) + ")";
+      drawCap($("capC"), t);
+      $("capC").style.textShadow = "0 6px 30px rgba(0,0,0,.45)";
+    }
+    if (t >= 6 && t < 9) { // D: four cuts on the beat, whip in
+      var c = CUTS[clamp(Math.floor((t - 6) / .75), 0, 3)], lc = t - c.a, src2 = frameSrc(c.v + lc * 1.6);
+      setImg($("Dimg"), src2); setBg($("Dbg"), src2);
+      var wp = E.expo(seg(lc, 0, .22));
+      $("Dshot").style.transform = "translateX(" + (420 * (1 - wp)) + "px) rotate(" + (4 * (1 - wp)) + "deg) scale(" + (1.08 - .08 * wp) + ")";
+      $("Dshot").style.filter = "blur(" + (18 * (1 - wp)) + "px)";
+      $("Dnum").textContent = c.n; $("Dtxt").innerHTML = c.txt;
+      var lp = E.out(seg(lc, 0, .2)); $("Dlabel").style.opacity = lp; $("Dlabel").style.transform = "translateY(" + (40 * (1 - lp)) + "px)";
+    }
+    if (t >= 9 && t < 12.5) { // E
+      var l2 = t - 9;
+      drawCap($("capE"), t);
+      var pp = E.expo(seg(l2, 0, .6));
+      $("phone").style.transform = "translateY(" + (900 * (1 - pp)) + "px) rotate(" + (-10 * (1 - pp)) + "deg)";
+      var tp = seg(l2, 1.3, 1.9); $("tap").style.left = "60px"; $("tap").style.top = "880px";
+      $("tap").style.opacity = tp > 0 && tp < 1 ? 1 - tp * .6 : 0; $("tap").style.transform = "scale(" + (.4 + tp * 1.2) + ")";
+      $("cta").style.transform = l2 > 1.45 && l2 < 1.75 ? "scale(.92)" : "";
+      var np = E.back(seg(l2, 2, 2.4)); $("notif").style.transform = "translateY(" + (-260 * (1 - np)) + "px)"; $("notif").style.opacity = l2 > 2 ? 1 : 0;
+    }
+    if (t >= 12.5 && t < 15.5) { // F
+      var l3 = t - 12.5; drawCap($("capF"), t);
+      var gp = E.expo(seg(l3, 0, .5)); $("gp").style.transform = "translateY(" + (700 * (1 - gp)) + "px) scale(" + (.9 + .1 * gp) + ")";
+      $("gp").querySelectorAll(".act").forEach(function (a, k) { var p = seg(l3, .8 + k * .12, 1.1 + k * .12); a.style.opacity = p > 0 ? 1 : 0; a.style.transform = "scale(" + (.3 + .7 * E.back(p)) + ")"; });
+      [["gpRow1", 1.4], ["gpRow2", 1.6]].forEach(function (r) { var p = E.out(seg(l3, r[1], r[1] + .3)); $(r[0]).style.opacity = p; $(r[0]).style.transform = "translateX(" + (60 * (1 - p)) + "px)"; });
+      $("gpHero").style.backgroundSize = (100 + l3 * 6) + "%";
+    }
+    if (t >= 15.5 && t < 19) { // G
+      var l4 = t - 15.5;
+      var g1 = seg(l4, 0, .2); $("G1").style.opacity = l4 < .75 ? 1 : 0; $("G1").style.transform = "scale(" + (1.5 - .5 * E.back(g1)) + ")";
+      var g2 = seg(l4, .75, .95); $("G2").style.opacity = l4 >= .75 ? 1 : 0; $("G2").style.transform = "scale(" + (1.4 - .4 * E.back(g2)) + ")";
+      $("price").textContent = Math.round(299 * E.out(seg(l4, .9, 1.7)));
+      var cp = E.back(seg(l4, 2.25, 2.6)); $("comment").style.opacity = l4 > 2.25 ? 1 : 0; $("comment").style.transform = "translateY(" + (200 * (1 - cp)) + "px) scale(" + (.8 + .2 * cp) + ")";
+    }
+    if (t >= 19) { // H
+      var l5 = t - 19;
+      $("Hmark").style.transform = "scale(" + (E.back(seg(l5, 0, .35)) || .001) + ")";
+      [["Hword", .15], ["Htag", .45], ["Hchip", .7]].forEach(function (r) { var p = E.out(seg(l5, r[1], r[1] + .35)); $(r[0]).style.opacity = p; $(r[0]).style.transform = "translateY(" + (50 * (1 - p)) + "px)"; });
+    }
+    return Promise.all(pending);
+  };
+  window.TOTAL = TOTAL; window.FPS = FPS;
+  window.renderAt(0);
+})();
+</script>
+</body>
+</html>
