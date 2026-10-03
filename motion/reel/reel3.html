@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Reel SitePulse · POV</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap">
+<style>
+/* 1080×1920 POV reel: the viewer's own phone screen. Rendered frame by frame through window.renderAt(t).
+   Stickers use TikTok's native "text with background" look; text stays inside x 70–940, y 180–1460. */
+:root { --navy: #071127; --blue: #3d7bff; --blue-2: #8db0ff; --f: "Poppins", "Segoe UI", system-ui, sans-serif; --g: "Roboto", Arial, sans-serif; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #000; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #000; font-family: var(--f); color: #fff; }
+.pg { position: absolute; inset: 0; overflow: hidden; display: none; }
+.abs { position: absolute; }
+.status { position: absolute; left: 0; right: 0; top: 0; height: 84px; z-index: 40; display: flex; justify-content: space-between; align-items: center; padding: 0 60px; font-family: var(--g); font-weight: 500; font-size: 34px; color: #fff; }
+.status .r { display: flex; gap: 14px; align-items: center; }
+.status .bat { width: 56px; height: 26px; border-radius: 7px; border: 3px solid #fff; position: relative; }
+.status .bat::after { content: ""; position: absolute; left: 3px; top: 3px; bottom: 3px; width: 26px; border-radius: 3px; background: #fff; }
+.sticker { position: absolute; left: 0; right: 0; z-index: 30; text-align: center; padding: 0 90px; }
+.sticker span { display: inline; background: rgba(0,0,0,.82); color: #fff; font-weight: 600; font-size: 58px; line-height: 1.5; padding: 6px 22px; border-radius: 18px; -webkit-box-decoration-break: clone; box-decoration-break: clone; letter-spacing: -0.01em; }
+.sticker.w span { background: #fff; color: #111; }
+.sticker.b span { background: var(--blue); }
+.tap { position: absolute; z-index: 35; width: 110px; height: 110px; margin: -55px 0 0 -55px; border-radius: 50%; background: rgba(255,255,255,.45); border: 4px solid #fff; box-shadow: 0 0 30px rgba(0,0,0,.35); }
+/* Google, mobile dark */
+.gpage { background: #202124; }
+.gsearch { position: absolute; left: 40px; right: 40px; top: 130px; height: 110px; border-radius: 55px; background: #303134; display: flex; align-items: center; gap: 26px; padding: 0 40px; font-family: var(--g); font-size: 42px; color: #e8eaed; }
+.gsearch svg { width: 44px; height: 44px; flex-shrink: 0; }
+.caret { display: inline-block; width: 3px; height: 50px; background: #8ab4f8; }
+.gtabs { position: absolute; left: 60px; top: 280px; display: flex; gap: 46px; font-family: var(--g); font-size: 34px; color: #9aa0a6; }
+.gtabs b { color: #8ab4f8; font-weight: 500; border-bottom: 5px solid #8ab4f8; padding-bottom: 14px; }
+.kb { position: absolute; left: 0; right: 0; bottom: 0; height: 640px; background: #2b2b2e; padding: 30px 12px 0; font-family: var(--g); z-index: 20; }
+.kb .row { display: flex; justify-content: center; gap: 12px; margin-bottom: 22px; }
+.kb .k { width: 92px; height: 116px; border-radius: 14px; background: #48484c; display: grid; place-items: center; font-size: 44px; color: #fff; }
+.kb .k.on { background: #8e8e93; transform: scale(1.12); }
+.kb .k.wide { width: 560px; font-size: 32px; color: #ccc; }
+/* sheet */
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; height: 760px; border-radius: 56px 56px 0 0; background: #fff; color: #111; z-index: 25; display: flex; flex-direction: column; align-items: center; padding-top: 110px; gap: 26px; }
+.sheet .ok { width: 170px; height: 170px; border-radius: 50%; background: #1e8e3e; display: grid; place-items: center; }
+.sheet .ok svg { width: 96px; height: 96px; }
+.sheet b { font-size: 56px; letter-spacing: -0.02em; }
+.sheet small { font-size: 34px; color: #666; }
+.full { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.note { position: absolute; right: 160px; top: 1400px; z-index: 30; font-size: 26px; letter-spacing: .1em; text-transform: uppercase; background: rgba(0,0,0,.55); padding: 8px 18px; border-radius: 999px; }
+.div { position: absolute; top: 0; bottom: 0; width: 8px; margin-left: -4px; background: #fff; z-index: 20; box-shadow: 0 0 24px rgba(0,0,0,.5); }
+.mark { width: 170px; height: 170px; border-radius: 46px; background: linear-gradient(140deg, #6b9bff, var(--blue)); display: grid; place-items: center; box-shadow: 0 0 140px rgba(61,123,255,.6); }
+.mark svg { width: 92px; height: 92px; }
+.comment { display: flex; gap: 24px; align-items: center; padding: 28px 34px; border-radius: 34px; background: #fff; color: #111; text-align: left; box-shadow: 0 40px 80px -30px rgba(0,0,0,.6); }
+.comment .av { width: 76px; height: 76px; border-radius: 50%; background: linear-gradient(140deg, #8db0ff, #3d7bff); flex-shrink: 0; }
+.comment small { display: block; font-size: 26px; color: #6b6b6b; }
+.comment b { display: block; font-size: 48px; letter-spacing: -0.02em; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="status" id="status"><span id="clock">22:07</span><span class="r"><svg width="40" height="28" viewBox="0 0 40 28" fill="#fff"><rect x="0" y="18" width="7" height="10" rx="2"/><rect x="11" y="12" width="7" height="16" rx="2"/><rect x="22" y="6" width="7" height="22" rx="2"/><rect x="33" y="0" width="7" height="28" rx="2"/></svg><span class="bat"></span></span></div>
+
+  <!-- 0 · POV hook -->
+  <section class="pg" id="p0" style="background:#000">
+    <div class="abs" id="drop" style="left:510px;top:560px;width:60px;height:84px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;background:linear-gradient(180deg,#8db0ff,#3d7bff)"></div>
+    <div class="sticker" id="k0" style="top:760px"><span>POV : ta toiture fuit</span><br><span>et il est 22h.</span></div>
+  </section>
+
+  <!-- 1 · Google search on the phone -->
+  <section class="pg gpage" id="p1">
+    <div class="gsearch"><svg viewBox="0 0 24 24" fill="none" stroke="#9aa0a6" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span id="typed"></span><span class="caret" id="caret"></span></div>
+    <div class="gtabs" id="gtabs"><b>Tous</b><span>Maps</span><span>Images</span><span>Actualités</span></div>
+    <img class="abs" id="pack" src="img/pack1.jpg" alt="" style="left:0;top:360px;width:1080px">
+    <div class="kb" id="kb"></div>
+    <div class="sticker" id="k1" style="top:1120px"><span>Premier résultat : lui.</span></div>
+  </section>
+
+  <!-- 2 · his Google profile -->
+  <section class="pg gpage" id="p2">
+    <img class="abs" src="img/fiche.jpg" alt="" style="left:0;top:110px;width:1080px">
+    <div class="sticker" id="k2" style="top:1420px"><span>Fiche Google, 5 étoiles.</span></div>
+  </section>
+
+  <!-- 3 · his site, hero only -->
+  <section class="pg" id="p3">
+    <img class="abs" id="site" src="img/mobile.jpg" alt="" style="left:0;top:0;width:1080px">
+    <div class="sticker" id="k3" style="top:300px"><span>Et un vrai site, propre.</span></div>
+    <div class="abs" id="dim" style="inset:0;background:#000;opacity:0;z-index:22"></div>
+    <div class="sheet" id="sheet"><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="m5 12 5 5 9-10"/></svg></span><b>Demande envoyée</b><small>Devis gratuit · toiture</small></div>
+    <div class="sticker w" id="k4" style="top:420px;z-index:31"><span>22h09. Réglé.</span></div>
+  </section>
+
+  <!-- 4 · next morning -->
+  <section class="pg" id="p4">
+    <div class="full" id="w2" style="background-image:url('img/worker2.jpg');background-position:62% 40%"></div>
+    <div class="sticker" id="k5" style="top:300px"><span>Le lendemain matin,</span><br><span>il était sur le toit.</span></div>
+  </section>
+
+  <!-- 5 · before / after -->
+  <section class="pg" id="p5">
+    <div class="full" style="background-image:url('img/before.jpg')"></div>
+    <div class="full" id="after" style="background-image:url('img/after.jpg')"></div>
+    <div class="div" id="divl"></div>
+    <div class="sticker" id="k6" style="top:260px"><span>Avant</span> <span id="apres" style="background:var(--blue)">Après</span></div>
+    <span class="note" id="simNote">Simulation</span>
+  </section>
+
+  <!-- 6 · end card -->
+  <section class="pg" id="p6" style="background:var(--navy)">
+    <div class="abs" style="inset:0;background:radial-gradient(900px 900px at 50% 58%, rgba(61,123,255,.28), transparent 65%)"></div>
+    <div class="sticker" id="k7" style="top:300px"><span>Tes clients te cherchent</span><br><span>comme ça.</span><br><span style="background:var(--blue)">Ils te trouvent ?</span></div>
+    <div class="abs" id="brand" style="left:0;right:0;top:820px;display:flex;flex-direction:column;align-items:center;gap:40px">
+      <div style="display:flex;align-items:center;gap:30px"><div class="mark"><svg viewBox="0 0 24 24" fill="#fff"><path d="M13.5 2 4 13.5h6.5L9 22l10-12.5h-6.6z"/></svg></div><div style="font-weight:700;font-size:110px;letter-spacing:-0.05em">SitePulse</div></div>
+      <div class="comment" id="cmt"><span class="av"></span><div><small>Commente</small><b>« SITE »</b><small>le prix t'arrive en privé</small></div></div>
+    </div>
+  </section>
+
+  <div class="tap" id="tap" style="opacity:0"></div>
+</div>
+<script>
+(function () {
+  "use strict";
+  /* set to false only if the "after" drone shot is a real finished job, not a retouched projection */
+  var AFTER_IS_SIMULATION = true;
+
+  var $ = function (id) { return document.getElementById(id); };
+  var TOTAL = 23;
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function seg(t, a, b) { return clamp((t - a) / (b - a), 0, 1); }
+  function out(p) { return 1 - Math.pow(1 - p, 3); }
+  function io(p) { return p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; }
+  $("simNote").style.display = AFTER_IS_SIMULATION ? "block" : "none";
+
+  /* keyboard */
+  var ROWS = ["azertyuiop", "qsdfghjklm", "wxcvbn"];
+  ROWS.forEach(function (r) { var d = document.createElement("div"); d.className = "row"; r.split("").forEach(function (c) { var k = document.createElement("span"); k.className = "k"; k.textContent = c; k.dataset.c = c; d.appendChild(k); }); $("kb").appendChild(d); });
+  var sp = document.createElement("div"); sp.className = "row"; sp.innerHTML = '<span class="k wide" data-c=" ">espace</span>'; $("kb").appendChild(sp);
+
+  // [page, start, end, entrance: "cut" | "push" | "fade"]
+  var PAGES = [["p0", 0, 2.6, "cut"], ["p1", 2.6, 6.2, "fade"], ["p2", 6.2, 9.2, "push"], ["p3", 9.2, 14.6, "push"], ["p4", 14.6, 17.4, "fade"], ["p5", 17.4, 20.2, "fade"], ["p6", 20.2, 23.01, "fade"]];
+  var TAPS = [[5.7, 540, 760], [8.5, 288, 905], [11.7, 540, 1530]];
+
+  function sticker(id, t, a, b) {
+    var p = out(seg(t, a, a + .35)), q = b ? seg(t, b, b + .25) : 0;
+    $(id).style.opacity = p * (1 - q); $(id).style.transform = "scale(" + (.92 + .08 * p) + ")";
+  }
+
+  window.renderAt = function (t) {
+    PAGES.forEach(function (p, i) {
+      var el = $(p[0]), on = t >= p[1] - .35 && t < p[2] + (i < PAGES.length - 1 ? .001 : 1);
+      el.style.display = on ? "block" : "none"; if (!on) return;
+      var e = seg(t, p[1] - .35, p[1]);
+      el.style.zIndex = i;
+      if (p[3] === "push") { el.style.transform = "translateX(" + (1080 * (1 - out(e))) + "px)"; el.style.opacity = 1; el.style.boxShadow = "-30px 0 60px rgba(0,0,0,.5)"; }
+      else if (p[3] === "fade") { el.style.opacity = i === 0 ? 1 : out(e); el.style.transform = ""; }
+      else { el.style.opacity = 1; }
+    });
+    var onPhone = t >= 2.25 && t < 14.6;
+    $("status").style.opacity = onPhone ? 1 : 0;
+    $("clock").textContent = t > 12.6 ? "22:09" : (t > 8 ? "22:08" : "22:07");
+
+    /* 0 */ sticker("k0", t, -1);
+    var dp = (t % 1.3) / 1.3; $("drop").style.transform = "translateY(" + (out(dp) * 120) + "px) scale(" + (1 - .3 * dp) + ")"; $("drop").style.opacity = 1 - dp;
+    /* 1 */
+    var kp = out(seg(t, 2.6, 3)) * (1 - io(seg(t, 4.6, 4.9)));
+    $("kb").style.transform = "translateY(" + (640 * (1 - kp)) + "px)";
+    var q = "couvreur poligny", n = clamp(Math.floor((t - 3) / .095), 0, q.length);
+    $("typed").textContent = q.slice(0, n);
+    var cur = n > 0 && n <= q.length && t < 4.6 ? q[n - 1] : null, fresh = t - (3 + (n - 1) * .095) < .07;
+    $("kb").querySelectorAll(".k").forEach(function (k) { k.classList.toggle("on", !!cur && fresh && k.dataset.c === cur); });
+    $("caret").style.opacity = t < 4.6 || Math.floor(t * 2) % 2 ? 1 : 0;
+    var rp = out(seg(t, 4.75, 5.15)); $("pack").style.opacity = rp; $("pack").style.transform = "translateY(" + (50 * (1 - rp)) + "px)";
+    $("gtabs").style.opacity = rp;
+    sticker("k1", t, 5.1);
+    /* 2 */ sticker("k2", t, 6.9);
+    /* 3 */
+    sticker("k3", t, 9.8, 11.9);
+    $("site").style.transform = "scale(" + (1 + .015 * seg(t, 9.2, 12)) + ")";
+    var sh = out(seg(t, 12, 12.45)); $("sheet").style.transform = "translateY(" + (800 * (1 - sh)) + "px)"; $("dim").style.opacity = .5 * sh;
+    sticker("k4", t, 12.9);
+    /* 4 */ sticker("k5", t, 15); $("w2").style.transform = "scale(" + (1.05 + .02 * (t - 14.6)) + ")";
+    /* 5 */
+    var w = io(seg(t, 18, 19.4)), x = 1080 * (1 - w);
+    $("after").style.clipPath = "inset(0 0 0 " + x + "px)"; $("divl").style.left = x + "px"; $("divl").style.opacity = w > 0 && w < 1 ? 1 : 0;
+    sticker("k6", t, 17.6); $("apres").style.opacity = seg(t, 19.1, 19.4);
+    /* 6 */
+    sticker("k7", t, 20.4);
+    var bp = out(seg(t, 21.3, 21.8)); $("brand").style.opacity = bp; $("brand").style.transform = "translateY(" + (40 * (1 - bp)) + "px)";
+    var cp = out(seg(t, 21.8, 22.2)); $("cmt").style.opacity = cp;
+
+    /* finger taps */
+    var tp = $("tap"), shown = false;
+    TAPS.forEach(function (tap) { var d = t - tap[0]; if (d >= -.15 && d < .4) { shown = true; var p = seg(d, -.15, .4); tp.style.left = tap[1] + "px"; tp.style.top = tap[2] + "px"; tp.style.opacity = d < 0 ? seg(d, -.15, 0) : 1 - seg(d, .1, .4); tp.style.transform = "scale(" + (d < 0 ? 1 : 1 - .25 * Math.sin(seg(d, 0, .2) * Math.PI)) + ")"; } });
+    if (!shown) tp.style.opacity = 0;
+    return Promise.resolve();
+  };
+  /* every frame waits until all photos are decoded, so no frame renders before its image */
+  var READY = Promise.all(["before", "after", "worker2", "mobile", "fiche", "pack1"].map(function (n) { var im = new Image(); im.src = "img/" + n + ".jpg"; return im.decode ? im.decode().catch(function () {}) : Promise.resolve(); }));
+  var render = window.renderAt;
+  window.renderAt = function (t) { return READY.then(function () { return render(t); }); };
+  window.TOTAL = TOTAL;
+  window.renderAt(0);
+})();
+</script>
+</body>
+</html>
