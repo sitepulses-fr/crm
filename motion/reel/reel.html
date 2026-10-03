@@ -145,8 +145,8 @@ html, body { margin: 0; background: #000; }
     <!-- G · call to action -->
     <section class="sc" id="G" style="background:var(--blue)">
       <div class="big" id="G1" style="top:330px;font-size:150px">Tu es<br>artisan ?</div>
-      <div class="big" id="G2" style="top:330px;font-size:118px">Ton site pro<br><span style="font-size:.62em;letter-spacing:-0.02em">dès</span> <span id="price" style="font-size:1.6em">0</span><span style="font-size:.9em"> €</span></div>
-      <div class="comment" id="comment"><span class="av"></span><div><b>Commente</b><span>« SITE »</span><b style="margin-top:10px">on te répond en privé</b></div></div>
+      <div class="big" id="G2" style="top:330px;font-size:118px">Ton site pro<br><span style="font-size:.5em;letter-spacing:-0.02em">à partir de</span><br><span id="price" style="display:inline-block;font-size:1.6em;filter:blur(42px);padding:0 .05em">000</span><span style="font-size:.9em"> €</span></div>
+      <div class="comment" id="comment"><span class="av"></span><div><b>Commente</b><span>« SITE »</span><b style="margin-top:10px">le prix t'arrive en privé</b></div></div>
     </section>
 
     <!-- H · end card -->
@@ -293,7 +293,9 @@ html, body { margin: 0; background: #000; }
       var l4 = t - 15.5;
       var g1 = seg(l4, 0, .2); $("G1").style.opacity = l4 < .75 ? 1 : 0; $("G1").style.transform = "scale(" + (1.5 - .5 * E.back(g1)) + ")";
       var g2 = seg(l4, .75, .95); $("G2").style.opacity = l4 >= .75 ? 1 : 0; $("G2").style.transform = "scale(" + (1.4 - .4 * E.back(g2)) + ")";
-      $("price").textContent = Math.round(299 * E.out(seg(l4, .9, 1.7)));
+      // the real price is never drawn: scrambled digits under a heavy blur
+      var fr = Math.floor(t * 30); $("price").textContent = [0, 1, 2].map(function (k) { return (fr * 7 + k * 13 + fr % (k + 3)) % 10; }).join("");
+      $("price").style.filter = "blur(" + (42 + 8 * Math.sin(t * 9)) + "px)";
       var cp = E.back(seg(l4, 2.25, 2.6)); $("comment").style.opacity = l4 > 2.25 ? 1 : 0; $("comment").style.transform = "translateY(" + (200 * (1 - cp)) + "px) scale(" + (.8 + .2 * cp) + ")";
     }
     if (t >= 19) { // H
