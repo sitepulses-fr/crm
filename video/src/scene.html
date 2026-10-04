@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>SITE PULSE — film</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+  :root { --pulse:#3b7bff; --hi:#8fb4ff; --white:#f3f6ff; --mute:#8a94b8; --red:#ff4f64; }
+  html, body { margin:0; width:1920px; height:1080px; overflow:hidden; background:#03050c; }
+  canvas#gl { position:absolute; inset:0; width:1920px; height:1080px; display:block; }
+  .ov { position:absolute; inset:0; pointer-events:none; font-family:"Inter Tight", sans-serif; color:var(--white); }
+  .vig { position:absolute; inset:0; background: radial-gradient(ellipse 75% 70% at 50% 50%, transparent 55%, rgba(0,0,0,.65) 100%); }
+  .grain { position:absolute; inset:0; opacity:.07; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  .mono { font-family:"JetBrains Mono", monospace; letter-spacing:.04em; }
+  .serif { font-family:"Instrument Serif", serif; }
+  .hud { position:absolute; left:72px; right:72px; top:56px; display:flex; justify-content:space-between; align-items:center; font-size:15px; }
+  .logo { display:flex; gap:16px; align-items:center; font-weight:600; letter-spacing:.32em; font-size:17px; }
+  .logo svg { width:46px; height:22px; } .logo path { fill:none; stroke:var(--pulse); stroke-width:2; stroke-linejoin:round; }
+  .chap { color:var(--mute); letter-spacing:.24em; text-transform:uppercase; font-size:14px; position:absolute; left:50%; transform:translateX(-50%); }
+  .bpm { color:var(--mute); letter-spacing:.14em; display:flex; gap:12px; align-items:center; }
+  .bpm b { color:var(--white); font-weight:500; } .bpm i { width:10px; height:10px; border-radius:50%; background:var(--pulse); box-shadow:0 0 14px var(--pulse); }
+  .bpm.flat, .bpm.flat b { color:var(--red); } .bpm.flat i { background:var(--red); box-shadow:0 0 14px var(--red); }
+  .cap { position:absolute; left:0; right:0; text-align:center; opacity:0; }
+  .cap.lower { bottom:150px; font-size:76px; line-height:1.05; }
+  .cap em { color:var(--hi); }
+  .score { position:absolute; right:96px; top:130px; text-align:right; opacity:0; }
+  .score .k { font-size:15px; letter-spacing:.24em; color:var(--mute); text-transform:uppercase; }
+  .score .v { font-size:112px; line-height:1; font-variant-numeric:tabular-nums; }
+  .score .v small { font-size:34px; color:var(--mute); }
+  .score .st { font-size:15px; letter-spacing:.2em; margin-top:12px; }
+  .flat { }
+  .flatcap { position:absolute; left:0; right:0; top:22%; text-align:center; font-size:22px; letter-spacing:.5em; color:var(--red); opacity:0; }
+  .rank { position:absolute; left:110px; top:300px; opacity:0; }
+  .rank .k { font-size:15px; letter-spacing:.24em; color:var(--mute); text-transform:uppercase; margin-bottom:14px; }
+  .rank .v { font-size:240px; line-height:.82; }
+  .rank .v span { font-size:.42em; color:#4a5577; vertical-align:top; margin-right:6px; }
+  .rank .q { margin-top:26px; font-size:18px; color:var(--mute); }
+  .notifs { position:absolute; right:110px; top:300px; width:440px; }
+  .nt { display:flex; gap:18px; align-items:center; padding:18px 22px; margin-bottom:14px; border-radius:14px; border:1px solid rgba(150,175,255,.25); background:rgba(10,20,50,.78); opacity:0; }
+  .nt i { flex:none; width:44px; height:44px; border-radius:50%; display:grid; place-items:center; background:var(--pulse); font-style:normal; font-size:20px; box-shadow:0 0 22px rgba(59,123,255,.7); }
+  .nt b { display:block; font-size:20px; font-weight:500; } .nt span { display:block; font-size:16px; color:var(--mute); }
+  .end { position:absolute; left:0; right:0; top:470px; bottom:0; padding-top:90px; text-align:center; opacity:0; background:linear-gradient(rgba(3,5,12,0), rgba(3,5,12,.88) 26%); }
+  .end .wm { font-weight:600; font-size:132px; letter-spacing:.06em; line-height:1; }
+  .end .bl { font-size:56px; margin-top:22px; } .end .bl em { color:var(--hi); }
+  .end .cta { display:inline-block; margin-top:36px; font-size:16px; letter-spacing:.24em; text-transform:uppercase; padding:16px 30px; border-radius:999px; border:1px solid rgba(150,175,255,.35); color:var(--white); }
+  .black { position:absolute; inset:0; background:#000; opacity:0; }
+  .flash { position:absolute; inset:0; background:radial-gradient(circle at 50% 55%, #fff, rgba(143,180,255,.7) 35%, rgba(3,5,12,0) 75%); opacity:0; }
+</style>
+<script type="importmap">{ "imports": { "three": "./node_modules/three/build/three.module.js", "three/addons/": "./node_modules/three/examples/jsm/" } }</script>
+</head>
+<body>
+<canvas id="gl" width="1920" height="1080"></canvas>
+<div class="ov">
+  <div class="vig"></div>
+  <div class="hud">
+    <div class="logo"><svg viewBox="0 0 44 20"><path d="M0 12 H12 L15 7 L18 12 H20 L24 1 L28 18 L31 12 H44"/></svg>SITE PULSE</div>
+    <div class="chap mono" id="chap">00 — Signal</div>
+    <div class="bpm mono" id="bpm"><i></i><b>054</b> BPM</div>
+  </div>
+  <p class="cap lower serif" id="c1">Votre entreprise existe.</p>
+  <p class="cap lower serif" id="c2"><em>Mais en ligne, personne ne la voit.</em></p>
+  <div class="score" id="score"><p class="k mono">Indice de présence</p><p class="v mono" id="scoreV">--<small>/100</small></p><p class="st mono" id="scoreS">ANALYSE EN COURS</p></div>
+  <p class="flatcap mono" id="flatcap">SIGNAL PLAT</p>
+  <p class="cap lower serif" id="c3">Puis vient <em>l'impulsion.</em></p>
+  <p class="cap lower serif" id="c4" style="font-size:64px">Nous ne construisons pas simplement un site.<br><em>Nous construisons votre présence digitale.</em></p>
+  <div class="rank" id="rank"><p class="k mono">Position sur Google</p><p class="v serif" id="rankV"><span>#</span>27</p><p class="q mono">« menuisier lyon »</p></div>
+  <div class="notifs" id="notifs">
+    <div class="nt"><i>☎</i><p><b>Appel entrant</b><span>09:42 · depuis Google</span></p></div>
+    <div class="nt"><i>✉</i><p><b>Demande de devis</b><span>Cuisine sur mesure · 18 m²</span></p></div>
+    <div class="nt"><i>➚</i><p><b>Itinéraire demandé</b><span>à 2,3 km de l'atelier</span></p></div>
+    <div class="nt"><i>★</i><p><b>Nouvel avis 5 étoiles</b><span>« Travail impeccable »</span></p></div>
+  </div>
+  <div class="end" id="end"><p class="wm">SITE PULSE</p><p class="bl serif">Votre entreprise <em>mérite d'être vue.</em></p><p class="cta mono">Diagnostic de présence offert</p></div>
+  <div class="grain"></div>
+  <div class="flash" id="flash"></div>
+  <div class="black" id="black"></div>
+</div>
+<script type="module" src="scene.js"></script>
+</body>
+</html>
