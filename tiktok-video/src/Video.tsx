@@ -32,7 +32,7 @@ export type VideoProps = {
   afficherZonesSures: boolean;
 };
 
-const Sfx: React.FC<{ at: number; src: string; volume?: number; rate?: number; master: number }> = ({ at, src, volume = 1, rate = 1, master }) => (
+export const Sfx: React.FC<{ at: number; src: string; volume?: number; rate?: number; master: number }> = ({ at, src, volume = 1, rate = 1, master }) => (
   <Sequence from={Math.max(0, Math.round(at))} layout="none" name={`sfx ${src}`}>
     <Audio src={staticFile(`audio/sfx/${src}.wav`)} volume={volume * master} playbackRate={rate} />
   </Sequence>
@@ -76,7 +76,7 @@ const SoundDesign: React.FC<{ props: VideoProps }> = ({ props }) => {
   );
 };
 
-const VoiceOver: React.FC<{ props: VideoProps }> = ({ props }) => {
+export const VoiceOver: React.FC<{ props: VideoProps }> = ({ props }) => {
   const { mode, fichier, volume, lignes } = props.voixOff;
   if (mode === 'fichier') return <Audio src={staticFile(fichier)} volume={volume} />;
   if (mode === 'lignes') {

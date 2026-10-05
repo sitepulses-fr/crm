@@ -32,12 +32,17 @@ function layoutLine(font: Font, line: string, accent: string): { segments: Segme
   return { segments, width: x };
 }
 
-const PunchText: React.FC<{ font: Font; lines: string[]; accent: string; frame: number }> = ({ font, lines, accent, frame }) => {
+const PunchText: React.FC<{ font: Font; lines: string[]; accent: string; frame: number; minimal: boolean }> = ({ font, lines, accent, frame, minimal }) => {
   const { fps } = useVideoConfig();
   const mats = useMemo(
     () => ({
-      face: new THREE.MeshPhysicalMaterial({ color: '#f7f7fa', metalness: 0.35, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.1, envMapIntensity: 1.3 }),
-      side: new THREE.MeshPhysicalMaterial({ color: '#30343d', metalness: 1, roughness: 0.3, envMapIntensity: 1.6 }),
+      // Variante minimale : faces blanc mat, flancs noirs. Seule la lumière dessine le volume.
+      face: minimal
+        ? new THREE.MeshStandardMaterial({ color: '#f2f2f0', metalness: 0, roughness: 0.55, envMapIntensity: 0.6 })
+        : new THREE.MeshPhysicalMaterial({ color: '#f7f7fa', metalness: 0.35, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.1, envMapIntensity: 1.3 }),
+      side: minimal
+        ? new THREE.MeshStandardMaterial({ color: '#050505', metalness: 0.6, roughness: 0.35, envMapIntensity: 0.9 })
+        : new THREE.MeshPhysicalMaterial({ color: '#30343d', metalness: 1, roughness: 0.3, envMapIntensity: 1.6 }),
       goldFace: new THREE.MeshPhysicalMaterial({
         color: colors.gold,
         emissive: new THREE.Color(colors.goldDeep),
@@ -49,7 +54,7 @@ const PunchText: React.FC<{ font: Font; lines: string[]; accent: string; frame: 
       }),
       goldSide: new THREE.MeshPhysicalMaterial({ color: '#b07a12', emissive: new THREE.Color('#4a2c00'), metalness: 1, roughness: 0.25, envMapIntensity: 2 }),
     }),
-    [],
+    [minimal],
   );
   const layouts = useMemo(() => lines.map((l) => layoutLine(font, l, accent)), [font, lines, accent]);
   const totalH = (lines.length - 1) * LINE_H;
@@ -82,7 +87,14 @@ const PunchText: React.FC<{ font: Font; lines: string[]; accent: string; frame: 
   );
 };
 
-export const PunchScene: React.FC<{ lines: string[]; accent: string; quality: string }> = ({ lines, accent, quality }) => {
+export const PunchScene: React.FC<{ lines: string[]; accent: string; quality: string; variant?: 'gold' | 'minimal' }> = ({
+  lines: rawLines,
+  accent,
+  quality,
+  variant = 'gold',
+}) => {
+  const minimal = variant === 'minimal';
+  const lines = useMemo(() => (minimal ? rawLines.map((l) => l.toUpperCase()) : rawLines), [rawLines, minimal]);
   const frame = useCurrentFrame();
   const font = useTypeface('inter-900.typeface.json');
 
@@ -94,8 +106,8 @@ export const PunchScene: React.FC<{ lines: string[]; accent: string; quality: st
   const baseDist = maxWidth / (0.84 * 2 * Math.tan((35 / 2) * (Math.PI / 180)) * (WIDTH / HEIGHT));
 
   // Orbite de la caméra autour du texte.
-  const orbit = interpolate(frame, [0, 134], [-34, 22], { easing: Easing.inOut(Easing.sin) }) * (Math.PI / 180);
-  const elev = interpolate(frame, [0, 134], [-8, 10]) * (Math.PI / 180);
+  const orbit = interpolate(frame, [0, 134], minimal ? [-16, 10] : [-34, 22], { easing: Easing.inOut(Easing.sin) }) * (Math.PI / 180);
+  const elev = interpolate(frame, [0, 134], minimal ? [-3, 4] : [-8, 10]) * (Math.PI / 180);
   const dolly = interpolate(frame, [0, 30, 134], [1.35, 1.08, 1.0], { ...clamp, easing: Easing.out(Easing.cubic) });
   const exit = interpolate(frame, [112, 134], [0, 1], { ...clamp, easing: Easing.in(Easing.cubic) });
   const dist = baseDist * (dolly - exit * 0.55);
@@ -105,7 +117,7 @@ export const PunchScene: React.FC<{ lines: string[]; accent: string; quality: st
     dist * Math.cos(orbit) * Math.cos(elev),
   ];
   const shake = interpolate(frame, [4, 16], [0.06, 0], clamp) * Math.sin(frame * 2.3);
-  const flash = interpolate(frame, [3, 6, 18], [0, 0.55, 0], clamp);
+  const flash = interpolate(frame, [3, 6, 18], [0, minimal ? 0.25 : 0.55, 0], clamp);
 
   return (
     <AbsoluteFill style={{ backgroundColor: colors.black }}>
@@ -116,16 +128,16 @@ export const PunchScene: React.FC<{ lines: string[]; accent: string; quality: st
         <StudioEnvironment warm={1} />
         <ambientLight intensity={0.2} />
         <spotLight position={[6, 8, 10]} angle={0.5} penumbra={1} intensity={500} color="#ffffff" />
-        <pointLight position={[-8, -2, 4]} intensity={120} color={colors.brandLight} />
+        <pointLight position={[-8, -2, 4]} intensity={minimal ? 60 : 120} color={minimal ? '#ffffff' : colors.brandLight} />
         <pointLight position={[3, 1, 3]} intensity={60 + 40 * Math.sin(frame / 8)} color={colors.gold} />
-        {font && <PunchText font={font} lines={lines} accent={accent} frame={frame} />}
+        {font && <PunchText font={font} lines={lines} accent={accent} frame={frame} minimal={minimal} />}
         {/* Anneau lumineux en arrière-plan */}
-        <mesh position={[0, 0, -4]} scale={1 + exit * 2}>
+        <mesh visible={!minimal} position={[0, 0, -4]} scale={1 + exit * 2}>
           <torusGeometry args={[baseDist * 0.24, 0.025, 16, 160]} />
           <meshBasicMaterial color={colors.gold} toneMapped={false} transparent opacity={0.55 * interpolate(frame, [8, 30], [0, 1], clamp)} />
         </mesh>
-        <Dust count={300} seed="punch" spread={[baseDist, baseDist * 1.6, baseDist]} color={colors.goldLight} size={0.05} opacity={0.5} />
-        <Effects quality={quality} bloom={1.1} threshold={0.5} vignette={0.85} />
+        {!minimal && <Dust count={300} seed="punch" spread={[baseDist, baseDist * 1.6, baseDist]} color={colors.goldLight} size={0.05} opacity={0.5} />}
+        <Effects quality={quality} bloom={minimal ? 0.45 : 1.1} threshold={minimal ? 0.92 : 0.5} vignette={0.85} />
       </ThreeCanvas>
       <AbsoluteFill style={{ background: `radial-gradient(circle, rgba(255,231,163,${flash}) 0%, rgba(245,196,81,${flash * 0.4}) 50%, transparent 80%)` }} />
     </AbsoluteFill>

@@ -3,6 +3,7 @@ import { Composition, getStaticFiles } from 'remotion';
 import config from '../config.json';
 import { resolveConfig, voiceLinesDir } from './resolveConfig';
 import { DURATION, FPS, HEIGHT, WIDTH } from './timeline';
+import { MinimalVideo } from './minimal/MinimalVideo';
 import { SitePulseVideo, VideoProps } from './Video';
 
 /** Détecte la voix off disponible dans public/ (fichier unique ou une piste par phrase). */
@@ -17,13 +18,26 @@ const base = resolveConfig(config);
 const defaultProps: VideoProps = { ...base, voixOff: { ...base.voixOff, mode: detectVoiceOver(base.slug) } };
 
 export const RemotionRoot: React.FC = () => (
-  <Composition
-    id="SitePulseMaps"
-    component={SitePulseVideo}
-    width={WIDTH}
-    height={HEIGHT}
-    fps={FPS}
-    durationInFrames={DURATION}
-    defaultProps={defaultProps}
-  />
+  <>
+    {/* Style « minimal » : noir, typographie géante, ligne de lumière (par défaut). */}
+    <Composition
+      id="SitePulseMinimal"
+      component={MinimalVideo}
+      width={WIDTH}
+      height={HEIGHT}
+      fps={FPS}
+      durationInFrames={DURATION}
+      defaultProps={defaultProps}
+    />
+    {/* Style « illustré » : smartphone 3D, interfaces Google / Maps recréées. */}
+    <Composition
+      id="SitePulseMaps"
+      component={SitePulseVideo}
+      width={WIDTH}
+      height={HEIGHT}
+      fps={FPS}
+      durationInFrames={DURATION}
+      defaultProps={defaultProps}
+    />
+  </>
 );

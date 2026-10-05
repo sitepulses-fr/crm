@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { renderMedia, selectComposition } from '@remotion/renderer';
 import { slugify, voiceLinesDir } from '../src/resolveConfig.js';
-import { browserOptions, buildProps, bundleProject, defaultConcurrency, ensureAssets, loadConfig, parseArgs, root } from './lib.mjs';
+import { browserOptions, compositionId, buildProps, bundleProject, defaultConcurrency, ensureAssets, loadConfig, parseArgs, root } from './lib.mjs';
 
 const args = parseArgs();
 const config = loadConfig();
@@ -46,7 +46,7 @@ console.log(
 console.log('Bundling…');
 const serveUrl = await bundleProject();
 const opts = browserOptions(args);
-const composition = await selectComposition({ serveUrl, id: 'SitePulseMaps', inputProps, ...opts });
+const composition = await selectComposition({ serveUrl, id: compositionId(config, args), inputProps, ...opts });
 
 const started = Date.now();
 let last = -1;

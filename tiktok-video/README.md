@@ -3,12 +3,19 @@
 Vidéo publicitaire verticale (1080×1920, 30 fps, 21 s, MP4 H.264) en motion design 3D, générée par du code
 (Remotion + React Three Fiber). Tu changes le métier et la ville, tu relances, tu as la vidéo du jour.
 
+Deux styles (`config.json → rendu.style`, ou `--style=` en ligne de commande) :
+
+- **`minimal`** (par défaut) : noir, typographie géante, une seule couleur d'accent (or). Le fil conducteur est
+  une ligne de lumière : hairline → barre de recherche → classement → pouls SitePulse → hairline (boucle parfaite).
+- **`illustre`** : smartphone 3D, interfaces Google / Google Maps recréées, carte 3D avec pins.
+
 ## Démarrage
 
 ```bash
 cd tiktok-video
 npm install          # installe tout + génère polices 3D et sound design (postinstall)
-npm run render       # → out/sitepulse-couvreur-dole-AAAA-MM-JJ.mp4
+npm run render       # → out/sitepulse-couvreur-dole-AAAA-MM-JJ.mp4 (style minimal)
+npm run render -- --style=illustre   # l'autre style
 ```
 
 Pour changer de cible **sans toucher au fichier** :
@@ -28,7 +35,7 @@ Autres commandes :
 | `npm run voiceover` | Génère la voix off phrase par phrase avec ElevenLabs (facultatif) |
 
 Options de `render` : `--out=chemin.mp4`, `--concurrency=4`, `--frames=0-120` (extrait), `--sans-voix`,
-`--crf=18`, `--gl=angle|swangle`, `--browser=/chemin/vers/chrome`.
+`--crf=18`, `--style=minimal|illustre`, `--gl=angle|swangle`, `--browser=/chemin/vers/chrome`.
 
 ## config.json
 
@@ -62,7 +69,17 @@ Sans voix off, la vidéo sort avec le sound design seul. Le sound design est ent
 gérer : nappe grave, whooshes, frappes clavier, chutes de pins, scintillement doré, impact et pulsation « SitePulse ».
 Il est automatiquement baissé quand une voix off est présente.
 
-## Storyboard (timings réels)
+## Storyboard — style `minimal` (timings réels)
+
+| Temps | Scène | Fichier |
+| --- | --- | --- |
+| 0 – 2,7 s | Image 0 : une hairline seule. Elle s'étire ; « Tu cherches / un couvreur / à Dole. » monte au-dessus en très grand (métier et ville en or). | `src/minimal/HookMinimal.tsx` |
+| 2,3 – 5,3 s | La ligne devient la recherche : « couvreur dole » se tape en très grand, curseur or. Validation : la ligne s'illumine puis se dissout. | `src/minimal/SearchMinimal.tsx` |
+| 4,9 – 13,3 s | Classement en 3D : les résultats (rang, nom, note) s'alignent, chacun sur sa ligne de lumière, caméra de biais avec profondeur de champ. Le top 3 s'allume en or ; les autres s'éteignent un par un, façon néon. | `src/minimal/RankingScene.tsx` |
+| 12,9 – 17,3 s | « SI T'ES PAS / DANS LES 3, / T'EXISTES PAS. » en 3D (faces blanc mat, flancs noirs, « 3 » en or), lente orbite. | `src/scenes/PunchScene.tsx` (variante `minimal`) |
+| 16,9 – 21 s | La ligne bat comme un pouls (or sur les battements), wordmark SitePulse, « Commente AUDIT, je te montre où tu en es. » Puis le pouls s'aplatit et redevient la hairline de l'image 0. | `src/minimal/CtaMinimal.tsx` |
+
+## Storyboard — style `illustre` (timings réels)
 
 | Temps | Scène | Fichier |
 | --- | --- | --- |

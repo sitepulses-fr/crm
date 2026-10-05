@@ -57,6 +57,12 @@ export async function ensureAssets() {
   }
 }
 
+/** Identifiant de composition selon le style choisi (config.rendu.style ou --style=). */
+export function compositionId(config, args) {
+  const style = args.style || config.rendu.style || 'minimal';
+  return style === 'illustre' ? 'SitePulseMaps' : 'SitePulseMinimal';
+}
+
 export async function bundleProject() {
   const { bundle } = await import('@remotion/bundler');
   return bundle({ entryPoint: path.join(root, 'src', 'index.ts'), publicDir: path.join(root, 'public') });

@@ -61,6 +61,8 @@
   "rendu": {
     "sortie": "out/sitepulse-{metier}-{ville}-{date}.mp4",
     "crf": 18,
+    "style": "minimal",
+    "_style": "minimal (noir, typographie, ligne de lumière) ou illustre (smartphone 3D, interfaces Google/Maps)",
     "qualite3D": "haute",
     "afficherZonesSures": false
   }
