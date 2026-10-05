@@ -187,7 +187,7 @@ const HisSite: React.FC = () => {
   );
 };
 
-// 5. « J'ai un couvreur à qui on a installé un site il y a deux mois. »
+// 5. « J'ai un Uber à qui on a installé un site il y a deux mois. »
 const ClientCase: React.FC = () => {
   const { visible, frame, inP, outP, top } = useLife(17.76, 20.85);
   const { outFrame } = useTimeline();
@@ -199,7 +199,7 @@ const ClientCase: React.FC = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <Label>Client SitePulse</Label>
-          <div style={{ fontSize: 80, fontWeight: 700, letterSpacing: -3.5, marginTop: 6, lineHeight: 1 }}>Couvreur</div>
+          <div style={{ fontSize: 80, fontWeight: 700, letterSpacing: -3.5, marginTop: 6, lineHeight: 1 }}>Uber</div>
         </div>
         <div
           style={{

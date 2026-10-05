@@ -56,7 +56,8 @@
   "minutes.",
   "huit",
   "deux",
-  "mois."
+  "mois.",
+  "uber"
  ],
  "mots": [
   {
@@ -380,7 +381,7 @@
    "e": 18.08
   },
   {
-   "w": "couvreur",
+   "w": "Uber",
    "s": 18.08,
    "e": 18.24
   },

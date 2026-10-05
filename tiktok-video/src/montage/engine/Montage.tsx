@@ -23,6 +23,8 @@ export type MontageProject = {
   skipFirstCaption?: string;
   Overlays: React.FC;
   sfx: SfxCue[];
+  /** Volume général du sound design (la voix reste à 100 %). */
+  sfxVolume?: number;
 };
 
 function punchScale(frame: number, tl: Timeline, punches: [number, number][]) {
@@ -122,7 +124,8 @@ const Flashes: React.FC<{ tl: Timeline; impacts: number[] }> = ({ tl, impacts })
 
 /** Sons : impacts, whooshes sur les transitions, petits « cuts » sur les jump cuts, + sons du projet. */
 const SoundDesign: React.FC<{ tl: Timeline; project: MontageProject }> = ({ tl, project }) => {
-  const master = 0.55;
+  // Discret par défaut : les effets ne doivent jamais couvrir la voix.
+  const master = project.sfxVolume ?? 0.2;
   return (
     <>
       {project.impacts.map((t) => (
