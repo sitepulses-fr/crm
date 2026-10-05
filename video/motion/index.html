@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>SitePulse — motion</title>
+<link rel="stylesheet" href="../src/fonts/fonts.css">
+<style>
+  html, body { margin:0; width:1920px; height:1080px; overflow:hidden; background:#02040c; }
+  #gl { position:absolute; inset:0; width:1920px; height:1080px; }
+  .ov { position:absolute; inset:0; pointer-events:none; font-family:"Inter Tight", sans-serif; color:#f3f6ff; }
+  .vig { position:absolute; inset:0; background:radial-gradient(ellipse 80% 75% at 50% 50%, transparent 55%, rgba(0,0,0,.6) 100%); }
+  .cap { position:absolute; left:0; right:0; bottom:118px; text-align:center; font-size:86px; font-weight:600; letter-spacing:-0.025em; line-height:1.02; display:none;
+    text-shadow:0 0 40px rgba(59,123,255,.55), 0 6px 30px rgba(0,0,0,.6); }
+  .cap .w { display:inline-block; margin:0 .12em; will-change:transform,filter,opacity; }
+  #end p { margin:0; } #end { position:absolute; left:0; right:0; top:250px; text-align:center; opacity:0; }
+  #end .wm { font-size:200px; font-weight:600; letter-spacing:-0.045em; line-height:1; text-shadow:0 0 60px rgba(59,123,255,.8); }
+  #end .wm span { color:#8fb4ff; }
+  #end svg { display:block; margin:6px auto 0; width:820px; height:90px; overflow:visible; }
+  #end path { fill:none; stroke:#3b7bff; stroke-width:4; stroke-linejoin:round; stroke-dasharray:1; stroke-dashoffset:1; filter:drop-shadow(0 0 10px #3b7bff); }
+  #e1 { font-size:46px; font-weight:500; margin-top:26px; }
+  #e2 { font-family:"JetBrains Mono", monospace; font-size:20px; letter-spacing:.24em; text-transform:uppercase; color:#a9b8e0; margin-top:26px; }
+  #e3 { display:inline-block; margin-top:40px; font-size:28px; font-weight:600; padding:18px 40px; border-radius:999px; background:#f3f6ff; color:#06102a; box-shadow:0 0 60px rgba(59,123,255,.6); }
+  #flash { position:absolute; inset:0; opacity:0; background:radial-gradient(circle at 50% 50%, #fff, rgba(143,180,255,.7) 30%, rgba(2,4,12,0) 70%); }
+  #black { position:absolute; inset:0; background:#000; }
+  .grain { position:absolute; inset:0; opacity:.05; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+</style>
+<script type="importmap">{ "imports": { "three": "./node_modules/three/build/three.module.js", "three/addons/": "./node_modules/three/examples/jsm/" } }</script>
+</head>
+<body>
+<canvas id="gl" width="1920" height="1080"></canvas>
+<div class="ov">
+  <div class="vig"></div>
+  <p class="cap" id="cap1">Un site moderne,<br>qui travaille pour vous.</p>
+  <p class="cap" id="cap2">Pensé pour le mobile.</p>
+  <p class="cap" id="cap3">Visible sur Google.</p>
+  <p class="cap" id="cap4">Premier dans votre ville.</p>
+  <p class="cap" id="cap5">Chaque demande devient un client.</p>
+  <p class="cap" id="cap6">Deux offres.<br>Zéro prise de tête.</p>
+  <div id="end">
+    <p class="wm">Site<span>Pulse</span></p>
+    <svg viewBox="0 0 820 90" preserveAspectRatio="none"><path id="endline" pathLength="1" d="M0 60 H330 L350 40 L368 60 H380 L400 6 L420 84 L436 60 H820"/></svg>
+    <p id="e1">Plus de clients grâce à un site web moderne et optimisé.</p>
+    <p id="e2">Sites web · SEO local · Google My Business · Dole & Jura</p>
+    <p id="e3">sitepulses.fr</p>
+  </div>
+  <div class="grain"></div>
+  <div id="flash"></div>
+  <div id="black"></div>
+</div>
+<script type="module" src="main.js"></script>
+</body>
+</html>
