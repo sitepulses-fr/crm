@@ -29,7 +29,7 @@ function punchScale(frame: number, tl: Timeline, punches: [number, number][]) {
   let prev = 1;
   let cur = 1;
   let at = 0;
-  for (const [t, s] of punches) {
+  for (const [t, s] of [...punches].sort((a, b) => a[0] - b[0])) {
     const f = tl.outFrame(t);
     if (frame >= f) {
       prev = cur;

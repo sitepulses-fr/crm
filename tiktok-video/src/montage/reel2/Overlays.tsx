@@ -19,12 +19,12 @@ const Stars: React.FC<{ n: number; size: number; on?: boolean }> = ({ n, size, o
 
 // 1. « Il regarde deux, trois fiches Google, pas plus. »
 const SearchFiches: React.FC = () => {
-  const { visible, frame, inP, outP, top } = useLife(0.9, 4.55);
+  const { visible, frame, inP, outP, top } = useLife(6.57, 10.22);
   const { outFrame } = useTimeline();
   if (!visible) return null;
   const q = 'couvreur';
-  const typed = Math.min(q.length, Math.max(0, Math.floor((frame - outFrame(1.0)) / 2)));
-  const lit = [3.14, 3.34, 3.6].map((t) => interpolate(frame, [outFrame(t), outFrame(t) + 5], [0, 1], clamp));
+  const typed = Math.min(q.length, Math.max(0, Math.floor((frame - outFrame(6.67)) / 2)));
+  const lit = [8.81, 9.01, 9.27].map((t) => interpolate(frame, [outFrame(t), outFrame(t) + 5], [0, 1], clamp));
   return (
     <Card top={top} inP={inP} outP={outP}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 18, padding: '14px 26px', borderRadius: 999, background: 'rgba(255,255,255,0.08)', fontSize: 40 }}>
@@ -65,11 +65,11 @@ const SearchFiches: React.FC = () => {
 
 // 2. « En huit secondes, il choisit… »
 const EightSeconds: React.FC = () => {
-  const { visible, frame, inP, outP, top } = useLife(4.62, 6.98);
+  const { visible, frame, inP, outP, top } = useLife(10.29, 12.65);
   const { outFrame } = useTimeline();
   if (!visible) return null;
-  const a = outFrame(4.8);
-  const b = outFrame(6.88);
+  const a = outFrame(10.47);
+  const b = outFrame(12.55);
   const p = interpolate(frame, [a, b], [0, 1], clamp);
   const sec = Math.max(0, Math.ceil(8 * (1 - p)));
   const R = 70;
@@ -109,12 +109,12 @@ const EightSeconds: React.FC = () => {
 
 // 3. « Pas forcément le meilleur artisan, mais celui qu'on trouve le mieux. »
 const BestVsFound: React.FC = () => {
-  const { visible, frame, inP, outP, top } = useLife(7.3, 9.82);
+  const { visible, frame, inP, outP, top } = useLife(12.97, 15.49);
   const { outFrame } = useTimeline();
   if (!visible) return null;
-  const r1 = interpolate(frame, [outFrame(7.84), outFrame(7.84) + 6], [0, 1], clamp);
-  const strike = interpolate(frame, [outFrame(8.68), outFrame(8.68) + 6], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
-  const r2 = spring({ frame: frame - outFrame(8.98), fps: 30, config: { damping: 12, stiffness: 200 } });
+  const r1 = interpolate(frame, [outFrame(13.51), outFrame(13.51) + 6], [0, 1], clamp);
+  const strike = interpolate(frame, [outFrame(14.35), outFrame(14.35) + 6], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+  const r2 = spring({ frame: frame - outFrame(14.65), fps: 30, config: { damping: 12, stiffness: 200 } });
   const row = (text: string, sub: string, hl: boolean, o: number, s = 1) => (
     <div
       style={{
@@ -158,10 +158,10 @@ const BestVsFound: React.FC = () => {
 
 // 4b. « … c'est juste celui qui a un site internet. »
 const HisSite: React.FC = () => {
-  const { visible, frame, inP, outP, top } = useLife(15.0, 16.54);
+  const { visible, frame, inP, outP, top } = useLife(3.87, 5.41);
   const { outFrame } = useTimeline();
   if (!visible) return null;
-  const ok = spring({ frame: frame - outFrame(15.72), fps: 30, config: { damping: 10, stiffness: 220 } });
+  const ok = spring({ frame: frame - outFrame(4.59), fps: 30, config: { damping: 10, stiffness: 220 } });
   return (
     <Card top={top} inP={inP} outP={outP} width={780}>
       <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
@@ -306,7 +306,7 @@ export const Overlays: React.FC = () => (
     <SearchFiches />
     <EightSeconds />
     <BestVsFound />
-    <Slam from={12.12} to={14.84} text={<>Ton pire<br />ennemi<span style={{ color: ink.accent }}>.</span></>} sub="N'est pas celui qui bosse mieux" size={190} top={215} />
+    <Slam from={0.99} to={3.71} text={<>Ton pire<br />ennemi<span style={{ color: ink.accent }}>.</span></>} sub="N'est pas celui qui bosse mieux" size={190} top={215} />
     <HisSite />
     <ClientCase />
     <Calls />
