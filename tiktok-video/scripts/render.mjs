@@ -78,4 +78,20 @@ await renderMedia({
   },
 });
 
+// Normalisation du volume au standard TikTok / Reels (-14 LUFS, crête -1,5 dB), en deux passes.
+// La voix ressort au bon niveau ; le sound design garde son équilibre (discret) par rapport à elle.
+if (!args['sans-normalisation']) {
+  const { execFileSync: run, spawnSync } = await import('node:child_process');
+  // ffmpeg écrit la mesure sur stderr.
+  const probe = spawnSync('ffmpeg', ['-hide_banner', '-i', output, '-vn', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json', '-f', 'null', '-'], { encoding: 'utf8' });
+  const m = JSON.parse(/\{[\s\S]*\}/.exec(probe.stderr)?.[0] ?? '{}');
+  if (m.input_i && m.input_i !== '-inf') {
+    const tmp = output.replace(/\.mp4$/, '.norm.mp4');
+    const filter = `loudnorm=I=-14:TP=-1.5:LRA=11:measured_I=${m.input_i}:measured_TP=${m.input_tp}:measured_LRA=${m.input_lra}:measured_thresh=${m.input_thresh}:offset=${m.target_offset}:linear=true,aresample=48000`;
+    run('ffmpeg', ['-loglevel', 'error', '-y', '-i', output, '-c:v', 'copy', '-af', filter, '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', tmp]);
+    fs.renameSync(tmp, output);
+    console.log(`  Volume normalisé : ${m.input_i} → -14 LUFS`);
+  }
+}
+
 console.log(`\n✓ Vidéo prête : ${path.relative(process.cwd(), output)}  (${((Date.now() - started) / 1000).toFixed(0)} s)`);
