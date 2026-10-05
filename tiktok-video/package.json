@@ -12,7 +12,8 @@
     "voiceover": "node scripts/voiceover.mjs",
     "typecheck": "tsc --noEmit",
     "montage": "node scripts/render.mjs --style=montage --sans-voix --out=out/montage-facecam.mp4",
-    "transcribe": "node scripts/transcribe.mjs"
+    "transcribe": "node scripts/transcribe.mjs",
+    "reel2": "node scripts/render.mjs --style=reel2 --sans-voix --out=out/reel2.mp4"
   },
   "dependencies": {
     "@fontsource/geist-mono": "5.3.0",

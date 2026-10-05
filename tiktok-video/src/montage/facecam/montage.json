@@ -1,23 +1,30 @@
 {
- "_info": "Montage facecam : segments gardés (secondes du rush), mots sous-titrés (temps du rush), apparitions graphiques.",
+ "_info": "Montage facecam : segments gardés (secondes du rush, transition d'entrée, ancrage des zooms = visage), mots sous-titrés (temps du rush).",
  "source": "rush/facecam.mp4",
  "segments": [
-  [
-   0.4,
-   7.4
-  ],
-  [
-   7.85,
-   17.95
-  ],
-  [
-   18.7,
-   26.05
-  ],
-  [
-   26.5,
-   33.65
-  ]
+  {
+   "de": 0.4,
+   "a": 7.4,
+   "origine": "50% 37%"
+  },
+  {
+   "de": 7.85,
+   "a": 17.95,
+   "transition": "whip",
+   "origine": "50% 37%"
+  },
+  {
+   "de": 18.7,
+   "a": 26.05,
+   "transition": "zoom",
+   "origine": "50% 29%"
+  },
+  {
+   "de": 26.5,
+   "a": 33.65,
+   "transition": "spin",
+   "origine": "50% 29%"
+  }
  ],
  "motsCles": [
   "artisan",

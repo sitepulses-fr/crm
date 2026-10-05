@@ -124,5 +124,14 @@ npm run transcribe -- --rush=/chemin/ma-video.mov   # rush → public/rush + tra
 npm run montage                                      # → out/montage-facecam.mp4
 ```
 
-Les apparitions et leurs timings (en secondes du rush) se règlent dans `src/montage/Overlays.tsx`,
-les zooms dans `src/montage/Montage.tsx` (`PUNCHES`). Les rushs ne sont pas versionnés (`public/rush/`).
+Organisation : `src/montage/engine/` (moteur commun : caméra, transitions, sous-titres, cartes) et un dossier
+par vidéo (`facecam/`, `reel2/`) contenant `montage.json` (segments gardés + mots), `Overlays.tsx`
+(apparitions, en secondes du rush) et `index.ts` (zooms, impacts, sons). Dans `segments`, la `transition`
+d'entrée vaut `whip`, `zoom`, `spin` ou `jump` (coupe sèche avec recadrage automatique, pour les blancs coupés).
+
+| Vidéo | Commande | Sortie |
+| --- | --- | --- |
+| Facecam « Stop, si t'es artisan… » | `npm run montage` | `out/montage-facecam.mp4` |
+| Réel n°2, 4 clips « Un client qui recherche un couvreur… » | `npm run reel2` | `out/reel2.mp4` |
+
+Les rushs ne sont pas versionnés (`public/rush/`).

@@ -4,8 +4,9 @@ import config from '../config.json';
 import { resolveConfig, voiceLinesDir } from './resolveConfig';
 import { DURATION, FPS, HEIGHT, WIDTH } from './timeline';
 import { MinimalVideo } from './minimal/MinimalVideo';
-import { Montage } from './montage/Montage';
-import { TOTAL_FRAMES } from './montage/timeline';
+import { MontageView, montageDuration } from './montage/engine/Montage';
+import { facecamProject } from './montage/facecam';
+import { reel2Project } from './montage/reel2';
 import { SitePulseVideo, VideoProps } from './Video';
 
 /** Détecte la voix off disponible dans public/ (fichier unique ou une piste par phrase). */
@@ -42,6 +43,21 @@ export const RemotionRoot: React.FC = () => (
       defaultProps={defaultProps}
     />
     {/* Montage facecam : rush filmé + sous-titres, apparitions, transitions. */}
-    <Composition id="MontageFacecam" component={Montage} width={WIDTH} height={HEIGHT} fps={FPS} durationInFrames={TOTAL_FRAMES} />
+    <Composition
+      id="MontageFacecam"
+      component={() => <MontageView project={facecamProject} />}
+      width={WIDTH}
+      height={HEIGHT}
+      fps={FPS}
+      durationInFrames={montageDuration(facecamProject.data)}
+    />
+    <Composition
+      id="MontageReel2"
+      component={() => <MontageView project={reel2Project} />}
+      width={WIDTH}
+      height={HEIGHT}
+      fps={FPS}
+      durationInFrames={montageDuration(reel2Project.data)}
+    />
   </>
 );

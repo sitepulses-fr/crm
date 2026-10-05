@@ -1,68 +1,17 @@
 import React from 'react';
-import { AbsoluteFill, Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
-import { fonts } from '../theme';
-import { ink } from '../minimal/timeline';
-import { outFrame } from './timeline';
+import { AbsoluteFill, Easing, interpolate, spring } from 'remotion';
+import { ink } from '../../minimal/timeline';
+import { fonts } from '../../theme';
+import { useTimeline } from '../engine/timeline';
+import { BAND_TOP, Card, CommentCta as CommentCtaBase, Label, PhoneIcon, useLife as useLifeBase } from '../engine/ui';
 
 const clamp = { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' } as const;
 
 // Les apparitions évitent toujours le visage : bande du haut (ciel / arbres) sur les
 // plans larges, bande du torse sur les plans rapprochés (à partir de 18,7 s du rush).
-const BAND_TOP = 215;
 const CLOSE_TOP = 860;
 const bandFor = (srcTime: number) => (srcTime >= 18.7 ? CLOSE_TOP : BAND_TOP);
-
-/** Entrée/sortie communes : pop élastique + flou, sortie rapide vers le haut. */
-function useLife(fromSrc: number, toSrc: number) {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const a = outFrame(fromSrc);
-  const b = outFrame(toSrc);
-  const local = frame - a;
-  const inP = spring({ frame: local, fps, config: { damping: 13, stiffness: 180, mass: 0.7 } });
-  const outP = interpolate(frame, [b - 6, b], [0, 1], { ...clamp, easing: Easing.in(Easing.cubic) });
-  const visible = frame >= a && frame < b;
-  return { visible, local, inP, outP, frame, top: bandFor(fromSrc) };
-}
-
-const Card: React.FC<{ inP: number; outP: number; width?: number; children: React.ReactNode; top?: number }> = ({
-  inP,
-  outP,
-  width = 880,
-  top = BAND_TOP,
-  children,
-}) => (
-  <div
-    style={{
-      position: 'absolute',
-      top,
-      left: (1080 - width) / 2,
-      width,
-      padding: '34px 40px',
-      boxSizing: 'border-box',
-      borderRadius: 40,
-      background: 'rgba(10,10,12,0.72)',
-      border: '1.5px solid rgba(255,255,255,0.14)',
-      boxShadow: '0 30px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08)',
-      backdropFilter: 'blur(22px) saturate(1.3)',
-      color: ink.text,
-      fontFamily: fonts.brand,
-      transformOrigin: '50% 0%',
-      transform: `perspective(1400px) rotateX(${(1 - inP) * -35}deg) scale(${0.7 + inP * 0.3}) translateY(${outP * -80}px)`,
-      opacity: Math.min(1, inP * 1.6) * (1 - outP),
-      filter: `blur(${(1 - Math.min(1, inP)) * 10 + outP * 12}px)`,
-    }}
-  >
-    {children}
-  </div>
-);
-
-const Label: React.FC<{ children: React.ReactNode; color?: string }> = ({ children, color = ink.dim }) => (
-  <div style={{ fontFamily: fonts.mono, fontSize: 26, letterSpacing: 4, textTransform: 'uppercase', color, display: 'flex', alignItems: 'center', gap: 14 }}>
-    <span style={{ width: 12, height: 12, borderRadius: 6, background: ink.accent, boxShadow: `0 0 12px ${ink.accent}` }} />
-    {children}
-  </div>
-);
+const useLife = (a: number, b: number) => useLifeBase(a, b, bandFor);
 
 // 1. « STOP » qui claque à l'écran.
 const Stop: React.FC = () => {
@@ -214,17 +163,9 @@ const Reviews: React.FC = () => {
   );
 };
 
-const Phone: React.FC<{ color: string; size: number; ring: number }> = ({ color, size, ring }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" style={{ transform: `rotate(${Math.sin(ring) * 14}deg)` }}>
-    <path
-      d="M6.6 10.8a15.2 15.2 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"
-      fill={color}
-    />
-  </svg>
-);
-
 // 6. Le concurrent décroche l'appel.
 const Competitor: React.FC = () => {
+  const { outFrame } = useTimeline();
   const { visible, local, inP, outP, frame, top } = useLife(13.8, 17.95);
   if (!visible) return null;
   const answered = frame >= outFrame(16.8);
@@ -268,7 +209,7 @@ const Competitor: React.FC = () => {
                 boxShadow: `0 0 ${ringing ? 20 + 20 * Math.abs(Math.sin(local / 3)) : 30}px ${answered ? '#22c55e' : ink.accent}`,
               }}
             >
-              <Phone color="#fff" size={40} ring={ringing ? local * 1.6 : 0} />
+              <PhoneIcon color="#fff" size={40} ring={ringing ? local * 1.6 : 0} />
             </div>
             <div style={{ fontSize: 34, fontWeight: 600 }}>{answered ? 'Appel décroché' : 'Appel entrant…'}</div>
           </div>,
@@ -320,6 +261,7 @@ const Jura: React.FC = () => {
 
 // 8. Courbe des demandes de devis (sans chiffre inventé : seulement la tendance).
 const Growth: React.FC = () => {
+  const { outFrame } = useTimeline();
   const { visible, frame, inP, outP, top } = useLife(22.5, 26.05);
   if (!visible) return null;
   const launch = outFrame(24.8);
@@ -394,81 +336,12 @@ const Preview: React.FC = () => {
 };
 
 // 10. CTA : commentaire « VISUEL » + délai 48 h.
-const CommentCta: React.FC = () => {
-  const { visible, frame, inP, outP, top } = useLife(29.85, 33.65);
-  if (!visible) return null;
-  const word = 'VISUEL';
-  const t0 = outFrame(30.25);
-  const typed = Math.max(0, Math.min(word.length, Math.floor((frame - t0) / 2)));
-  const sent = interpolate(frame, [t0 + 16, t0 + 22], [0, 1], clamp);
-  const badge = spring({ frame: frame - outFrame(32.8), fps: 30, config: { damping: 11, stiffness: 200 } });
-  return (
-    <Card top={top} inP={inP} outP={outP}>
-      <Label>Écris en commentaire</Label>
-      <div
-        style={{
-          marginTop: 20,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 20,
-          padding: '18px 18px 18px 34px',
-          borderRadius: 999,
-          background: 'rgba(255,255,255,0.08)',
-          border: '1.5px solid rgba(255,255,255,0.16)',
-        }}
-      >
-        <div style={{ flex: 1, fontSize: 84, fontWeight: 700, letterSpacing: -2, color: typed ? '#fff' : 'rgba(255,255,255,0.4)' }}>
-          {typed ? word.slice(0, typed) : 'Ajouter…'}
-          {typed > 0 && typed < word.length && <span style={{ color: ink.accent }}>|</span>}
-        </div>
-        <div
-          style={{
-            width: 100,
-            height: 100,
-            borderRadius: 50,
-            background: sent > 0.5 ? '#22c55e' : ink.text,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transform: `scale(${1 + Math.sin(sent * Math.PI) * 0.2})`,
-          }}
-        >
-          <svg width="50" height="50" viewBox="0 0 24 24">
-            {sent > 0.5 ? (
-              <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-            ) : (
-              <path d="M5 12h12M12 6l6 6-6 6" fill="none" stroke={ink.bg} strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" />
-            )}
-          </svg>
-        </div>
-      </div>
-      <div
-        style={{
-          marginTop: 22,
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: 14,
-          padding: '12px 26px',
-          borderRadius: 999,
-          background: ink.accent,
-          fontSize: 40,
-          fontWeight: 600,
-          transform: `scale(${badge})`,
-          transformOrigin: 'left center',
-        }}
-      >
-        <svg width="36" height="36" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="9" fill="none" stroke="#fff" strokeWidth="2.4" />
-          <path d="M12 7v5l3 2" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" />
-        </svg>
-        Réponse sous 48 h
-      </div>
-    </Card>
-  );
-};
+const CommentCta: React.FC = () => (
+  <CommentCtaBase word="VISUEL" from={29.85} to={33.65} typeAt={30.25} badgeAt={32.8} badge="Réponse sous 48 h" />
+);
 
 export const Overlays: React.FC = () => (
-  <AbsoluteFill style={{ pointerEvents: 'none' }}>
+  <AbsoluteFill>
     <Stop />
     <Brand />
     <OneInTwo />
@@ -482,6 +355,3 @@ export const Overlays: React.FC = () => (
   </AbsoluteFill>
 );
 
-/** Instants (frames montées) où une apparition entre : pour le sound design. */
-export const OVERLAY_HITS = [2.6, 8.0, 9.1, 11.0, 13.8, 19.6, 22.5, 27.9, 29.85].map(outFrame);
-export const STOP_HIT = outFrame(0.55);

@@ -1,15 +1,15 @@
 import React from 'react';
 import { AbsoluteFill, Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
-import { fonts } from '../theme';
-import { ink } from '../minimal/timeline';
-import { KEYWORDS, WORDS, outFrame } from './timeline';
+import { fonts } from '../../theme';
+import { ink } from '../../minimal/timeline';
+import { Timeline, useTimeline } from './timeline';
 
 const clamp = { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' } as const;
 
 type Chunk = { words: { w: string; start: number; end: number }[]; start: number; end: number };
 
 /** Groupes de 1 à 3 mots (coupés à la ponctuation), façon sous-titres de créateurs. */
-function buildChunks(): Chunk[] {
+function buildChunks(tl: Timeline): Chunk[] {
   const chunks: Chunk[] = [];
   let cur: Chunk['words'] = [];
   const flush = () => {
@@ -17,8 +17,8 @@ function buildChunks(): Chunk[] {
     chunks.push({ words: cur, start: cur[0].start, end: cur[cur.length - 1].end });
     cur = [];
   };
-  for (const w of WORDS) {
-    const item = { w: w.w, start: outFrame(w.s), end: outFrame(w.e) };
+  for (const w of tl.words) {
+    const item = { w: w.w, start: tl.outFrame(w.s), end: tl.outFrame(w.e) };
     const chars = cur.reduce((a, x) => a + x.w.length + 1, 0) + w.w.length;
     if (cur.length >= 3 || chars > 17) flush();
     cur.push(item);
@@ -33,14 +33,23 @@ function buildChunks(): Chunk[] {
   });
 }
 
-const CHUNKS = buildChunks();
-const isKey = (w: string) => KEYWORDS.has(w.toLowerCase().replace(/[.,?!]$/, '')) || KEYWORDS.has(w.toLowerCase());
+const cache = new WeakMap<Timeline, Chunk[]>();
 
-export const Captions: React.FC<{ hideFrom?: number }> = ({ hideFrom = Infinity }) => {
+export const Captions: React.FC<{ hideFrom?: number; topAt: (frame: number) => number; skipFirst?: string }> = ({
+  hideFrom = Infinity,
+  topAt,
+  skipFirst,
+}) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  // Le premier « Stop » est déjà affiché en géant : on ne le double pas en sous-titre.
-  const chunk = CHUNKS.find((c) => frame >= c.start && frame < c.end && !(c.words[0].w.startsWith('Stop') && c.words.length === 1));
+  const tl = useTimeline();
+  if (!cache.has(tl)) cache.set(tl, buildChunks(tl));
+  const CHUNKS = cache.get(tl)!;
+  const isKey = (w: string) => tl.keywords.has(w.toLowerCase().replace(/[\s.,?!]+$/, '')) || tl.keywords.has(w.toLowerCase());
+  // Un mot déjà affiché en géant (ex. « Stop ») n'est pas doublé en sous-titre.
+  const chunk = CHUNKS.find(
+    (c) => frame >= c.start && frame < c.end && !(skipFirst && c === CHUNKS[0] && c.words.length === 1 && c.words[0].w.startsWith(skipFirst)),
+  );
   if (!chunk || frame >= hideFrom) return null;
   const pop = spring({ frame: frame - chunk.start, fps, config: { damping: 14, stiffness: 260, mass: 0.6 } });
 
@@ -49,8 +58,7 @@ export const Captions: React.FC<{ hideFrom?: number }> = ({ hideFrom = Infinity 
       <div
         style={{
           position: 'absolute',
-          // Plus bas sur les plans rapprochés, sous les apparitions placées au niveau du torse.
-          top: frame >= outFrame(18.7) ? 1380 : 1255,
+          top: topAt(frame),
           left: 50,
           right: 50,
           display: 'flex',

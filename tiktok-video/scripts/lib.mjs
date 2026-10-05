@@ -61,6 +61,7 @@ export async function ensureAssets() {
 export function compositionId(config, args) {
   const style = args.style || config.rendu.style || 'minimal';
   if (style === 'montage') return 'MontageFacecam';
+  if (style === 'reel2') return 'MontageReel2';
   return style === 'illustre' ? 'SitePulseMaps' : 'SitePulseMinimal';
 }
 
