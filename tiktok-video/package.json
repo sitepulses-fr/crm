@@ -24,6 +24,7 @@
     "@remotion/cli": "4.0.533",
     "@remotion/renderer": "4.0.533",
     "@remotion/three": "4.0.533",
+    "node-edge-tts": "1.2.10",
     "postprocessing": "6.38.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",

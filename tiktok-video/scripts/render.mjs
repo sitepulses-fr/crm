@@ -15,10 +15,14 @@ await ensureAssets();
 
 let inputProps = buildProps(config, args);
 
-// Voix off automatique (une piste par phrase) si une clé ElevenLabs est disponible.
-if (!args['sans-voix'] && !inputProps.voixOff.mode && process.env.ELEVENLABS_API_KEY) {
+// Voix off automatique (une piste par phrase, cache inclus). Sans réseau : la vidéo sort sans voix.
+if (!args['sans-voix'] && inputProps.voixOff.mode !== 'fichier') {
   const extra = [args.metier && `--metier=${args.metier}`, args.ville && `--ville=${args.ville}`].filter(Boolean);
-  execFileSync(process.execPath, [path.join(root, 'scripts', 'voiceover.mjs'), ...extra], { stdio: 'inherit' });
+  try {
+    execFileSync(process.execPath, [path.join(root, 'scripts', 'voiceover.mjs'), ...extra], { stdio: 'inherit' });
+  } catch {
+    console.warn('⚠ Voix off non générée : rendu avec le sound design seul.');
+  }
   inputProps = buildProps(config, args);
 }
 

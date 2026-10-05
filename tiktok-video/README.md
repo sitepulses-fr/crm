@@ -50,24 +50,26 @@ Options de `render` : `--out=chemin.mp4`, `--concurrency=4`, `--frames=0-120` (e
 | `audio` | Sound design on/off et volume ; `musique` : chemin d'un fichier dans `public/` (ex. `"audio/musique.mp3"`). |
 | `rendu` | Modèle du nom de sortie, CRF, `qualite3D` (`haute` = bloom + profondeur de champ, `moyenne` = sans profondeur de champ, `basse` = sans post-traitement) et `afficherZonesSures` (affiche en rouge les 150 px du haut et les 350 px du bas). |
 
-## Voix off
+## Voix off (voix d'homme)
 
 Le script est dans `config.json → voixOff.lignes` :
 
 > Tu cherches un couvreur à Dole. · Tu tapes sur Google. · Tu regardes qui ? · Les trois premiers. ·
 > Les autres ? Personne ne les voit. · Si t'es pas dans les 3, t'existes pas. · Commente AUDIT, et je te montre où tu en es.
 
-Deux options :
+`npm run render` génère automatiquement la voix off, phrase par phrase, calée sur les timings `debut`, et la met en
+cache dans `public/audio/vo/<metier>-<ville>/`. Chaque jour, la voix dit donc le bon métier et la bonne ville.
 
-1. **Enregistrement maison** : un seul fichier `public/audio/voiceover.mp3`, calé sur les timings `debut`.
-   Ce fichier n'est utilisé que pour le métier et la ville du `config.json`.
-2. **Automatique (une voix par jour, zéro effort)** : `export ELEVENLABS_API_KEY=...`, puis `npm run render`.
-   Chaque phrase est générée dans `public/audio/vo/<metier>-<ville>/` (avec un cache) et placée à son timing.
-   Choisis une voix grave et posée via `voixOff.elevenlabs.voiceId`.
+- **Par défaut (`"fournisseur": "edge"`)** : voix neuronales Microsoft Edge, gratuites et sans clé. Voix d'homme
+  `fr-FR-HenriNeural`, légèrement ralentie et plus grave pour un ton posé. Variante : `fr-FR-RemyMultilingualNeural`.
+  Le débit et la hauteur se règlent dans `voixOff.edge`.
+- **ElevenLabs (`"fournisseur": "elevenlabs"`)** : `export ELEVENLABS_API_KEY=...`, voix choisie par `voixOff.elevenlabs.voiceId`.
+- **Enregistrement maison** : `public/audio/voiceover.mp3`, un seul fichier calé sur les timings. Il est prioritaire
+  pour le métier et la ville du `config.json`.
 
-Sans voix off, la vidéo sort avec le sound design seul. Le sound design est entièrement procédural, donc sans droits à
-gérer : nappe grave, whooshes, frappes clavier, chutes de pins, scintillement doré, impact et pulsation « SitePulse ».
-Il est automatiquement baissé quand une voix off est présente.
+Commandes : `npm run voiceover` (générer seulement), `--force` (régénérer), `npm run render -- --sans-voix`.
+Sans accès réseau, le rendu continue sans voix, avec le sound design seul. Le sound design est entièrement procédural
+et automatiquement baissé quand une voix off est présente.
 
 ## Storyboard — style `minimal` (timings réels)
 

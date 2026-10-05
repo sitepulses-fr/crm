@@ -23,7 +23,14 @@
   },
 
   "voixOff": {
-    "_info": "Dépose ton enregistrement dans public/audio/voiceover.mp3 (calé sur 'debut'), ou lance `npm run voiceover` avec ELEVENLABS_API_KEY pour générer une piste par phrase.",
+    "_info": "Générée automatiquement par npm run render (une piste par phrase, calée sur 'debut'). Ou dépose ton enregistrement dans public/audio/voiceover.mp3.",
+    "fournisseur": "edge",
+    "edge": {
+      "_info": "Voix neuronales Microsoft Edge, gratuites et sans clé. Hommes FR : fr-FR-HenriNeural, fr-FR-RemyMultilingualNeural.",
+      "voix": "fr-FR-HenriNeural",
+      "debit": "-6%",
+      "hauteur": "-4Hz"
+    },
     "fichier": "audio/voiceover.mp3",
     "volume": 1,
     "lignes": [
