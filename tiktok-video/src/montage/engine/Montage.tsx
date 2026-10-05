@@ -122,7 +122,7 @@ const Flashes: React.FC<{ tl: Timeline; impacts: number[] }> = ({ tl, impacts })
   );
 };
 
-/** Sons : impacts, whooshes sur les transitions, petits « cuts » sur les jump cuts, + sons du projet. */
+/** Sons : impacts + sons du projet. Aucun bruit sur les transitions (elles restent purement visuelles). */
 const SoundDesign: React.FC<{ tl: Timeline; project: MontageProject }> = ({ tl, project }) => {
   // Discret par défaut : les effets ne doivent jamais couvrir la voix.
   const master = project.sfxVolume ?? 0.2;
@@ -131,11 +131,6 @@ const SoundDesign: React.FC<{ tl: Timeline; project: MontageProject }> = ({ tl, 
       {project.impacts.map((t) => (
         <Sfx key={`i${t}`} at={tl.outFrame(t)} src="impact" master={master} volume={0.9} rate={1.1} />
       ))}
-      {tl.cuts.map(({ frame: c, type }, i) =>
-        type === 'jump' ? null : (
-          <Sfx key={c} at={c - 9} src={type === 'zoom' ? 'whoosh-deep' : 'whoosh'} master={master} volume={0.9} rate={type === 'spin' ? 0.85 : 1.1 + (i % 2) * 0.1} />
-        ),
-      )}
       {project.sfx.map((s, i) => (
         <Sfx key={`s${i}`} at={tl.outFrame(s.at) + (s.offset ?? 0)} src={s.src} master={master} volume={s.volume ?? 0.7} rate={s.rate ?? 1} />
       ))}

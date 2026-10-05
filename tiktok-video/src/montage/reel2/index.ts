@@ -25,7 +25,6 @@ export const reel2Project: MontageProject = {
     ...[8.81, 9.01, 9.27].map((at, i) => ({ at, src: 'pin', volume: 0.5, rate: 1.5 + i * 0.1 })),
     ...Array.from({ length: 8 }, (_, i) => ({ at: 10.47, offset: i * 8, src: `key-${i % 4}`, volume: 0.55, rate: 0.7 })),
     ...Array.from({ length: 8 }, (_, i) => ({ at: 6.67, offset: i * 2, src: `key-${i % 4}`, volume: 0.45 })),
-    { at: 14.35, src: 'whoosh-out', volume: 0.4, rate: 1.4 },
     { at: 14.65, src: 'shimmer', volume: 0.4, rate: 1.3 },
     { at: 4.59, src: 'tap', volume: 0.7, rate: 0.9 },
     { at: 20.34, src: 'shimmer', volume: 0.4, rate: 1.2 },
