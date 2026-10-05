@@ -8,6 +8,11 @@ const FACES: [string, string, string][] = [
   ['Roboto', '400', 'roboto-latin-400-normal.woff2'],
   ['Roboto', '500', 'roboto-latin-500-normal.woff2'],
   ['Roboto', '700', 'roboto-latin-700-normal.woff2'],
+  ['Geist', '500', 'geist-sans-latin-500-normal.woff2'],
+  ['Geist', '600', 'geist-sans-latin-600-normal.woff2'],
+  ['Geist', '700', 'geist-sans-latin-700-normal.woff2'],
+  ['Geist Mono', '400', 'geist-mono-latin-400-normal.woff2'],
+  ['Geist Mono', '500', 'geist-mono-latin-500-normal.woff2'],
 ];
 
 let promise: Promise<void> | null = null;

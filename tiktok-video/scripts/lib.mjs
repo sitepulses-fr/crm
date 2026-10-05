@@ -49,7 +49,7 @@ export function defaultConcurrency(args) {
 /** Prépare polices + sound design si absents (premier lancement). */
 export async function ensureAssets() {
   const { execFileSync } = await import('node:child_process');
-  if (!fs.existsSync(path.join(root, 'public', 'fonts', 'inter-900.typeface.json'))) {
+  if (!fs.existsSync(path.join(root, 'public', 'fonts', 'geist-mono-500.typeface.json'))) {
     execFileSync(process.execPath, [path.join(root, 'scripts', 'prepare-fonts.mjs')], { stdio: 'inherit' });
   }
   if (!fs.existsSync(path.join(root, 'public', 'audio', 'sfx', 'drone.wav'))) {

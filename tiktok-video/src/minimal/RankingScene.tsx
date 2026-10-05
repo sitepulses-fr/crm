@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { Font } from 'three/examples/jsm/loaders/FontLoader.js';
 import { Caption } from '../components/Kinetic';
 import { Business } from '../scenes/MapScene';
+import { fonts } from '../theme';
 import { HEIGHT, WIDTH, sec } from '../timeline';
 import { CameraRig, Effects } from '../three/common';
 import { makeTextGeometry, textAdvance, useTypeface } from '../three/Text3D';
@@ -16,7 +17,7 @@ const clamp = { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' } as const;
 export const RANK = {
   rowsStart: 6,
   stagger: 6,
-  gold: [126, 135, 144] as const,
+  lit: [126, 135, 144] as const,
   offStart: 176,
   offStep: 5,
   out: 236,
@@ -31,7 +32,7 @@ const FOV = 30;
 export const offFrame = (i: number) => RANK.offStart + (ROWS - 1 - i) * RANK.offStep;
 export const rowFrame = (i: number) => RANK.rowsStart + i * RANK.stagger;
 
-const gold = new THREE.Color(ink.gold);
+const accent = new THREE.Color(ink.accent);
 const white = new THREE.Color(ink.text);
 
 /** Extinction façon néon : deux clignotements, puis noir. */
@@ -41,19 +42,19 @@ function flicker(f: number) {
   return f < seq.length ? seq[Math.floor(f)] : 0.04;
 }
 
-type RowState = { appear: number; gold: number; on: number };
+type RowState = { appear: number; lit: number; on: number };
 
-const Row: React.FC<{ font: Font; b: Business; index: number; y: number; state: RowState }> = ({ font, b, index, y, state }) => {
+const Row: React.FC<{ font: Font; mono: Font; b: Business; index: number; y: number; state: RowState }> = ({ font, mono, b, index, y, state }) => {
   const parts = useMemo(() => {
-    const num = makeTextGeometry(font, String(index + 1).padStart(2, '0'), { size: 0.12, depth: 0.004, bevel: 0 });
-    const nameText = b.nom.toUpperCase();
+    const num = makeTextGeometry(mono, String(index + 1).padStart(2, '0'), { size: 0.12, depth: 0.004, bevel: 0 });
+    const nameText = b.nom;
     const avail = COL_W - 0.42 - 0.5;
-    const nameScale = Math.min(1, avail / textAdvance(font, nameText, 0.15));
-    const name = makeTextGeometry(font, nameText, { size: 0.15 * nameScale, depth: 0.004, bevel: 0 });
+    const nameScale = Math.min(1, avail / textAdvance(font, nameText, 0.17));
+    const name = makeTextGeometry(font, nameText, { size: 0.17 * nameScale, depth: 0.004, bevel: 0 });
     const ratingText = b.note.toFixed(1).replace('.', ',');
-    const rating = makeTextGeometry(font, ratingText, { size: 0.12, depth: 0.004, bevel: 0 });
-    return { num, name, rating, ratingW: textAdvance(font, ratingText, 0.12) };
-  }, [font, b, index]);
+    const rating = makeTextGeometry(mono, ratingText, { size: 0.12, depth: 0.004, bevel: 0 });
+    return { num, name, rating, ratingW: textAdvance(mono, ratingText, 0.12) };
+  }, [font, mono, b, index]);
 
   const mats = useMemo(
     () => ({
@@ -64,14 +65,14 @@ const Row: React.FC<{ font: Font; b: Business; index: number; y: number; state: 
     [],
   );
 
-  const { appear, gold: g, on } = state;
+  const { appear, lit: g, on } = state;
   const lum = appear * on;
-  // Or « sur-exposé » (> 1) pour déclencher le bloom uniquement sur le top 3.
-  mats.name.color.copy(white).lerp(gold, g).multiplyScalar(1 + g * 0.6);
+  // Bleu « sur-exposé » (> 1) pour déclencher le bloom uniquement sur le top 3.
+  mats.name.color.copy(white).lerp(accent, g).multiplyScalar(1 + g * 0.6);
   mats.name.opacity = lum * (0.88 + g * 0.12);
-  mats.num.color.copy(white).lerp(gold, g).multiplyScalar(1 + g * 1.2);
+  mats.num.color.copy(white).lerp(accent, g).multiplyScalar(1 + g * 1.2);
   mats.num.opacity = lum * (0.45 + g * 0.55);
-  mats.bar.color.copy(white).lerp(gold, g).multiplyScalar(1 + g * 1.8);
+  mats.bar.color.copy(white).lerp(accent, g).multiplyScalar(1 + g * 1.8);
   mats.bar.opacity = lum * (0.22 + g * 0.78);
 
   const slide = (1 - appear) * 0.35;
@@ -95,19 +96,20 @@ export const RankingScene: React.FC<{
   quality: string;
 }> = ({ businesses, legendes, quality }) => {
   const frame = useCurrentFrame();
-  const font = useTypeface('inter-800.typeface.json');
+  const font = useTypeface('geist-600.typeface.json');
+  const mono = useTypeface('geist-mono-500.typeface.json');
   const rows = businesses.slice(0, ROWS);
   const top = ((rows.length - 1) * SPACING) / 2;
 
   const states: RowState[] = rows.map((_, i) => ({
     appear: interpolate(frame, [rowFrame(i), rowFrame(i) + 14], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) }),
-    gold: i < 3 ? interpolate(frame, [RANK.gold[i], RANK.gold[i] + 8], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) }) : 0,
-    on: i < 3 ? 1 : flicker(frame - offFrame(i)) * interpolate(frame, [RANK.gold[0], RANK.gold[0] + 12], [1, 0.55], clamp),
+    lit: i < 3 ? interpolate(frame, [RANK.lit[i], RANK.lit[i] + 8], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) }) : 0,
+    on: i < 3 ? 1 : flicker(frame - offFrame(i)) * interpolate(frame, [RANK.lit[0], RANK.lit[0] + 12], [1, 0.55], clamp),
   }));
 
   // Caméra : légère vue de biais (profondeur), puis recentrage et push sur le top 3.
-  const push = interpolate(frame, [RANK.gold[0] - 6, RANK.out + 16], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
-  const yaw = (interpolate(frame, [0, RANK.gold[0]], [22, 9], { ...clamp, easing: Easing.out(Easing.quad) }) * (1 - push)) * (Math.PI / 180);
+  const push = interpolate(frame, [RANK.lit[0] - 6, RANK.out + 16], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+  const yaw = (interpolate(frame, [0, RANK.lit[0]], [22, 9], { ...clamp, easing: Easing.out(Easing.quad) }) * (1 - push)) * (Math.PI / 180);
   const pitch = interpolate(frame, [0, 250], [6, 2]) * (Math.PI / 180);
   const dist = interpolate(frame, [0, 120], [14.2, 13], { ...clamp, easing: Easing.out(Easing.cubic) }) - push * 1.4;
   const target: [number, number, number] = [0, push * (top - SPACING), 0];
@@ -118,7 +120,7 @@ export const RankingScene: React.FC<{
   ];
   const out = interpolate(frame, [RANK.out, RANK.out + 18], [0, 1], { ...clamp, easing: Easing.in(Easing.cubic) });
   const enter = interpolate(frame, [0, 10], [0, 1], clamp);
-  const goldGlow = interpolate(frame, [RANK.gold[0], RANK.gold[2] + 10], [0, 1], clamp);
+  const litGlow = interpolate(frame, [RANK.lit[0], RANK.lit[2] + 10], [0, 1], clamp);
 
   return (
     <AbsoluteFill style={{ background: ink.bg, opacity: enter }}>
@@ -126,10 +128,11 @@ export const RankingScene: React.FC<{
         <color attach="background" args={[ink.bg]} />
         <CameraRig position={cam} target={target} fov={FOV} />
         {font &&
-          rows.map((b, i) => <Row key={b.nom} font={font} b={b} index={i} y={top - i * SPACING} state={states[i]} />)}
+          mono &&
+          rows.map((b, i) => <Row key={b.nom} font={font} mono={mono} b={b} index={i} y={top - i * SPACING} state={states[i]} />)}
         <Effects
           quality={quality}
-          bloom={0.35 + goldGlow * 0.45}
+          bloom={0.35 + litGlow * 0.45}
           threshold={0.95}
           vignette={0.6}
           dof={quality === 'haute' ? { target: [0, top - SPACING, 0], focalLength: 0.03, bokehScale: 2.5 } : null}
@@ -145,6 +148,8 @@ export const RankingScene: React.FC<{
           top={250}
           accent={l.accent}
           highlights={['3', 'trois', 'premiers']}
+          fontFamily={fonts.brand}
+          accentColor={ink.accent}
         />
       ))}
       <AbsoluteFill style={{ background: ink.bg, opacity: out }} />

@@ -1,6 +1,8 @@
 export const fonts = {
   ui: "'Roboto', system-ui, sans-serif",
   display: "'Inter', system-ui, sans-serif",
+  brand: "'Geist', 'Inter', system-ui, sans-serif",
+  mono: "'Geist Mono', ui-monospace, monospace",
 };
 
 // Thème sombre façon Google / Google Maps (nuit) + accents de marque.

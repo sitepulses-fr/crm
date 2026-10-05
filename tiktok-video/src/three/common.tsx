@@ -36,7 +36,7 @@ export const StudioEnvironment: React.FC<{ warm?: number }> = ({ warm = 0.4 }) =
     <color attach="background" args={['#000000']} />
     <Lightformer form="rect" intensity={3} position={[0, 4, -6]} scale={[10, 3, 1]} color="#ffffff" />
     <Lightformer form="rect" intensity={2.2} position={[-5, 1, 2]} rotation-y={Math.PI / 2} scale={[8, 2, 1]} color="#9ec5ff" />
-    <Lightformer form="rect" intensity={2.2 * warm + 0.6} position={[5, 0.5, 1]} rotation-y={-Math.PI / 2} scale={[8, 1.5, 1]} color="#ffd48a" />
+    <Lightformer form="rect" intensity={2.2 * warm + 0.6} position={[5, 0.5, 1]} rotation-y={-Math.PI / 2} scale={[8, 1.5, 1]} color={warm > 0 ? '#ffd48a' : '#ffffff'} />
     <Lightformer form="ring" intensity={1.5} position={[0, -3, 4]} scale={4} color="#ffffff" />
   </Environment>
 );

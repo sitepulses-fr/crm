@@ -55,14 +55,16 @@ export const RevealWords: React.FC<{
 };
 
 /** Légende façon sous-titre premium, dans la zone sûre. */
-export const Caption: React.FC<{ text: string; start: number; end: number; top?: number; accent?: boolean; highlights?: string[] }> = ({
-  text,
-  start,
-  end,
-  top = 210,
-  accent = false,
-  highlights = [],
-}) => {
+export const Caption: React.FC<{
+  text: string;
+  start: number;
+  end: number;
+  top?: number;
+  accent?: boolean;
+  highlights?: string[];
+  fontFamily?: string;
+  accentColor?: string;
+}> = ({ text, start, end, top = 210, accent = false, highlights = [], fontFamily = fonts.display, accentColor = colors.gold }) => {
   const frame = useCurrentFrame();
   if (frame < start - 2 || frame > end + 2) return null;
   return (
@@ -73,16 +75,17 @@ export const Caption: React.FC<{ text: string; start: number; end: number; top?:
         end={end}
         stagger={2}
         highlights={highlights}
+        accentColor={accentColor}
         style={{
           position: 'absolute',
           top,
           left: 70,
           right: 70,
           textAlign: 'center',
-          fontFamily: fonts.display,
-          fontWeight: 800,
+          fontFamily,
+          fontWeight: fontFamily === fonts.display ? 800 : 600,
           lineHeight: 1.1,
-          letterSpacing: -1.5,
+          letterSpacing: fontFamily === fonts.display ? -1.5 : -2.5,
           color: '#ffffff',
           fontSize: accent ? 92 : 76,
           textShadow: '0 6px 30px rgba(0,0,0,0.95), 0 0 2px rgba(0,0,0,0.9)',

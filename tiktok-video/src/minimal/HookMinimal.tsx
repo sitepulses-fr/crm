@@ -21,6 +21,29 @@ function toLines(text: string, maxChars: number) {
   return lines;
 }
 
+/**
+ * Comme le titre de sitepulses.fr : mots-clés pleins, le reste en contour,
+ * point final en bleu.
+ */
+const Word: React.FC<{ word: string; filled: boolean; last: boolean }> = ({ word, filled, last }) => {
+  const dot = last && /[.!?]$/.test(word);
+  const body = dot ? word.slice(0, -1) : word;
+  return (
+    <>
+      <span
+        style={
+          filled
+            ? { color: ink.text }
+            : { color: 'transparent', WebkitTextStroke: `2px ${ink.text}`, opacity: 0.75 }
+        }
+      >
+        {body}
+      </span>
+      {dot && <span style={{ color: ink.accent }}>{word.slice(-1)}</span>}{' '}
+    </>
+  );
+};
+
 /** Image 0 : une simple hairline. Elle s'étire, puis l'accroche monte au-dessus d'elle. */
 export const HookMinimal: React.FC<{ hook: string; highlights: string[] }> = ({ hook, highlights }) => {
   const frame = useCurrentFrame();
@@ -32,18 +55,18 @@ export const HookMinimal: React.FC<{ hook: string; highlights: string[] }> = ({ 
   const push = interpolate(frame, [0, 80], [1, 1.04]);
 
   return (
-    <AbsoluteFill style={{ background: ink.bg }}>
+    <AbsoluteFill>
       <div
         style={{
           position: 'absolute',
           left: LINE.x,
           right: 60,
           bottom: 1920 - LINE.y + 44,
-          fontFamily: fonts.display,
-          fontWeight: 900,
-          fontSize: 128,
-          lineHeight: 1.0,
-          letterSpacing: -6,
+          fontFamily: fonts.brand,
+          fontWeight: 600,
+          fontSize: 136,
+          lineHeight: 1.02,
+          letterSpacing: -7,
           color: ink.text,
           transformOrigin: '0% 100%',
           transform: `scale(${push})`,
@@ -58,10 +81,7 @@ export const HookMinimal: React.FC<{ hook: string; highlights: string[] }> = ({ 
             <div key={li} style={{ overflow: 'hidden', paddingBottom: 14, marginBottom: -14 }}>
               <div style={{ transform: `translateY(${(1 - p) * 110 + o * -110}%)` }}>
                 {l.split(' ').map((w, wi) => (
-                  <span key={wi} style={{ color: isHighlighted(w, highlights) ? ink.gold : undefined }}>
-                    {w}
-                    {wi < l.split(' ').length - 1 ? ' ' : ''}
-                  </span>
+                  <Word key={wi} word={w} filled={isHighlighted(w, highlights)} last={li === lines.length - 1 && wi === l.split(' ').length - 1} />
                 ))}
               </div>
             </div>

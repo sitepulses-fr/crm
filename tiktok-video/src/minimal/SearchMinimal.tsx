@@ -24,21 +24,25 @@ export const SearchMinimal: React.FC<{ query: string }> = ({ query }) => {
   const fontSize = query.length > 16 ? 96 : 118;
 
   return (
-    <AbsoluteFill style={{ background: ink.bg }}>
+    <AbsoluteFill>
       <div
         style={{
           position: 'absolute',
           left: LINE.x,
           top: LINE.y - 330,
-          fontFamily: fonts.display,
-          fontWeight: 500,
-          fontSize: 30,
-          letterSpacing: 10,
+          fontFamily: fonts.mono,
+          fontWeight: 400,
+          fontSize: 28,
+          letterSpacing: 5,
           color: ink.dim,
           opacity: label * (1 - exit),
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
         }}
       >
-        RECHERCHE
+        <span style={{ width: 12, height: 12, borderRadius: 6, background: ink.accent }} />
+        RECHERCHE GOOGLE
       </div>
       <div
         style={{
@@ -46,10 +50,10 @@ export const SearchMinimal: React.FC<{ query: string }> = ({ query }) => {
           left: LINE.x,
           right: 40,
           bottom: 1920 - LINE.y + 40,
-          fontFamily: fonts.display,
-          fontWeight: 800,
+          fontFamily: fonts.brand,
+          fontWeight: 600,
           fontSize,
-          letterSpacing: -4,
+          letterSpacing: -5,
           lineHeight: 1,
           color: ink.text,
           whiteSpace: 'nowrap',
@@ -66,7 +70,7 @@ export const SearchMinimal: React.FC<{ query: string }> = ({ query }) => {
             height: fontSize * 0.85,
             marginLeft: 10,
             verticalAlign: '-8%',
-            background: ink.gold,
+            background: ink.accent,
             opacity: caretOn && frame < M_ENTER_AT ? 1 : 0,
           }}
         />
@@ -76,7 +80,7 @@ export const SearchMinimal: React.FC<{ query: string }> = ({ query }) => {
         width={LINE.w * (1 - exit * 0.3)}
         x={LINE.x + exit * LINE.w * 0.15}
         thickness={3 + enter * 3}
-        color={enter > 0.2 ? ink.gold : ink.text}
+        color={enter > 0.2 ? ink.accent : ink.text}
         glow={0.55 + enter * 1.2}
         opacity={1 - exit}
       />

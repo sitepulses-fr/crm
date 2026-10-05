@@ -1,3 +1,5 @@
+import config from '../../config.json';
+
 // Version « minimal / typographique » : mêmes 21 s, mêmes timings de voix off.
 export const TM = {
   hook: { from: 0, duration: 80 }, // 0 → 2,7 s : hairline → accroche géante
@@ -15,10 +17,11 @@ export const LINE = {
   restW: 140, // longueur au repos (première et dernière image)
 };
 
+// Direction artistique SitePulse (sitepulses.fr) : quasi-noir, blanc cassé, un seul bleu.
 export const ink = {
-  bg: '#000000',
-  text: '#f2f2f0',
-  dim: '#8a8a8a',
-  faint: '#3a3a3a',
-  gold: '#f5c451',
+  bg: '#0a0a0c',
+  text: '#ecede9',
+  dim: '#8b8d92',
+  faint: '#2a2b30',
+  accent: config.marque.bleu, // #5d7bff
 };

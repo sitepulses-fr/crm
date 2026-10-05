@@ -32,31 +32,38 @@ function layoutLine(font: Font, line: string, accent: string): { segments: Segme
   return { segments, width: x };
 }
 
-const PunchText: React.FC<{ font: Font; lines: string[]; accent: string; frame: number; minimal: boolean }> = ({ font, lines, accent, frame, minimal }) => {
+const PunchText: React.FC<{ font: Font; lines: string[]; accent: string; frame: number; minimal: boolean; accentColor: string }> = ({
+  font,
+  lines,
+  accent: accentText,
+  frame,
+  minimal,
+  accentColor: accent,
+}) => {
   const { fps } = useVideoConfig();
   const mats = useMemo(
     () => ({
       // Variante minimale : faces blanc mat, flancs noirs. Seule la lumière dessine le volume.
       face: minimal
-        ? new THREE.MeshStandardMaterial({ color: '#f2f2f0', metalness: 0, roughness: 0.55, envMapIntensity: 0.6 })
+        ? new THREE.MeshStandardMaterial({ color: '#ecede9', metalness: 0, roughness: 0.55, envMapIntensity: 0.6 })
         : new THREE.MeshPhysicalMaterial({ color: '#f7f7fa', metalness: 0.35, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.1, envMapIntensity: 1.3 }),
       side: minimal
         ? new THREE.MeshStandardMaterial({ color: '#050505', metalness: 0.6, roughness: 0.35, envMapIntensity: 0.9 })
         : new THREE.MeshPhysicalMaterial({ color: '#30343d', metalness: 1, roughness: 0.3, envMapIntensity: 1.6 }),
       goldFace: new THREE.MeshPhysicalMaterial({
-        color: colors.gold,
-        emissive: new THREE.Color(colors.goldDeep),
+        color: minimal ? accent : colors.gold,
+        emissive: new THREE.Color(minimal ? accent : colors.goldDeep),
         emissiveIntensity: 0.9,
         metalness: 1,
         roughness: 0.18,
         clearcoat: 1,
         envMapIntensity: 2,
       }),
-      goldSide: new THREE.MeshPhysicalMaterial({ color: '#b07a12', emissive: new THREE.Color('#4a2c00'), metalness: 1, roughness: 0.25, envMapIntensity: 2 }),
+      goldSide: new THREE.MeshPhysicalMaterial({ color: minimal ? '#1d2f8a' : '#b07a12', emissive: new THREE.Color(minimal ? '#0b1440' : '#4a2c00'), metalness: 1, roughness: 0.25, envMapIntensity: 2 }),
     }),
-    [minimal],
+    [minimal, accent],
   );
-  const layouts = useMemo(() => lines.map((l) => layoutLine(font, l, accent)), [font, lines, accent]);
+  const layouts = useMemo(() => lines.map((l) => layoutLine(font, l, accentText)), [font, lines, accentText]);
   const totalH = (lines.length - 1) * LINE_H;
   const goldPulse = 0.9 + 0.5 * Math.max(0, Math.sin((frame - 30) / 7));
   mats.goldFace.emissiveIntensity = goldPulse;
@@ -87,16 +94,18 @@ const PunchText: React.FC<{ font: Font; lines: string[]; accent: string; frame: 
   );
 };
 
-export const PunchScene: React.FC<{ lines: string[]; accent: string; quality: string; variant?: 'gold' | 'minimal' }> = ({
+export const PunchScene: React.FC<{ lines: string[]; accent: string; quality: string; variant?: 'gold' | 'minimal'; accentColor?: string }> = ({
   lines: rawLines,
   accent,
   quality,
   variant = 'gold',
+  accentColor = colors.gold,
 }) => {
   const minimal = variant === 'minimal';
-  const lines = useMemo(() => (minimal ? rawLines.map((l) => l.toUpperCase()) : rawLines), [rawLines, minimal]);
+  const lines = rawLines;
   const frame = useCurrentFrame();
-  const font = useTypeface('inter-900.typeface.json');
+  // Variante minimale : Geist, la police de la DA SitePulse.
+  const font = useTypeface(minimal ? 'geist-700.typeface.json' : 'inter-900.typeface.json');
 
   const maxWidth = useMemo(
     () => (font ? Math.max(...lines.map((l) => textAdvance(font, l, SIZE))) : 8),
@@ -120,17 +129,17 @@ export const PunchScene: React.FC<{ lines: string[]; accent: string; quality: st
   const flash = interpolate(frame, [3, 6, 18], [0, minimal ? 0.25 : 0.55, 0], clamp);
 
   return (
-    <AbsoluteFill style={{ backgroundColor: colors.black }}>
+    <AbsoluteFill style={{ backgroundColor: minimal ? '#0a0a0c' : colors.black }}>
       <ThreeCanvas width={WIDTH} height={HEIGHT} gl={{ antialias: true }} style={{ position: 'absolute', inset: 0 }}>
-        <color attach="background" args={[colors.black]} />
-        <fog attach="fog" args={[colors.black, baseDist * 0.9, baseDist * 2.6]} />
+        <color attach="background" args={[minimal ? '#0a0a0c' : colors.black]} />
+        <fog attach="fog" args={[minimal ? '#0a0a0c' : colors.black, baseDist * 0.9, baseDist * 2.6]} />
         <CameraRig position={[cam[0] + shake, cam[1] + shake, cam[2]]} target={[0, -0.1, 0]} fov={35} roll={orbit * -0.08} />
-        <StudioEnvironment warm={1} />
+        <StudioEnvironment warm={minimal ? 0 : 1} />
         <ambientLight intensity={0.2} />
         <spotLight position={[6, 8, 10]} angle={0.5} penumbra={1} intensity={500} color="#ffffff" />
         <pointLight position={[-8, -2, 4]} intensity={minimal ? 60 : 120} color={minimal ? '#ffffff' : colors.brandLight} />
-        <pointLight position={[3, 1, 3]} intensity={60 + 40 * Math.sin(frame / 8)} color={colors.gold} />
-        {font && <PunchText font={font} lines={lines} accent={accent} frame={frame} minimal={minimal} />}
+        <pointLight position={[3, 1, 3]} intensity={60 + 40 * Math.sin(frame / 8)} color={minimal ? accentColor : colors.gold} />
+        {font && <PunchText font={font} lines={lines} accent={accent} frame={frame} minimal={minimal} accentColor={accentColor} />}
         {/* Anneau lumineux en arrière-plan */}
         <mesh visible={!minimal} position={[0, 0, -4]} scale={1 + exit * 2}>
           <torusGeometry args={[baseDist * 0.24, 0.025, 16, 160]} />
@@ -139,7 +148,7 @@ export const PunchScene: React.FC<{ lines: string[]; accent: string; quality: st
         {!minimal && <Dust count={300} seed="punch" spread={[baseDist, baseDist * 1.6, baseDist]} color={colors.goldLight} size={0.05} opacity={0.5} />}
         <Effects quality={quality} bloom={minimal ? 0.45 : 1.1} threshold={minimal ? 0.92 : 0.5} vignette={0.85} />
       </ThreeCanvas>
-      <AbsoluteFill style={{ background: `radial-gradient(circle, rgba(255,231,163,${flash}) 0%, rgba(245,196,81,${flash * 0.4}) 50%, transparent 80%)` }} />
+      <AbsoluteFill style={{ background: `radial-gradient(circle, ${minimal ? `rgba(93,123,255,${flash})` : `rgba(255,231,163,${flash})`} 0%, ${minimal ? `rgba(93,123,255,${flash * 0.3})` : `rgba(245,196,81,${flash * 0.4})`} 50%, transparent 80%)` }} />
     </AbsoluteFill>
   );
 };

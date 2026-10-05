@@ -53,7 +53,7 @@ export const CtaMinimal: React.FC<{ brand: { nom: string; accroche: string }; ct
   const handoff = interpolate(loop, [0.8, 1], [0, 1], clamp);
 
   return (
-    <AbsoluteFill style={{ background: ink.bg }}>
+    <AbsoluteFill>
       <svg width={1080} height={1920} style={{ position: 'absolute', inset: 0, opacity: 1 - handoff }}>
           <defs>
             <filter id="glow" x="-20%" y="-50%" width="140%" height="200%">
@@ -67,7 +67,7 @@ export const CtaMinimal: React.FC<{ brand: { nom: string; accroche: string }; ct
           <path
             d={pulsePath(amp, loopW, loopY)}
             fill="none"
-            stroke={pulse > 0.3 ? ink.gold : ink.text}
+            stroke={pulse > 0.3 ? ink.accent : ink.text}
             strokeWidth={(4 + pulse * 2) * (1 - loop) + 3 * loop}
             strokeLinejoin="round"
             strokeLinecap="round"
@@ -79,22 +79,76 @@ export const CtaMinimal: React.FC<{ brand: { nom: string; accroche: string }; ct
       {/* Dernières images : relais par la même hairline que l'image 0 (boucle parfaite). */}
       {handoff > 0 && <LightLine width={loopW} y={loopY} glow={0.35} opacity={handoff} />}
 
-      <div style={{ position: 'absolute', top: 800, width: '100%', textAlign: 'center', fontFamily: fonts.display, opacity: leave }}>
-        <div style={{ fontSize: 132, fontWeight: 900, letterSpacing: -6, color: ink.text, opacity: fade(18), transform: `translateY(${(1 - fade(18)) * 30}px)` }}>
+      <div style={{ position: 'absolute', top: 800, width: '100%', textAlign: 'center', fontFamily: fonts.brand, opacity: leave }}>
+        {/* Logo comme sur le site : point bleu + wordmark */}
+        <div
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 30,
+            fontSize: 128,
+            fontWeight: 600,
+            letterSpacing: -6,
+            color: ink.text,
+            opacity: fade(18),
+            transform: `translateY(${(1 - fade(18)) * 30}px)`,
+          }}
+        >
+          <span
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 22,
+              background: ink.accent,
+              boxShadow: `0 0 ${30 + pulse * 50}px ${ink.accent}`,
+              transform: `scale(${1 + pulse * 0.25})`,
+            }}
+          />
           {brand.nom}
         </div>
-        <div style={{ marginTop: 6, fontSize: 28, fontWeight: 500, letterSpacing: 10, color: ink.dim, opacity: fade(24) }}>
+        <div style={{ marginTop: 14, fontFamily: fonts.mono, fontSize: 27, letterSpacing: 5, color: ink.dim, opacity: fade(24) }}>
           {brand.accroche.toUpperCase()}
         </div>
       </div>
 
-      <div style={{ position: 'absolute', top: 1180, left: 60, right: 60, textAlign: 'center', fontFamily: fonts.display, opacity: leave }}>
-        <div style={{ fontSize: 92, fontWeight: 800, letterSpacing: -3, color: ink.text, opacity: fade(34), transform: `translateY(${(1 - fade(34)) * 30}px)` }}>
-          {before}
-          <span style={{ color: ink.gold, textShadow: `0 0 ${20 + pulse * 30}px rgba(245,196,81,${0.35 + pulse * 0.4})` }}>{motCle}</span>
-          {after}
+      <div style={{ position: 'absolute', top: 1180, left: 60, right: 60, textAlign: 'center', fontFamily: fonts.brand, opacity: leave }}>
+        <div
+          style={{
+            fontSize: 88,
+            fontWeight: 600,
+            letterSpacing: -4,
+            color: ink.text,
+            opacity: fade(34),
+            transform: `translateY(${(1 - fade(34)) * 30}px)`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 26,
+          }}
+        >
+          <span>{before.trim()}</span>
+          {/* Bouton pilule blanc, comme « Réserver un appel → » sur le site */}
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 22,
+              padding: '14px 40px 18px 44px',
+              borderRadius: 999,
+              background: ink.text,
+              color: ink.bg,
+              fontSize: 72,
+              letterSpacing: -2,
+              boxShadow: `0 0 ${pulse * 60}px ${ink.accent}`,
+              transform: `scale(${1 + pulse * 0.04})`,
+            }}
+          >
+            {motCle}
+            <span style={{ fontSize: 60, fontWeight: 500 }}>→</span>
+          </span>
+          {/[^\s,.]/.test(after) && <span>{after.trim()}</span>}
         </div>
-        <div style={{ marginTop: 14, fontSize: 56, fontWeight: 700, letterSpacing: -1.5, color: ink.dim, opacity: fade(42), transform: `translateY(${(1 - fade(42)) * 30}px)` }}>
+        <div style={{ marginTop: 34, fontSize: 58, fontWeight: 500, letterSpacing: -2, color: ink.dim, opacity: fade(42), transform: `translateY(${(1 - fade(42)) * 30}px)` }}>
           {ctaSuite}
         </div>
       </div>
