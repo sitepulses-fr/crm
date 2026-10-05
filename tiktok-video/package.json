@@ -1,0 +1,42 @@
+{
+  "name": "sitepulse-tiktok-maps",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Vidéo TikTok SitePulse « Google Maps : qui apparaît en premier ? » — Remotion + React Three Fiber",
+  "scripts": {
+    "postinstall": "node scripts/prepare-fonts.mjs && node scripts/generate-sfx.mjs",
+    "dev": "remotion studio src/index.ts",
+    "render": "node scripts/render.mjs",
+    "stills": "node scripts/stills.mjs",
+    "voiceover": "node scripts/voiceover.mjs",
+    "typecheck": "tsc --noEmit",
+    "montage": "node scripts/render.mjs --style=montage --sans-voix --out=out/montage-facecam.mp4",
+    "transcribe": "node scripts/transcribe.mjs",
+    "reel2": "node scripts/render.mjs --style=reel2 --sans-voix --out=out/reel2.mp4"
+  },
+  "dependencies": {
+    "@fontsource/geist-mono": "5.3.0",
+    "@fontsource/geist-sans": "5.3.0",
+    "@fontsource/inter": "5.3.0",
+    "@fontsource/roboto": "5.3.0",
+    "@react-three/drei": "10.7.9",
+    "@react-three/fiber": "9.8.1",
+    "@react-three/postprocessing": "3.1.3",
+    "@remotion/bundler": "4.0.533",
+    "@remotion/cli": "4.0.533",
+    "@remotion/renderer": "4.0.533",
+    "@remotion/three": "4.0.533",
+    "node-edge-tts": "1.2.10",
+    "postprocessing": "6.38.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.533",
+    "three": "0.180.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/three": "0.186.0",
+    "typescript": "7.0.2"
+  }
+}
