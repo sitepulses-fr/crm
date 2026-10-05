@@ -4,6 +4,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { buildShowcase, drawImg, monogram } from './showcase.js';
 
 const W = 1920, H = 1080, DUR = 34;
 const BEATS = await (await fetch('beats.json')).json();
@@ -44,7 +45,8 @@ const BLUE = new THREE.Color(0x3b7bff), HI = new THREE.Color(0x8fb4ff), RED = ne
 /* ---------- moteur ---------- */
 const canvas = document.getElementById('gl');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
-renderer.setPixelRatio(1);
+const PR = window.devicePixelRatio || 1;
+renderer.setPixelRatio(PR);
 renderer.setSize(W, H, false);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
@@ -53,8 +55,9 @@ scene.background = new THREE.Color(0x03050c);
 scene.fog = new THREE.FogExp2(0x040918, 0.03);
 const camera = new THREE.PerspectiveCamera(40, W / H, 0.1, 400);
 const composer = new EffectComposer(renderer);
+composer.setPixelRatio(PR);
 composer.addPass(new RenderPass(scene, camera));
-const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.95, 0.55, 0.6);
+const bloom = new UnrealBloomPass(new THREE.Vector2(W * PR, H * PR), 0.95, 0.55, 0.6);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
@@ -212,7 +215,7 @@ function drawPanel(P, after, nMarks) {
   if (P.kind === 'google') {
     T('FICHE GOOGLE', 40, 60, 22, mute, 'JetBrains Mono');
     [[40, 380], [432, 200], [644, 216]].forEach(([x, ww], i) => {
-      if (after) { const gr = g.createLinearGradient(x, 84, x + ww, 234); gr.addColorStop(0, ['#1c3a86', '#0f1f48', '#13244f'][i]); gr.addColorStop(1, ['#6ea0ff', '#2b5fd9', '#3b7bff'][i]); g.fillStyle = gr; g.fillRect(x, 84, ww, 150); }
+      if (after) drawImg(g, ['kitchen', 'stairs', 'workshop'][i], x, 84, ww, 150, 70 + i, 8);
       else { g.setLineDash([10, 8]); g.strokeStyle = 'rgba(150,175,255,.35)'; g.lineWidth = 2; g.strokeRect(x, 84, ww, 150); g.setLineDash([]); }
     });
     T('Atelier Morel', 40, 300, 46, white, 'Inter Tight', 500);
@@ -236,22 +239,21 @@ function drawPanel(P, after, nMarks) {
       g.fillStyle = '#8b7e66'; [240, 270, 300].forEach((y, k) => g.fillRect(450, y, k === 1 ? 220 : 340, 12));
       g.save(); g.translate(460, 360); g.rotate(-0.07); g.fillStyle = '#b0202a'; g.fillRect(0, 0, 230, 48); g.font = '26px "Times New Roman"'; g.fillStyle = '#fff'; g.fillText('En construction', 22, 33); g.restore();
     } else {
-      g.fillStyle = '#050a1a'; g.fillRect(40, 104, 820, 380);
-      T('AM', 70, 150, 30, white, 'Instrument Serif');
-      [600, 670, 740].forEach((x) => { g.fillStyle = 'rgba(243,246,255,.35)'; g.fillRect(x, 136, 50, 6); });
-      T("L'art du bois,", 70, 240, 58, white, 'Instrument Serif');
-      T('sur mesure.', 70, 300, 58, hi, 'Instrument Serif', 400, true);
-      g.fillStyle = '#3b7bff'; roundRect(g, 70, 334, 250, 52, 26); g.fill(); T('Demander un devis', 96, 368, 22, '#fff', 'Inter Tight', 500);
-      const gr = g.createLinearGradient(470, 180, 700, 460); gr.addColorStop(0, '#6ea0ff'); gr.addColorStop(1, '#10204a'); g.fillStyle = gr; g.fillRect(470, 180, 230, 270);
-      g.strokeStyle = '#f3f6ff'; g.lineWidth = 4; roundRect(g, 730, 190, 110, 220, 20); g.stroke();
-      g.fillStyle = '#3b7bff'; g.fillRect(745, 230, 80, 70);
-      [320, 340, 360].forEach((y) => { g.fillStyle = 'rgba(243,246,255,.4)'; g.fillRect(745, y, 80, 6); });
+      drawImg(g, 'kitchen', 40, 104, 820, 380, 75);
+      const ov = g.createLinearGradient(40, 0, 600, 0); ov.addColorStop(0, 'rgba(20,16,12,.85)'); ov.addColorStop(1, 'rgba(20,16,12,0)');
+      g.fillStyle = ov; g.fillRect(40, 104, 820, 380);
+      monogram(g, 84, 146, 22);
+      T("L'art du bois,", 70, 250, 58, '#f3ede3', 'Instrument Serif');
+      T('sur mesure.', 70, 310, 58, '#d4a96f', 'Instrument Serif', 400, true);
+      g.fillStyle = '#f3ede3'; roundRect(g, 70, 344, 230, 52, 26); g.fill(); T('Devis gratuit', 104, 378, 22, '#1f1b16', 'Inter Tight', 600);
+      g.fillStyle = '#faf7f2'; roundRect(g, 730, 200, 110, 230, 18); g.fill(); g.strokeStyle = '#1f1b16'; g.lineWidth = 6; g.stroke();
+      drawImg(g, 'kitchen2', 738, 222, 94, 120, 76, 4);
     }
     T(after ? 'Chargement 0,9 s' : 'Chargement 7,8 s', 40, 540, 26, after ? white : mute, 'JetBrains Mono');
     T(after ? 'Mobile ✓' : 'Mobile ✕', 720, 540, 26, after ? hi : mute, 'JetBrains Mono');
   } else if (P.kind === 'social') {
     g.beginPath(); g.arc(90, 86, 40, 0, 7);
-    if (after) { g.fillStyle = '#13244f'; g.fill(); g.strokeStyle = '#3b7bff'; g.lineWidth = 4; g.stroke(); T('AM', 66, 98, 34, white, 'Instrument Serif'); }
+    if (after) monogram(g, 90, 86, 40);
     else { g.setLineDash([8, 6]); g.strokeStyle = 'rgba(150,175,255,.4)'; g.lineWidth = 3; g.stroke(); g.setLineDash([]); }
     T('@ateliermorel', 150, 78, 34, white, 'Inter Tight', 500);
     T(after ? '3 480 abonnés · 146 posts' : '212 abonnés · 9 posts', 150, 116, 24, mute, 'JetBrains Mono');
@@ -259,11 +261,7 @@ function drawPanel(P, after, nMarks) {
     for (let k = 0; k < 6; k++) {
       const x = 40 + (k % 3) * 278, y = 160 + Math.floor(k / 3) * 206;
       if (after) {
-        const gr = g.createLinearGradient(x, y, x + 264, y + 194);
-        const pal = [['#13244f', '#3b7bff'], ['#0b1736', '#0b1736'], ['#1d3b85', '#13244f'], ['#8fb4ff', '#13244f'], ['#f3f6ff', '#f3f6ff'], ['#3b7bff', '#0b1736']][k];
-        gr.addColorStop(0, pal[0]); gr.addColorStop(1, pal[1]); g.fillStyle = gr; g.fillRect(x, y, 264, 194);
-        if (k === 1) { g.strokeStyle = '#3b7bff'; g.lineWidth = 3; g.strokeRect(x + 2, y + 2, 260, 190); T('AM', x + 96, y + 118, 64, white, 'Instrument Serif'); }
-        if (k === 4) T("L'art du bois", x + 38, y + 110, 40, '#0b1736', 'Instrument Serif', 400, true);
+        drawImg(g, ['kitchen', 'detail', 'dressing', 'stairs', 'finish', 'table'][k], x, y, 264, 194, 80 + k);
       } else { g.fillStyle = before[k]; g.fillRect(x, y, 264, 194); }
     }
   } else {
@@ -357,6 +355,8 @@ const skyHead = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, transp
 skyHead.scale.set(1.6, 1.6, 1);
 scene.add(skyHead);
 
+const SHOW = buildShowcase(scene);
+
 /* ---------- caméra : clés + Catmull-Rom ---------- */
 const KEYS = [
   [0, [-24, 6.5, 9.5], [-8, 0.6, 0]],
@@ -395,11 +395,13 @@ const show = (el, t, a, b, c = 99, d = 99, dy = 24) => {
 };
 $('c1').style.bottom = '238px';
 const chapters = [[0, '00 — Signal'], [5.5, '01 — Diagnostic'], [11.2, '02 — Impulsion'], [14.5, '03 — Transformation'], [21, '04 — Visibilité'], [27.5, '05 — Site Pulse']];
+const scCaps = [...document.querySelectorAll('.sccap')];
 const bpmAt = (t) => (t < 5.5 ? 54 : t < 11.2 ? 66 : t < 12.8 ? 0 : t < 13.4 ? 150 : t < 27 ? 100 : 60);
 const notifs = [...document.querySelectorAll('.nt')];
 
-function overlay(t) {
+function overlay(t, Tg) {
   let ch = chapters[0][1]; for (const [a, c] of chapters) if (t >= a) ch = c;
+  if (Tg > 19 && Tg < 31) ch = '03 — Vitrine';
   $('chap').textContent = ch;
   const bpm = bpmAt(t);
   $('bpm').querySelector('b').textContent = String(bpm).padStart(3, '0');
@@ -409,11 +411,11 @@ function overlay(t) {
   show($('c2'), t, 2.6, 3.4, 5.0, 5.6);
   // score
   const sc = $('score');
-  const scoreK = seg(t, 6.0, 6.6) * (1 - seg(t, 11.0, 11.4)) + seg(t, 15.2, 15.8) * (1 - seg(t, 20.6, 21.1));
+  const scoreK = seg(t, 6.0, 6.6) * (1 - seg(t, 11.0, 11.4)) + seg(t, 15.2, 15.8) * (1 - seg(Tg, 18.6, 19.0)) * (Tg < 19.5 ? 1 : 0);
   sc.style.opacity = scoreK;
   let v, st, col;
   if (t < 12) { v = t < 6.6 ? '--' : Math.round(23 * E.out(seg(t, 6.6, 10.2))); st = t < 10.2 ? 'ANALYSE EN COURS' : '10 SIGNAUX FAIBLES'; col = '#ff4f64'; }
-  else { v = Math.round(lerp(23, 94, E.inOut(seg(t, 15.6, 19.8)))); st = t < 19.8 ? 'TRANSFORMATION' : 'PRÉSENCE OPTIMISÉE'; col = v < 40 ? '#ff4f64' : v < 70 ? '#ff9442' : '#8fb4ff'; }
+  else { v = Math.round(lerp(23, 94, E.inOut(seg(t, 15.6, 18.3)))); st = t < 18.3 ? 'TRANSFORMATION' : 'PRÉSENCE OPTIMISÉE'; col = v < 40 ? '#ff4f64' : v < 70 ? '#ff9442' : '#8fb4ff'; }
   $('scoreV').innerHTML = `${v}<small>/100</small>`;
   $('scoreV').style.color = col;
   $('scoreS').textContent = st; $('scoreS').style.color = col;
@@ -421,7 +423,10 @@ function overlay(t) {
   const fl = t >= 12.8 ? Math.exp(-(t - 12.8) * 3.2) : 0;
   $('flash').style.opacity = fl;
   show($('c3'), t, 13.1, 13.6, 14.6, 15.1);
-  show($('c4'), t, 17.4, 18.0, 20.6, 21.1);
+  show($('c4'), t, 16.4, 17.0, 18.5, 18.95);
+  if (Tg > 19.5) $('c4').style.opacity = 0;
+  const SW = [[19.9, 22.7], [23.5, 26.7], [27.5, 30.3]];
+  scCaps.forEach((el, i) => show(el, Tg, SW[i][0] - 0.2, SW[i][0] + 0.4, SW[i][1] - 0.2, SW[i][1] + 0.3, 30));
   show($('rank'), t, 21.4, 22.0, 27.0, 27.5);
   const rk = Math.max(1, Math.round(27 - 26 * E.inOut(seg(t, 22.0, 25.0))));
   $('rankV').innerHTML = `<span>#</span>${rk}`;
@@ -434,11 +439,11 @@ function overlay(t) {
     n.style.transform = `translateX(${(1 - E.out(seg(t, a, a + 0.45))) * 60}px)`;
   });
   show($('end'), t, 29.2, 30.2, 99, 99, 30);
-  $('black').style.opacity = seg(t, 0, 0.6) < 1 ? 1 - seg(t, 0, 0.6) : seg(t, 33.2, 34);
+  $('black').style.opacity = seg(t, 0, 0.6) < 1 ? 1 - seg(t, 0, 0.6) : seg(t, 33.4, 34);
 }
 
 /* ---------- rendu d'une image ---------- */
-function renderAt(t) {
+function renderBase(t, Tg) {
   const flatW = seg(t, 11.2, 11.6) * (1 - seg(t, 12.75, 12.8));       // signal plat
   const boom = t >= 12.8 ? t - 12.8 : -1;
   const rise = E.inOut(seg(t, 14.6, 18.2));                          // la tour monte
@@ -450,8 +455,13 @@ function renderAt(t) {
   const cam = camAt(t);
   let sx = 0, sy = 0;
   if (boom >= 0 && boom < 1.6) { const a = 0.32 * Math.exp(-boom * 3); sx = Math.sin(boom * 61) * a; sy = Math.cos(boom * 47) * a; }
-  camera.position.set(cam.pos[0] + sx, cam.pos[1] + sy, cam.pos[2]);
-  camera.lookAt(cam.look[0], cam.look[1], cam.look[2]);
+  const P0 = new THREE.Vector3(cam.pos[0] + sx, cam.pos[1] + sy, cam.pos[2]);
+  const L0 = new THREE.Vector3(...cam.look);
+  const scc = SHOW.camera(Tg);
+  if (scc && scc.w > 0) { P0.lerp(scc.cam.pos, scc.w); L0.lerp(scc.cam.look, scc.w); }
+  camera.position.copy(P0);
+  camera.lookAt(L0);
+  const inShow = scc ? scc.w : 0;
 
   // ville
   const e = env(t, 4.5);
@@ -631,15 +641,24 @@ function renderAt(t) {
   skyHead.visible = draw > 0;
   skyHead.position.set(hx, skyY(hx), 0.85);
 
-  bloom.strength = 0.95 + (boom >= 0 ? 0.6 * Math.exp(-boom * 2.4) : 0);
+  const devOn = seg(Tg, 18.5, 19.0) * (1 - seg(Tg, 30.9, 31.3));
+  bloom.strength = lerp(0.95 + (boom >= 0 ? 0.6 * Math.exp(-boom * 2.4) : 0), 0.55, devOn);
+  bloom.threshold = lerp(0.6, 0.95, devOn);
+  SHOW.update(Tg);
   renderer.toneMappingExposure = 1.05 * (1 - 0.5 * flatW);
   scene.fog.density = 0.03 * (1 - 0.35 * seg(t, 21, 24)) + 0.012 * seg(t, 27.5, 30);
 
-  overlay(t);
+  overlay(t, Tg);
   composer.render();
 }
 
+/* Temps global → temps de base : le passage vitrine (19 → 31 s) ralentit le monde à 15 %.
+   Décalage final = 10,2 s = 17 temps à 100 BPM : la musique reste calée sur les battements. */
+const DUR_G = 44.2;
+const baseT = (Tg) => (Tg < 19 ? Tg : Tg < 31 ? 19 + (Tg - 19) * 0.15 : Tg - 10.2);
+function renderAt(Tg) { renderBase(baseT(Tg), Tg); }
+
 window.renderAt = renderAt;
-window.DUR = DUR;
+window.DUR = DUR_G;
 window.sceneReady = true;
 renderAt(9);

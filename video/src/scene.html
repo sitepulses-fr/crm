@@ -43,6 +43,12 @@
   .end .wm { font-weight:600; font-size:132px; letter-spacing:.06em; line-height:1; }
   .end .bl { font-size:56px; margin-top:22px; } .end .bl em { color:var(--hi); }
   .end .cta { display:inline-block; margin-top:36px; font-size:16px; letter-spacing:.24em; text-transform:uppercase; padding:16px 30px; border-radius:999px; border:1px solid rgba(150,175,255,.35); color:var(--white); }
+  .sccap { position:absolute; left:96px; bottom:120px; width:600px; opacity:0; }
+  .sccap .sk { font-size:16px; letter-spacing:.24em; text-transform:uppercase; color:var(--hi); margin:0 0 18px; }
+  .sccap .st { font-size:66px; line-height:1.02; margin:0 0 22px; text-shadow:0 4px 30px rgba(0,0,0,.6); }
+  .sccap .st em { color:var(--hi); }
+  .sccap .sd { font-size:17px; letter-spacing:.06em; color:#c9d3ef; margin:0; }
+  .sccap::before { content:""; position:absolute; left:-40px; top:-40px; right:-80px; bottom:-40px; background:radial-gradient(ellipse at 30% 60%, rgba(3,5,12,.75), rgba(3,5,12,0) 70%); z-index:-1; }
   .black { position:absolute; inset:0; background:#000; opacity:0; }
   .flash { position:absolute; inset:0; background:radial-gradient(circle at 50% 55%, #fff, rgba(143,180,255,.7) 35%, rgba(3,5,12,0) 75%); opacity:0; }
 </style>
@@ -70,6 +76,9 @@
     <div class="nt"><i>➚</i><p><b>Itinéraire demandé</b><span>à 2,3 km de l'atelier</span></p></div>
     <div class="nt"><i>★</i><p><b>Nouvel avis 5 étoiles</b><span>« Travail impeccable »</span></p></div>
   </div>
+  <div class="sccap" style="--i:0"><p class="sk mono">01 · Fiche Google</p><p class="st serif">Trouvée en premier,<br><em>choisie en confiance.</em></p><p class="sd mono">4,8★ · 127 avis · 24 photos · horaires à jour</p></div>
+  <div class="sccap"><p class="sk mono">02 · Site web</p><p class="st serif">Un site qui donne<br><em>envie d'appeler.</em></p><p class="sd mono">Sur mesure · 0,9 s · responsive · SEO local</p></div>
+  <div class="sccap"><p class="sk mono">03 · Instagram</p><p class="st serif">Une vitrine qui vit<br><em>chaque semaine.</em></p><p class="sd mono">3 480 abonnés · 3 posts / semaine · identité unifiée</p></div>
   <div class="end" id="end"><p class="wm">SITE PULSE</p><p class="bl serif">Votre entreprise <em>mérite d'être vue.</em></p><p class="cta mono">Diagnostic de présence offert</p></div>
   <div class="grain"></div>
   <div class="flash" id="flash"></div>
