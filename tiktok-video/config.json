@@ -53,7 +53,7 @@
 
   "audio": {
     "soundDesign": true,
-    "volumeSoundDesign": 0.8,
+    "volumeSoundDesign": 0.5,
     "musique": null,
     "volumeMusique": 0.35
   },
