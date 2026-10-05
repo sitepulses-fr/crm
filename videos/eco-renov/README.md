@@ -2,7 +2,9 @@
 
 Film motion-design 3D pour **Eco Renov** — couvreur à Saint-Sernin, près d'Aubenas (07) — 06 12 19 14 68.
 
-`eco-renov-film.mp4` : le film final (H.264 + AAC, bande-son originale incluse).
+`eco-renov-film.mp4` : le film final (H.264 6 Mb/s + AAC 192 kb/s, bande-son originale incluse, 39 Mo).
+
+![Aperçu](apercu.jpg)
 
 ## Découpage
 
