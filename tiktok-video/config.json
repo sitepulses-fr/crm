@@ -1,0 +1,67 @@
+{
+  "metier": "couvreur",
+  "ville": "Dole",
+  "article": "un",
+  "prepositionVille": "à",
+
+  "_entreprises": "Laisse [] pour générer automatiquement 8 fiches cohérentes avec le métier et la ville. Sinon, liste tes noms (les 3 premiers = le top 3).",
+  "entreprises": [],
+
+  "textes": {
+    "hook": "Tu cherches {article} {metier} {preposition} {ville}.",
+    "recherche": "{metier} {ville}",
+    "legendes": [
+      { "texte": "Tu regardes qui ?", "debut": 6.9, "fin": 9.0 },
+      { "texte": "Les 3 premiers.", "debut": 9.1, "fin": 10.6, "accent": true },
+      { "texte": "Les autres ? Personne ne les voit.", "debut": 10.7, "fin": 13.0 }
+    ],
+    "punchline": ["Si t'es pas", "dans les 3,", "t'existes pas."],
+    "punchlineAccent": "3",
+    "cta": "Commente {motCle},",
+    "ctaSuite": "je te montre où tu en es.",
+    "motCle": "AUDIT"
+  },
+
+  "voixOff": {
+    "_info": "Dépose ton enregistrement dans public/audio/voiceover.mp3 (calé sur 'debut'), ou lance `npm run voiceover` avec ELEVENLABS_API_KEY pour générer une piste par phrase.",
+    "fichier": "audio/voiceover.mp3",
+    "volume": 1,
+    "lignes": [
+      { "texte": "Tu cherches {article} {metier} {preposition} {ville}.", "debut": 0.25 },
+      { "texte": "Tu tapes sur Google.", "debut": 2.4 },
+      { "texte": "Tu regardes qui ?", "debut": 6.9 },
+      { "texte": "Les trois premiers.", "debut": 9.1 },
+      { "texte": "Les autres ? Personne ne les voit.", "debut": 10.7 },
+      { "texte": "Si t'es pas dans les 3, t'existes pas.", "debut": 13.4 },
+      { "texte": "Commente AUDIT, et je te montre où tu en es.", "debut": 17.3 }
+    ],
+    "elevenlabs": {
+      "voiceId": "onwK4e9ZLuTAKqWW03F9",
+      "modelId": "eleven_multilingual_v2",
+      "stability": 0.55,
+      "similarityBoost": 0.8,
+      "style": 0.15
+    }
+  },
+
+  "marque": {
+    "nom": "SitePulse",
+    "accroche": "Sites web pour artisans",
+    "bleu": "#2563eb",
+    "or": "#f5c451"
+  },
+
+  "audio": {
+    "soundDesign": true,
+    "volumeSoundDesign": 0.8,
+    "musique": null,
+    "volumeMusique": 0.35
+  },
+
+  "rendu": {
+    "sortie": "out/sitepulse-{metier}-{ville}-{date}.mp4",
+    "crf": 18,
+    "qualite3D": "haute",
+    "afficherZonesSures": false
+  }
+}
