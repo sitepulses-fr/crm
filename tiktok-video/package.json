@@ -10,7 +10,9 @@
     "render": "node scripts/render.mjs",
     "stills": "node scripts/stills.mjs",
     "voiceover": "node scripts/voiceover.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "montage": "node scripts/render.mjs --style=montage --sans-voix --out=out/montage-facecam.mp4",
+    "transcribe": "node scripts/transcribe.mjs"
   },
   "dependencies": {
     "@fontsource/geist-mono": "5.3.0",

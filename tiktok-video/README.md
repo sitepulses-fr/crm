@@ -104,3 +104,25 @@ Les timings globaux sont dans `src/timeline.ts`. Tout le texte important reste e
   ou un Chromium local avec `REMOTION_BROWSER_EXECUTABLE=/chemin/vers/chrome`.
 - Pour automatiser la publication quotidienne : un cron ou une tâche planifiée qui lance
   `npm run render -- --metier=... --ville=...`.
+
+## Montage facecam (tes rushs filmés)
+
+Composition `MontageFacecam` : tu te filmes, et le code fait le montage « créateur » :
+
+- **Sous-titres mot à mot** (Geist) : le mot prononcé s'allume dans une pastille bleue, les mots-clés restent en bleu.
+- **Blancs coupés** entre les plans et **zoom cuts** (changements de cadrage secs sur les relances).
+- **3 transitions** sur les raccords : whip pan, zoom traversant avec flash, spin avec light leak.
+- **Apparitions synchronisées** sur ce que tu dis : STOP, carte SitePulse, « 1/2 », site introuvable,
+  avis Google, le concurrent qui décroche, Jura, courbe des devis, aperçu de site, commentaire « VISUEL », 48 h.
+  Elles se placent au-dessus de ta tête sur les plans larges et au niveau du torse sur les plans rapprochés, jamais sur le visage.
+- Étalonnage léger, vignette, sound design (impact, whooshes, pops, clavier).
+
+```bash
+npm i --no-save --ignore-scripts sts-whisper-small @huggingface/transformers   # une fois (Whisper local)
+npm run transcribe -- --rush=/chemin/ma-video.mov   # rush → public/rush + transcription mot à mot
+# relis src/montage/montage.json (mots + "segments" gardés), puis :
+npm run montage                                      # → out/montage-facecam.mp4
+```
+
+Les apparitions et leurs timings (en secondes du rush) se règlent dans `src/montage/Overlays.tsx`,
+les zooms dans `src/montage/Montage.tsx` (`PUNCHES`). Les rushs ne sont pas versionnés (`public/rush/`).

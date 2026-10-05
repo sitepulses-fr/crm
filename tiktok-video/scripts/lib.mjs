@@ -60,6 +60,7 @@ export async function ensureAssets() {
 /** Identifiant de composition selon le style choisi (config.rendu.style ou --style=). */
 export function compositionId(config, args) {
   const style = args.style || config.rendu.style || 'minimal';
+  if (style === 'montage') return 'MontageFacecam';
   return style === 'illustre' ? 'SitePulseMaps' : 'SitePulseMinimal';
 }
 
