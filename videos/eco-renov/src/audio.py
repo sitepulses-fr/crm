@@ -8,13 +8,21 @@ N = int(SR * TOTAL)
 t = np.arange(N) / SR
 rng = np.random.default_rng(7)
 
-TRANS = [6.3, 11.4, 16.5, 21.2, 25.9, 30.8, 35.9, 41.2]  # transition starts (0.9s long)
-TR = 0.9
+import json, sys
+CFG = json.load(open(sys.argv[1])) if len(sys.argv) > 1 else {}
+TRANS = CFG.get('trans', [6.3, 11.4, 16.5, 21.2, 25.9, 30.8, 35.9, 41.2])  # transition starts
+TR = CFG.get('tr', 0.9)
+TOTAL = CFG.get('total', TOTAL)
+N = int(SR * TOTAL)
+t = np.arange(N) / SR
+INTRO_HIT = CFG.get('intro_hit', 3.25)
+OUT_WAV = CFG.get('out', 'music.wav')
 BPM = 112
 BEAT = 60 / BPM
 GRID0 = TRANS[0] + TR / 2  # first downbeat = first impact
 DRUM_END = TRANS[-1] + TR / 2
-LOGO = TRANS[-1] + 3.3
+LOGO = TRANS[-1] + CFG.get('logo_after', 3.3)
+CHIME = CFG.get('chime', LOGO + 2.0)
 
 def midi(m): return 440.0 * 2 ** ((m - 69) / 12)
 
@@ -218,11 +226,11 @@ for i, ts in enumerate(TRANS):
     add(fx, im, mid, 0.42 * big); add(verb_send, im, mid, 0.25 * big)
     w2 = whoosh(0.9, False, 50 + i); add(fx, w2, mid, 0.07, 0.5 - (i % 2))
 # intro
-r_ = riser(3.2); add(fx, r_, 0.05, 0.12); add(verb_send, r_, 0.05, 0.1)
-im = impact(1.2, 99); add(fx, im, 3.25, 0.5); add(verb_send, im, 3.25, 0.4)
+r_ = riser(INTRO_HIT - 0.05); add(fx, r_, 0.05, 0.12); add(verb_send, r_, 0.05, 0.1)
+im = impact(1.2, 99); add(fx, im, INTRO_HIT, 0.5); add(verb_send, im, INTRO_HIT, 0.4)
 rr = np.random.default_rng(5)
 for j in range(70):
-    tt_ = 1.6 + rr.random() ** 0.9 * 3.2
+    tt_ = (INTRO_HIT - 1.65) + rr.random() ** 0.9 * 3.2
     add(fx, tick(j), tt_, 0.03 * rr.random(), rr.uniform(-0.8, 0.8))
 add(verb_send, np.zeros(1), 0, 0)
 # outro logo
@@ -232,7 +240,7 @@ im = impact(1.3, 77); add(fx, im, LOGO, 0.55); add(verb_send, im, LOGO, 0.5)
 for j, m in enumerate([74, 81, 86]):
     n = int(2.2 * SR); tt = np.arange(n) / SR
     x = (np.sin(2 * np.pi * midi(m) * tt) + 0.3 * np.sin(2 * np.pi * midi(m) * 3 * tt) * np.exp(-tt * 6)) * np.exp(-tt * 2.2)
-    add(fx, x, LOGO + 2.0 + j * 0.11, 0.05, -0.4 + 0.4 * j); add(verb_send, x, LOGO + 2.0 + j * 0.11, 0.06)
+    add(fx, x, CHIME + j * 0.11, 0.05, -0.4 + 0.4 * j); add(verb_send, x, CHIME + j * 0.11, 0.06)
 
 dry += fx
 
@@ -251,6 +259,6 @@ mix *= 0.16 / rms
 mix = np.tanh(mix * 1.1) / np.tanh(1.1)
 mix *= 0.93 / np.abs(mix).max()
 pcm = (mix.T * 32767).astype(np.int16)
-with wave.open('music.wav', 'wb') as w:
+with wave.open(OUT_WAV, 'wb') as w:
     w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes(pcm.tobytes())
 print('ok', TOTAL, 'rms', np.sqrt((mix ** 2).mean()))

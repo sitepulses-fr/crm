@@ -34,3 +34,25 @@ ffmpeg -framerate 30 -i frames/f%05d.jpg -i music.wav -c:v libx264 -preset slow 
 Aperçu en temps réel dans un navigateur : `http://localhost:8123/index.html?play`, ou une image précise avec `?t=12.5`.
 
 Les textes (titres, sous-titres, coordonnées) sont dans `src/index.html` et dans l'objet `CARDS` de `src/main.js`.
+
+---
+
+# Version 2 — 100 % typographique (52 s)
+
+`eco-renov-typo.mp4` : même univers, sans aucune illustration. Uniquement du texte : lettres extrudées en 3D (crème, cuivre, chrome, bois, crépi), mises en lumière et animées.
+
+| Temps | Séquence | Animation |
+|-------|----------|-----------|
+| 0:00 | ECO RENOV | Les lettres 3D surgissent des profondeurs et se posent, une lame de lumière balaie le logo |
+| 0:06 | Votre toit. Votre maison. Notre métier. | Vol à travers un tunnel d'anneaux de texte (les 7 prestations) |
+| 0:11 | 01 Couverture | Les lettres tombent et s'emboîtent comme des tuiles |
+| 0:15 | 02 Nettoyage de toiture | Lettres couvertes de mousse, lavées par un jet d'eau |
+| 0:19 | 03 Zinguerie | Lettres chromées qui pivotent, reflets en mouvement |
+| 0:22 | 04 Dessous de toit | Vue en contre-plongée, lettres qui basculent en place comme des lames |
+| 0:26 | 05 Nettoyage façade | Lettres qui sortent d'un mur crépi encrassé, puis nettoyage |
+| 0:30 | 06 Traitement de charpente | Tracé filaire cuivré → lettres en bois → scan de traitement |
+| 0:34 | 07 Isolation des combles | Des milliers de fibres soufflées viennent former les lettres |
+| 0:38 | Saint-Sernin · Ardèche | Anneaux de lettres 3D en rotation autour de la caméra |
+| 0:43 | Final | Logo, numéro 06 12 19 14 68 qui défile comme une machine à sous, site, prestations |
+
+Régénération : comme la version 1, avec `PAGE=typo.html OUT=frames2 node render.mjs 0 2000`, puis `python3 audio.py typo_audio.json` (→ `music_typo.wav`) et ffmpeg sur `frames2/`.

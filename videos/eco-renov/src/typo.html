@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Eco Renov — Typo</title>
+<style>
+@font-face{font-family:'Syne';font-weight:400 800;src:url('fonts/Syne-800.woff2') format('woff2');font-display:block}
+@font-face{font-family:'Inter';font-weight:100 900;src:url('fonts/Inter-400.woff2') format('woff2');font-display:block}
+@font-face{font-family:'JetBrains Mono';font-weight:100 800;src:url('fonts/JetBrainsMono-400.woff2') format('woff2');font-display:block}
+:root{--copper:#e0864e;--copper2:#f3b07a;--ink:#f4efe8;--muted:rgba(244,239,232,.62)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#000;overflow:hidden}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden;background:#000}
+#stage canvas{position:absolute;inset:0;display:block}
+#ui{position:absolute;inset:0;pointer-events:none;color:var(--ink);font-family:'Inter',sans-serif}
+.abs{position:absolute}
+.mask{display:block;overflow:hidden;padding:.06em .02em .14em;margin:-.06em -.02em -.14em}
+.mask.il{display:inline-block}
+.wd{display:inline-block;white-space:nowrap}
+.ch{display:inline-block;will-change:transform,opacity,filter;white-space:pre}
+.center{position:absolute;left:0;right:0;text-align:center}
+.mono{font-family:'JetBrains Mono';letter-spacing:.32em;text-transform:uppercase;color:var(--copper2)}
+.subl{font-size:24px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.ln{display:inline-block;height:2px;width:90px;background:var(--copper);vertical-align:middle}
+#shade{position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(2,3,5,0) 40%,rgba(2,3,5,.55) 100%)}
+#vig{position:absolute;inset:0;background:radial-gradient(ellipse 65% 60% at 50% 50%,rgba(2,3,5,.25),rgba(2,3,5,.8));opacity:0}
+
+/* intro */
+#i-kick{top:300px;font-size:20px}
+#i-kick .row{display:inline-flex;align-items:center;gap:22px}
+#i-loc{top:750px}
+
+/* manifesto */
+#mani .w{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;font-family:'Syne';font-weight:800;font-size:150px;line-height:1;letter-spacing:-.03em;text-shadow:0 20px 80px rgba(0,0,0,.6)}
+#mani .w.c{color:var(--copper)}
+
+/* service captions */
+.sk{top:285px;font-size:20px}
+.sk .row{display:inline-flex;align-items:center;gap:22px}
+.ss{top:775px}
+.ghostnum{position:absolute;top:50%;transform:translateY(-50%);font-family:'Syne';font-weight:800;font-size:30px;color:var(--copper2);letter-spacing:.2em}
+
+/* location */
+#l-mid{top:50%;transform:translateY(-50%);font-family:'Syne';font-weight:800;font-size:64px;letter-spacing:-.01em}
+#l-mid small{display:block;font-family:'JetBrains Mono';font-weight:400;font-size:19px;letter-spacing:.34em;color:var(--copper2);margin-bottom:14px;text-transform:uppercase}
+
+/* outro */
+#o-top{top:150px}
+#o-top svg{width:120px;height:78px;overflow:visible;display:block;margin:0 auto 18px}
+#o-top h1{font-family:'Syne';font-weight:800;font-size:96px;line-height:.95;letter-spacing:-.02em}
+#o-top h1 .r{color:var(--copper)}
+#o-top h1 .mask.il:first-child{margin-right:.3em}
+#o-call{top:395px;font-size:19px}
+#o-loc{top:716px;font-size:20px}
+#o-web{top:770px;font-size:24px;letter-spacing:.16em;color:var(--muted)}
+#o-svc{top:880px;font-size:17px;letter-spacing:.26em;text-transform:uppercase;color:rgba(244,239,232,.5);line-height:1.9}
+
+/* HUD */
+#hud{position:absolute;inset:0}
+#hud .tl{left:72px;top:58px;display:flex;align-items:center;gap:16px;font-family:'Syne';font-weight:800;font-size:22px;letter-spacing:.12em}
+#hud .tr{right:72px;top:62px;font-family:'JetBrains Mono';font-size:15px;letter-spacing:.22em;color:var(--muted);text-transform:uppercase}
+#hud .bl{left:72px;bottom:62px;display:flex;align-items:center;gap:20px;font-family:'JetBrains Mono';font-size:15px;letter-spacing:.2em;color:var(--muted)}
+#hud .bar{width:280px;height:2px;background:rgba(255,255,255,.16);position:relative;overflow:hidden}
+#hud .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--copper);width:0}
+#hud .br{right:72px;bottom:56px;display:flex;align-items:center;gap:14px;font-family:'Syne';font-weight:700;font-size:26px;letter-spacing:.06em}
+#hud .br .dot{width:10px;height:10px;border-radius:50%;background:var(--copper);box-shadow:0 0 18px var(--copper)}
+</style>
+<script type="importmap">
+{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}
+</script>
+</head>
+<body>
+<div id="stage">
+  <div id="ui">
+    <div id="shade"></div>
+    <div id="vig"></div>
+
+    <div id="intro">
+      <div id="i-kick" class="center mono"><span class="row"><span class="ln"></span><span class="mask"><span class="ch">Artisan couvreur · Ardèche</span></span><span class="ln"></span></span></div>
+      <div id="i-loc" class="center subl"><span class="mask"><span class="ch">Saint-Sernin · près d'Aubenas</span></span></div>
+    </div>
+
+    <div id="mani">
+      <div class="w"><span class="mask il" data-split>Votre toit.</span></div>
+      <div class="w"><span class="mask il" data-split>Votre maison.</span></div>
+      <div class="w c"><span class="mask il" data-split>Notre métier.</span></div>
+    </div>
+
+    <div id="svc"></div>
+
+    <div id="locd">
+      <div id="l-mid" class="center"><small><span class="mask"><span class="ch">Votre couvreur</span></span></small><span class="mask" data-split>en Ardèche</span></div>
+    </div>
+
+    <div id="outro">
+      <div id="o-top" class="center">
+        <svg viewBox="0 0 120 76"><path id="lg1" d="M8 58 L60 14 L112 58" fill="none" stroke="#e0864e" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path id="lg2" d="M34 66 L60 44 L86 66" fill="none" stroke="#f4efe8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h1><span class="mask il" data-split>ECO</span><span class="mask il r" data-split>RENOV</span></h1>
+      </div>
+      <div id="o-call" class="center mono"><span class="mask"><span class="ch">Appelez-nous</span></span></div>
+      <div id="o-loc" class="center mono"><span class="mask"><span class="ch">Saint-Sernin · près d'Aubenas (07)</span></span></div>
+      <div id="o-web" class="center"><span class="mask"><span class="ch">eco-renov-couverture.fr</span></span></div>
+      <div id="o-svc" class="center"><span class="mask"><span class="ch">Couverture · Nettoyage de toiture · Dessous de toit · Zinguerie</span></span><span class="mask"><span class="ch">Nettoyage façade · Traitement de charpente · Isolation des combles</span></span></div>
+    </div>
+
+    <div id="hud">
+      <div class="abs tl"><svg width="34" height="22" viewBox="0 0 120 76"><path d="M8 58 L60 14 L112 58" fill="none" stroke="#e0864e" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><path d="M34 66 L60 44 L86 66" fill="none" stroke="#f4efe8" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></svg>ECO RENOV</div>
+      <div class="abs tr">Saint-Sernin · Ardèche</div>
+      <div class="abs bl"><span id="cnt">01 / 07</span><div class="bar"><i id="prog"></i></div></div>
+      <div class="abs br"><span class="dot"></span>06 12 19 14 68</div>
+    </div>
+  </div>
+</div>
+<script type="module" src="typo.js"></script>
+</body>
+</html>
