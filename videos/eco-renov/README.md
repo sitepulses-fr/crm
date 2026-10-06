@@ -39,7 +39,9 @@ Les textes (titres, sous-titres, coordonnées) sont dans `src/index.html` et dan
 
 # Version 2 — 100 % typographique (52 s)
 
-`eco-renov-typo.mp4` : même univers, sans aucune illustration. Uniquement du texte : lettres extrudées en 3D (crème, cuivre, chrome, bois, crépi), mises en lumière et animées.
+![Aperçu typo](apercu-typo.jpg)
+
+`eco-renov-typo.mp4` (40 Mo) : même univers, sans aucune illustration. Uniquement du texte : lettres extrudées en 3D (crème, cuivre, chrome, bois, crépi), mises en lumière et animées.
 
 | Temps | Séquence | Animation |
 |-------|----------|-----------|
