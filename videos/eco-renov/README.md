@@ -58,3 +58,17 @@ Les textes (titres, sous-titres, coordonnées) sont dans `src/index.html` et dan
 | 0:43 | Final | Logo, numéro 06 12 19 14 68 qui défile comme une machine à sous, site, prestations |
 
 Régénération : comme la version 1, avec `PAGE=typo.html OUT=frames2 node render.mjs 0 2000`, puis `python3 audio.py typo_audio.json` (→ `music_typo.wav`) et ffmpeg sur `frames2/`.
+
+---
+
+# Version 3 — Publicité portrait 9:16 (29 s, 1080×1920)
+
+`eco-renov-pub-portrait.mp4` : publicité verticale (Reels / TikTok / Stories / Shorts) construite à partir des photos fournies.
+Logo et accents dans le vert du site : **#44C867**.
+
+- Photos intégrées en **relief** : fausse carte de profondeur + parallaxe selon la caméra, cartes 3D épaisses (tranche verte), fond flou en profondeur, cadre décalé, numéros 3D.
+- Entrée différente pour chaque prestation (flip latéral, montée, chute, tranches, zoom depuis le fond, diagonale), transitions shader entre les scènes.
+- Anneau 3D de toutes les photos, puis final avec numéro **06 12 19 14 68** en rouleau de machine à sous et bouton « Contactez-nous ».
+- Zones de sécurité des réseaux sociaux respectées (titres entre 1330 et 1650 px, pied de page à 232 px du bas).
+
+Régénération : `PAGE=ad.html VW=1080 VH=1920 OUT=frames3 node render.mjs 0 870`, `python3 audio.py ad_audio.json`, puis ffmpeg comme pour les versions précédentes (les photos sont à placer dans `src/ads/photos/`).
