@@ -63,7 +63,9 @@ Régénération : comme la version 1, avec `PAGE=typo.html OUT=frames2 node rend
 
 # Version 3 — Publicité portrait 9:16 (29 s, 1080×1920)
 
-`eco-renov-pub-portrait.mp4` : publicité verticale (Reels / TikTok / Stories / Shorts) construite à partir des photos fournies.
+![Aperçu pub portrait](apercu-pub-portrait.jpg)
+
+`eco-renov-pub-portrait.mp4` (19 Mo) : publicité verticale (Reels / TikTok / Stories / Shorts) construite à partir des photos fournies.
 Logo et accents dans le vert du site : **#44C867**.
 
 - Photos intégrées en **relief** : fausse carte de profondeur + parallaxe selon la caméra, cartes 3D épaisses (tranche verte), fond flou en profondeur, cadre décalé, numéros 3D.
